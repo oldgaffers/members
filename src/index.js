@@ -6,15 +6,17 @@ import reportWebVitals from './reportWebVitals';
 import OGAProvider from "./components/OGAProvider";
 import Members from './components/Members';
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
+const root = ReactDOM.createRoot(document.getElementById('members'));
 root.render(
   <React.StrictMode>
     <Auth0Provider
-      scope='member'
       domain="dev-uf87e942.eu.auth0.com"
       clientId="Mlm45jI7zvoQXbLSYSNV8F1qI1iTEnce"
-      authorizationParams={{ redirect_uri: window.location.origin + window.location.pathname }}
-      audience="https://oga.org.uk/boatregister"
+      authorizationParams={{
+        redirect_uri: window.location.origin + window.location.pathname,
+        audience: "https://oga.org.uk/boatregister",
+        scope: 'member',
+      }}
       useRefreshTokens={true}
       cacheLocation='localstorage'
     >

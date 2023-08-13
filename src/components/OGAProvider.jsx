@@ -20,7 +20,6 @@ export default function OGAProvider({ children }) {
     const getAccessToken = async () => {
       if (isAuthenticated) {
         const token = await getAccessTokenSilently();
-        console.log('token', token);
         const authLink = setContext((_, { headers }) => {
           // get the authentication token from local storage if it exists
           // return the headers to the context so httpLink can read them
