@@ -3,17 +3,12 @@ import Box from '@mui/material/Box';
 import CircularProgress from '@mui/material/CircularProgress';
 import { FormControlLabel, FormGroup, Switch, Typography } from '@mui/material';
 import { gql, useQuery } from '@apollo/client';
-import YearbookMembers from './yearbook_members';
 import { SuggestLogin } from './loginbutton';
 import RoleRestricted from './rolerestrictedcomponent';
 import { memberPredicate } from '../membership';
 import { useAuth0 } from '@auth0/auth0-react';
-export function membersBoats(boats, members) {
-  return boats.filter((b) => b.owners?.length > 0).map((b) => {
-    const owners = b.owners.map((o) => members.find((m) => m.id === o && o)).filter((o) => o);
-    return { ...b, owners, id: b.oga_no };
-  }).filter((b) => b.owners.length > 0);
-}
+import MembersAndBoats from './MembersAndBoats';
+import MembersBoats from './MembersBoats';
 
 function MembersList() {
   const [excludeNotPaid, setExcludeNotPaid] = useState(false);
@@ -40,7 +35,7 @@ function MembersList() {
   const { members } = membersResult.data;
   const ybmembers = members.filter((m) => memberPredicate(m.id, m, excludeNotPaid, excludeNoConsent));
 
-  const ybboats = membersBoats(boats, ybmembers);
+  const membersBoats = MembersBoats(boats, ybmembers);
 
   const handleNotPaidSwitchChange = (event, newValue) => {
     setExcludeNotPaid(newValue);
@@ -59,7 +54,7 @@ function MembersList() {
           {roles.includes['editor'] ? <FormControlLabel control={<Switch onChange={handleNoConsentSwitchChange} checked={excludeNoConsent} />} label="Exclude no Consent" /> : ''}
         </FormGroup>
       </Box>
-      <YearbookMembers members={ybmembers} boats={ybboats} />
+      <MembersAndBoats members={ybmembers} boats={membersBoats} />
     </Box>
   );
 }

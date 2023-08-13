@@ -1,17 +1,9 @@
 import React from 'react';
 import Typography from '@mui/material/Typography';
 import { DataGrid, GridToolbarContainer, GridToolbarFilterButton } from '@mui/x-data-grid';
-// import { GridToolbarExport } from '@mui/x-data-grid';
 import { parsePhoneNumber } from 'awesome-phonenumber'
 import Contact from './contact';
 
-/*
-            <GridToolbarExport csvOptions={{
-                fileName: 'members',
-                delimiter: '\t',
-                utf8WithBom: true,
-            }} />
-*/
 function CustomToolbar() {
     return (
         <GridToolbarContainer>
@@ -112,8 +104,7 @@ function areaFormatter({ value }) {
     return (<Typography variant='body2'>{value}</Typography>);
 }
 
-// export default function YearbookMembers({ members=[], boats=[] }) {
-export default function YearbookMembers({ members=[], boats=[], components={ Toolbar: CustomToolbar } }) {
+export default function MembersAndBoats({ members=[], boats=[], components={ Toolbar: CustomToolbar } }) {
     // console.log('YearbookBoats', members, boats);
 
     function boatGetter({ row }) {

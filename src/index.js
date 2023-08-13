@@ -5,10 +5,12 @@ import './index.css';
 import reportWebVitals from './reportWebVitals';
 import OGAProvider from "./components/OGAProvider";
 import Members from './components/Members';
+import MembersAndBoats from './components/MembersAndBoats';
+import UpdateMyDetails from './components/UpdateMyDetails';
 
-const root = ReactDOM.createRoot(document.getElementById('members'));
-root.render(
-  <React.StrictMode>
+function Wrapper({ children }) {
+  return (
+    <React.StrictMode>
     <Auth0Provider
       domain="dev-uf87e942.eu.auth0.com"
       clientId="Mlm45jI7zvoQXbLSYSNV8F1qI1iTEnce"
@@ -21,11 +23,28 @@ root.render(
       cacheLocation='localstorage'
     >
       <OGAProvider>
-        <Members />
+        {children}
       </OGAProvider>
     </Auth0Provider>
   </React.StrictMode >
-);
+  );
+}
+
+const details = document.getElementById('update_my_details');
+const members = document.getElementById('members');
+const boats = document.getElementById('members_boats');
+
+if (details) {
+  ReactDOM.createRoot(details).render(<Wrapper><UpdateMyDetails/></Wrapper>);
+}
+
+if (members) {
+  ReactDOM.createRoot(members).render(<Wrapper><Members /></Wrapper>);
+}
+
+if (boats) {
+  ReactDOM.createRoot(boats).render(<Wrapper><MembersAndBoats /></Wrapper>);
+}
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
