@@ -9,9 +9,9 @@ import { Button, Checkbox, CircularProgress, Dialog, DialogActions, DialogConten
 import RoleRestricted from './rolerestrictedcomponent';
 import { getFilterable, postGeneralEnquiry } from './api';
 import { SuggestLogin } from './loginbutton';
-import MembersBoats from './MembersBoats';
+import membersBoats from './membersBoats';
 import MembersAndBoats from './MembersAndBoats';
-import BoatsAndMembers from './BoatsAndMembers';
+import BoatsAndOwners from './BoatsAndOwners';
 
 const MEMBER_QUERY = gql(`query members($members: [Int]!) {
     members(members: $members) {
@@ -321,7 +321,7 @@ function MyDetails() {
         if (!boats) {
             getFilterable()
                 .then((r) => {
-                    setBoats(r.data);
+                    setBoats(r);
                 }).catch((e) => console.log(e));
         }
     }, [boats]);
@@ -331,7 +331,7 @@ function MyDetails() {
     }
     const { members } = memberResult.data;
     const record = members.find((m) => m.id === id);
-    const myBoats = MembersBoats(boats, members);
+    const myBoats = membersBoats(boats, members);
 
     let your = 'Your entry';
     if (members.length > 1) {
@@ -364,7 +364,7 @@ function MyDetails() {
                     <div></div>
                 </Stack>
                 <Typography variant='h6'>{your} in the Yearbook boat list would be</Typography>
-                <BoatsAndMembers boats={myBoats} components={{}} />
+                <BoatsAndOwners boats={myBoats} components={{}} />
             </Stack>
             <UpdateMyDetailsDialog user={record} onSubmit={handleSubmit} onCancel={() => setOpen(false)} open={open} />
             <Snackbar

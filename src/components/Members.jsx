@@ -8,7 +8,7 @@ import RoleRestricted from './rolerestrictedcomponent';
 import { memberPredicate } from '../membership';
 import { useAuth0 } from '@auth0/auth0-react';
 import MembersAndBoats from './MembersAndBoats';
-import MembersBoats from './MembersBoats';
+import membersBoats from './membersBoats';
 
 function MembersList() {
   const [excludeNotPaid, setExcludeNotPaid] = useState(false);
@@ -35,7 +35,7 @@ function MembersList() {
   const { members } = membersResult.data;
   const ybmembers = members.filter((m) => memberPredicate(m.id, m, excludeNotPaid, excludeNoConsent));
 
-  const membersBoats = MembersBoats(boats, ybmembers);
+  const wboats = membersBoats(boats, ybmembers);
 
   const handleNotPaidSwitchChange = (event, newValue) => {
     setExcludeNotPaid(newValue);
@@ -54,7 +54,7 @@ function MembersList() {
           {roles.includes['editor'] ? <FormControlLabel control={<Switch onChange={handleNoConsentSwitchChange} checked={excludeNoConsent} />} label="Exclude no Consent" /> : ''}
         </FormGroup>
       </Box>
-      <MembersAndBoats members={ybmembers} boats={membersBoats} />
+      <MembersAndBoats members={ybmembers} boats={wboats} />
     </Box>
   );
 }

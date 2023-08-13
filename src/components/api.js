@@ -26,5 +26,9 @@ export async function postGeneralEnquiry(scope, subject, data) {
 }
 
 export async function getFilterable() {
-  return (await fetch(`${boatRegisterHome}/boatregister/filterable.json`)).json();
+  const r = await fetch(`${boatRegisterHome}/boatregister/filterable.json`);
+  if (r.ok) {
+    return r.json();
+  }
+  return [];
 }

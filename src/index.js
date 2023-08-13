@@ -5,7 +5,7 @@ import './index.css';
 import reportWebVitals from './reportWebVitals';
 import OGAProvider from "./components/OGAProvider";
 import Members from './components/Members';
-import MembersAndBoats from './components/MembersAndBoats';
+import Boats from './components/Boats';
 import UpdateMyDetails from './components/UpdateMyDetails';
 
 function Wrapper({ children }) {
@@ -43,7 +43,7 @@ if (members) {
 }
 
 if (boats) {
-  ReactDOM.createRoot(boats).render(<Wrapper><MembersAndBoats /></Wrapper>);
+  ReactDOM.createRoot(boats).render(<Wrapper><Boats /></Wrapper>);
 }
 
 // If you want to start measuring performance in your app, pass a function
