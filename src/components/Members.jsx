@@ -4,11 +4,11 @@ import CircularProgress from '@mui/material/CircularProgress';
 import { FormControlLabel, FormGroup, Switch, Typography } from '@mui/material';
 import { gql, useQuery } from '@apollo/client';
 import { SuggestLogin } from './loginbutton';
-import RoleRestricted from './rolerestrictedcomponent';
-import { memberPredicate } from '../membership';
+import RoleRestricted from './RoleRestricted';
+import { memberPredicate } from '../lib/membership';
 import { useAuth0 } from '@auth0/auth0-react';
 import MembersAndBoats from './MembersAndBoats';
-import membersBoats from './membersBoats';
+import membersBoats from '../lib/members_boats';
 
 function MembersList() {
   const [excludeNotPaid, setExcludeNotPaid] = useState(false);

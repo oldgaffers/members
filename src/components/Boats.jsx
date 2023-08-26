@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { gql, useQuery } from '@apollo/client';
 import { SuggestLogin } from './loginbutton';
-import RoleRestricted from './rolerestrictedcomponent';
+import RoleRestricted from './RoleRestricted';
 import BoatsAndOwners from './BoatsAndOwners';
 import { getFilterable } from './api';
 import { CircularProgress } from '@mui/material';
-import membersBoats from './membersBoats';
-import { memberPredicate } from '../membership';
+import membersBoats from '../lib/members_boats';
+import { memberPredicate } from '../lib/membership';
 
 function BoatList() {
     const [boats, setBoats] = useState();
