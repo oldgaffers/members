@@ -308,12 +308,55 @@ function Update({ setOpen }) {
     </Stack>;
 }
 
+function Members({ members, boats }) {
+    const yeses = members.filter((m) => m.GDPR);
+    const nos = members.filter((m) => !m.GDPR);
+    if (yeses.length === members.length) {
+        return <>
+            <Typography sx={{ marginTop: '2px' }} variant='h6'>
+                Your {(members.length > 1) ? 'entries' : 'entry'} in the online member list are:
+            </Typography>
+            <MembersAndBoats members={members} boats={boats} components={{}} />
+        </>;
+    
+    }
+    if (nos.length === members.length) {
+        return <>
+            <Typography sx={{ marginTop: '2px' }} variant='h6'>
+                Your {(members.length > 1) ? 'entries' : 'entry'} in the online member list would be:
+            </Typography>
+            <MembersAndBoats members={members} boats={boats} components={{}} />
+        </>;
+    }
+    return <>
+        <Typography sx={{ marginTop: '2px' }} variant='h6'>
+                Your {(members.length > 1) ? 'entries' : 'entry'} in the online member list are:
+        </Typography>
+        <MembersAndBoats members={yeses} boats={boats} components={{}} />
+        <Typography sx={{ marginTop: '2px' }} variant='h6'>
+                You could add:
+        </Typography>
+        <MembersAndBoats members={nos} boats={boats} components={{}} />
+    </>;
+}
+
+function Boats({ boats }) {
+    if (boats.length === 0) {
+        return <Typography>You don't have any boats registered to your membership</Typography>
+    }
+    return <><Typography variant='h6'>
+        Your entries in the online list of members boats {(boats.length > 1) ? 'are' : 'is'}:
+    </Typography>
+        <BoatsAndOwners boats={boats} components={{}} />
+    </>;
+}
+
 function MyDetails() {
     const [open, setOpen] = useState(false);
     const [snackBarOpen, setSnackBarOpen] = useState(false);
     const [boats, setBoats] = useState();
     const { user } = useAuth0();
-    const id = 1219; // user?.["https://oga.org.uk/id"];
+    const id = user?.["https://oga.org.uk/id"];
     const memberNo = user?.["https://oga.org.uk/member"];
     const memberResult = useQuery(MEMBER_QUERY, { variables: { members: [memberNo] } });
 
@@ -343,9 +386,8 @@ function MyDetails() {
         return <CircularProgress />
     }
     const members = memberResult.data.members.filter((m) => m.member === memberNo);
-    const record = members.find((m) => m.id === id);
+    const myRecord = members.find((m) => m.id === id);
     const myBoats = membersBoats(boats, members);
-
     const primary = members.find((m) => m.primary);
 
     return (
@@ -354,32 +396,26 @@ function MyDetails() {
             <List>
                 <ListItem>your membership number is {memberNo}</ListItem>
                 <ListItem>
-                    {email_indication(record)}
+                    {email_indication(myRecord)}
                 </ListItem>
                 <ListItem>
-                    {  (record.primary) ?
+                    {(myRecord.primary) ?
                         `You are the 'primary' member in this membership.
                         Gaffers Log will be sent to you.`
                         :
                         `You are not the 'primary' member in this membership.
                         Gaffers Log will be sent to ${primary.firstname} ${primary.lastname}`
                     }
-                    
+
                 </ListItem>
             </List>
             <Stack direction='column'>
                 <MemberStatus key={memberNo} memberNo={memberNo} members={members} />
-                <Typography sx={{ marginTop: '2px' }} variant='h6'>
-                    Your {(members.length > 1) ? 'entries' : 'entry'} in the online member list {(record.GDPR) ? 'is' : 'would be'}:
-                </Typography>
-                <MembersAndBoats members={members} boats={myBoats} components={{}} />
-                <Typography variant='h6'>
-                    Your entries in the online list of members boats are:
-                </Typography>
-                <BoatsAndOwners boats={myBoats} components={{}} />
+                <Members members={members} boats={myBoats}/>
+                <Boats boats={myBoats} />
                 <Update setOpen={setOpen} />
             </Stack>
-            <UpdateMyDetailsDialog user={record} onSubmit={handleSubmit} onCancel={() => setOpen(false)} open={open} />
+            <UpdateMyDetailsDialog user={myRecord} onSubmit={handleSubmit} onCancel={() => setOpen(false)} open={open} />
             <Snackbar
                 anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
                 open={snackBarOpen}

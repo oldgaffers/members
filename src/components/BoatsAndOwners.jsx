@@ -20,14 +20,7 @@ function joinList(strings, sep, lastSep) {
     return strings.slice(0, -1).join(sep) + lastSep + strings.slice(-1);
 }
 
-function ownerValueGetter({ value }) {
-    if (!value) {
-        return '';
-    }
-    const visible = value.filter((m) => m.GDPR);
-    if (visible.length === 0) {
-        return '(private)';
-    }
+function namelist(value) {
     const lastNames = [...new Set(value.map((owner) => owner?.lastname))]?.filter((n) => n);
     const r = joinList(
         lastNames.map((ln) => {
@@ -39,6 +32,21 @@ function ownerValueGetter({ value }) {
         ' & '
     );
     return r;
+}
+
+function ownerValueGetter({ value }) {
+    if (!value) {
+        return '';
+    }
+    const visible = value.filter((m) => m.GDPR);
+    if (visible.length === 0) {
+        return '(private)';
+    }
+    const names = namelist(visible);
+    if (visible.length === value.length) {
+        return names;
+    }
+    return `${names}, and other private owners`;
 }
 
 function renderBoat(params) {
@@ -58,23 +66,23 @@ const columns = [
         headerName: 'View in the Boat Register',
         width: 250,
         renderCell: (params) => <Button
-        padding='5px'
-        size="small"
-        component={'a'}
-        href={boatUrl(params.row.oga_no, {})}
-        variant="contained"
-        color="primary"
-      >More..</Button>,
+            padding='5px'
+            size="small"
+            component={'a'}
+            href={boatUrl(params.row.oga_no, {})}
+            variant="contained"
+            color="primary"
+        >More..</Button>,
     },
     {
         field: 'data.email',
         headerName: 'Contact',
         width: 150,
-        renderCell: (params) => <Contact member={params.row.id}/>,
+        renderCell: (params) => <Contact member={params.row.id} />,
     },
 ];
 
-export default function BoatsAndOwners({ boats=[], components={ Toolbar: CustomToolbar } }) {
+export default function BoatsAndOwners({ boats = [], components = { Toolbar: CustomToolbar } }) {
 
     return (
         <div style={{ display: 'flex', height: '100%' }}>
