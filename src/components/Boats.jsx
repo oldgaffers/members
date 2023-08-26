@@ -3,7 +3,7 @@ import { gql, useQuery } from '@apollo/client';
 import { SuggestLogin } from './loginbutton';
 import RoleRestricted from './RoleRestricted';
 import BoatsAndOwners from './BoatsAndOwners';
-import { getFilterable } from './api';
+import { getFilterable } from '../lib/api';
 import { CircularProgress } from '@mui/material';
 import membersBoats from '../lib/members_boats';
 import { memberPredicate } from '../lib/membership';

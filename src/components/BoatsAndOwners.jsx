@@ -2,7 +2,7 @@ import React from 'react';
 import Typography from '@mui/material/Typography';
 import { DataGrid, GridToolbarContainer, GridToolbarFilterButton } from '@mui/x-data-grid';
 import { Button } from '@mui/material';
-import { boatUrl } from './api';
+import { boatUrl } from '../lib/api';
 import Contact from './contact';
 
 function CustomToolbar() {
