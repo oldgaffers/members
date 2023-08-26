@@ -19,7 +19,7 @@ function membersAreaStatus({ GDPR, status }) {
         return 'Not listed in the members area - left OGA';
     }
     if (GDPR) {
-        return <Typography>shown</Typography>;
+        return 'shown';
     }
     return 'Not shown - consent not given';
 }

@@ -11,7 +11,9 @@ import membersBoats from './membersBoats';
 import MembersByMembership from './MembersByMembership';
 import BoatsByMembership from './BoatsByMembership';
 import MemberStatus from './MemberStatus';
-import UpdateMyDetailsDialog from './UpdateMyDetailsDialog';
+import UpdateInterestsDialog from './UpdateInterestsDialog';
+import ContactTheMembershipSecretary from './ContactTheMembershipSecretary';
+import ConfigureCrewing from './ConfigureCrewing';
 
 const MEMBER_QUERY = gql(`query members($members: [Int]!) {
     members(members: $members) {
@@ -30,21 +32,33 @@ function email_indication(record) {
     return 'You haven\'t provided an email address so you won\t get any emails.';
 }
 
-function Update({ setOpen }) {
+function Update({ openInterestDialog, openContactDialog, openCrewingDialog}) {
     return <Stack direction='row' spacing={2} sx={{ margin: 2 }}>
-        <div></div>
         <Button size="small"
             endIcon={<EditIcon />}
             variant="contained"
-            color="primary" onClick={() => setOpen(true)}>
+            color="primary" onClick={() => openInterestDialog(true)}>
             Update My Interests
         </Button>
-        <div></div>
+        <Button size="small"
+            endIcon={<EditIcon />}
+            variant="contained"
+            color="primary" onClick={() => openContactDialog(true)}>
+            Contact the Membership Secretary
+        </Button>
+        <Button size="small"
+            endIcon={<EditIcon />}
+            variant="contained"
+            color="primary" onClick={() => openCrewingDialog(true)}>
+            Configure Boat Sharing
+        </Button>
     </Stack>;
 }
 
 function MyDetails() {
-    const [open, setOpen] = useState(false);
+    const [openInterests, setOpenInterests] = useState(false);
+    const [openContact, setOpenContact] = useState(false);
+    const [openCrewing, setOpenCrewing] = useState(false);
     const [snackBarOpen, setSnackBarOpen] = useState(false);
     const [boats, setBoats] = useState();
     const { user } = useAuth0();
@@ -52,10 +66,33 @@ function MyDetails() {
     const memberNo = user?.["https://oga.org.uk/member"];
     const memberResult = useQuery(MEMBER_QUERY, { variables: { members: [memberNo] } });
 
-    const handleSubmit = (newData, text) => {
-        // console.log('submit', newData, text);
-        setOpen(false);
-        postGeneralEnquiry('member', 'profile', { ...newData, text })
+    const handleSubmitInterests = (newData) => {
+        setOpenInterests(false);
+        postGeneralEnquiry('member', 'profile', { ...newData })
+            .then((response) => {
+                setSnackBarOpen(true);
+            })
+            .catch((error) => {
+                // console.log("post", error);
+                // TODO snackbar from response.data
+            });
+    }
+
+    const handleSubmitContact = (text) => {
+        setOpenContact(false);
+        postGeneralEnquiry('member', 'profile', { user, text })
+            .then((response) => {
+                setSnackBarOpen(true);
+            })
+            .catch((error) => {
+                // console.log("post", error);
+                // TODO snackbar from response.data
+            });
+    }
+
+    const handleSubmitCrewing = (text) => {
+        setOpenContact(false);
+        postGeneralEnquiry('member', 'crewing', { user, text })
             .then((response) => {
                 setSnackBarOpen(true);
             })
@@ -105,9 +142,15 @@ function MyDetails() {
                 <MemberStatus key={memberNo} memberNo={memberNo} members={members} />
                 <MembersByMembership members={members} boats={myBoats}/>
                 <BoatsByMembership boats={myBoats} />
-                <Update setOpen={setOpen} />
+                <Update
+                openInterestDialog={setOpenInterests}
+                openContactDialog={setOpenContact}
+                openCrewingDialog={setOpenCrewing}
+                />
             </Stack>
-            <UpdateMyDetailsDialog user={myRecord} onSubmit={handleSubmit} onCancel={() => setOpen(false)} open={open} />
+            <UpdateInterestsDialog user={myRecord} onSubmit={handleSubmitInterests} onCancel={() => setOpenInterests(false)} open={openInterests} />
+            <ContactTheMembershipSecretary user={user} onSubmit={handleSubmitContact} onCancel={() => setOpenContact(false)} open={openContact} />
+            <ConfigureCrewing user={user} onSubmit={handleSubmitCrewing} onCancel={() => setOpenCrewing(false)} open={openCrewing} />
             <Snackbar
                 anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
                 open={snackBarOpen}
@@ -124,6 +167,5 @@ export default function UpdateMyDetails() {
     return <>
         <SuggestLogin />
         <RoleRestricted role='member'><MyDetails /></RoleRestricted>
-    </>
-        ;
+    </>;
 }

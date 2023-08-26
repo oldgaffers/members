@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import ScopedCssBaseline from '@mui/material/ScopedCssBaseline';
 import { Stack } from '@mui/system';
 import Grid2 from '@mui/material/Unstable_Grid2/Grid2';
-import { Button, Checkbox, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, FormControlLabel, FormGroup, FormHelperText, FormLabel, Radio, RadioGroup, TextField, Typography } from '@mui/material';
+import { Button, Checkbox, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, FormControlLabel, FormGroup, FormHelperText, FormLabel, Radio, RadioGroup } from '@mui/material';
 
 const areas = [
     { label: 'Bristol Channel', value: 'BC', funded: true },
@@ -19,11 +19,10 @@ const areas = [
     { label: 'Rest of World', value: 'RW', funded: false },
 ];
 
-export default function UpdateMyDetailsDialog({ user, onCancel, onSubmit, open }) {
+export default function UpdateInterestsDialog({ user, onCancel, onSubmit, open }) {
     const [smallboats, setSmallboats] = useState(user?.smallboats || false);
     const [primary, setPrimary] = useState(user?.area);
     const [additional, setAdditional] = useState(user?.interests || []);
-    const [text, setText] = useState('');
 
     const handleAreaChange = (event) => {
         const { name, value } = event.target;
@@ -73,7 +72,7 @@ export default function UpdateMyDetailsDialog({ user, onCancel, onSubmit, open }
     }
 
     const handleSubmit = () => {
-        onSubmit({ ...user, smallboats, interests: additional, area: primary }, text)
+        onSubmit({ ...user, smallboats, interests: additional, area: primary })
     };
 
     return (
@@ -102,8 +101,8 @@ export default function UpdateMyDetailsDialog({ user, onCancel, onSubmit, open }
                             Some areas are not currently set up to be primary areas
                         </FormHelperText>
                         <Grid2 container>
-                            {areas.map((area) =>
-                                <Grid2 item xs={6}>
+                            {areas.map((area, index) =>
+                                <Grid2 item xs={6} key={index}>
                                     <FormControl>
                                         <FormLabel id={area.value}>{area.label}</FormLabel>
                                         <RadioGroup
@@ -120,8 +119,6 @@ export default function UpdateMyDetailsDialog({ user, onCancel, onSubmit, open }
                                     </FormControl>
                                 </Grid2>)}
                         </Grid2>
-                        <FormLabel><Typography>If anything else needs changing, just ask here.</Typography></FormLabel>
-                        <TextField multiline rows={3} label="Other changes" variant="outlined" onChange={(event) => setText(event.target.value)} />
                     </Stack>
                 </DialogContent>
                 <DialogActions>
