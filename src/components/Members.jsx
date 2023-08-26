@@ -3,7 +3,7 @@ import Box from '@mui/material/Box';
 import CircularProgress from '@mui/material/CircularProgress';
 import { FormControlLabel, FormGroup, Switch, Typography } from '@mui/material';
 import { gql, useQuery } from '@apollo/client';
-import { SuggestLogin } from './loginbutton';
+import { SuggestLogin } from './LoginButton';
 import RoleRestricted from './RoleRestricted';
 import { memberPredicate } from '../lib/membership';
 import { useAuth0 } from '@auth0/auth0-react';
