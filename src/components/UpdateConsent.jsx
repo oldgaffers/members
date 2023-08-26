@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Snackbar } from '@mui/material';
-import { postGeneralEnquiry } from './api';
+import { postGeneralEnquiry } from '../lib/api';
 
 export default function UpdateConsent({ member }) {
     const [open, setOpen] = useState(false);

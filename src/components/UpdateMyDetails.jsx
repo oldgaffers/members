@@ -5,7 +5,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 import { useQuery, gql } from '@apollo/client';
 import { Button, CircularProgress, List, ListItem, Snackbar, Typography } from '@mui/material';
 import RoleRestricted from './RoleRestricted';
-import { getFilterable, postGeneralEnquiry } from './api';
+import { getFilterable, postGeneralEnquiry } from '../lib/api';
 import { SuggestLogin } from './LoginButton';
 import membersBoats from '../lib/members_boats';
 import MembersByMembership from './MembersByMembership';

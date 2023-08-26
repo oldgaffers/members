@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { gql, useQuery } from '@apollo/client';
-import { SuggestLogin } from './loginbutton';
+import { SuggestLogin } from './LoginButton';
 import RoleRestricted from './RoleRestricted';
 import BoatsAndOwners from './BoatsAndOwners';
 import { getFilterable } from '../lib/api';
