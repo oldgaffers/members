@@ -2,7 +2,7 @@ import React from 'react';
 import Typography from '@mui/material/Typography';
 import { DataGrid, GridToolbarContainer, GridToolbarFilterButton } from '@mui/x-data-grid';
 import { parsePhoneNumber } from 'awesome-phonenumber'
-import Contact from './contact';
+import Contact from './Contact';
 
 function CustomToolbar() {
     return (
