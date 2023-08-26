@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import ScopedCssBaseline from '@mui/material/ScopedCssBaseline';
 import { Stack } from '@mui/system';
-import Grid2 from '@mui/material/Unstable_Grid2/Grid2';
 import EditIcon from '@mui/icons-material/Edit';
 import { useAuth0 } from '@auth0/auth0-react';
 import { useQuery, gql } from '@apollo/client';
-import { Button, Checkbox, CircularProgress, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, FormControlLabel, FormGroup, FormHelperText, FormLabel, List, ListItem, Radio, RadioGroup, Snackbar, Table, TableBody, TableCell, TableHead, TableRow, TextField, Typography } from '@mui/material';
+import { Button, CircularProgress, List, ListItem, Snackbar, Typography } from '@mui/material';
 import RoleRestricted from './rolerestrictedcomponent';
 import { getFilterable, postGeneralEnquiry } from './api';
 import { SuggestLogin } from './loginbutton';
 import membersBoats from './membersBoats';
-import MembersAndBoats from './MembersAndBoats';
-import BoatsAndOwners from './BoatsAndOwners';
+import MembersByMembership from './MembersByMembership';
+import BoatsByMembership from './BoatsByMembership';
+import MemberStatus from './MemberStatus';
+import UpdateMyDetailsDialog from './UpdateMyDetailsDialog';
 
 const MEMBER_QUERY = gql(`query members($members: [Int]!) {
     members(members: $members) {
@@ -21,272 +21,7 @@ const MEMBER_QUERY = gql(`query members($members: [Int]!) {
     }
   }`);
 
-const areas = [
-    { label: 'Bristol Channel', value: 'BC', funded: true },
-    { label: 'Dublin Bay', value: 'DB', funded: true },
-    { label: 'East Coast', value: 'EC', funded: true },
-    { label: 'North East', value: 'NE', funded: true },
-    { label: 'North Wales', value: 'NWa', funded: true },
-    { label: 'North West', value: 'NW', funded: true },
-    { label: 'Scotland', value: 'SC', funded: true },
-    { label: 'Solent', value: 'SO', funded: true },
-    { label: 'South West', value: 'SW', funded: true },
-    { label: 'The Americas', value: 'AM', funded: false },
-    { label: 'Continental Europe', value: 'EU', funded: false },
-    { label: 'Rest of World', value: 'RW', funded: false },
-];
-
-function UpdateMyDetailsDialog({ user, onCancel, onSubmit, open }) {
-    const [smallboats, setSmallboats] = useState(user?.smallboats || false);
-    const [primary, setPrimary] = useState(user?.area);
-    const [additional, setAdditional] = useState(user?.interests || []);
-    const [text, setText] = useState('');
-
-    const handleAreaChange = (event) => {
-        const { name, value } = event.target;
-        const abbr = name.split('-')[0]; // the area abbreviation
-        const areaName = areas.find((area) => area.value === abbr).label;
-        switch (value) {
-            case 'P':
-                if (primary && primary !== areaName) {
-                    const v = areas.find((area) => area.label === primary).value;
-                    const a = new Set(additional);
-                    a.add(v);
-                    a.delete(abbr)
-                    setAdditional([...a]);
-                }
-                setPrimary(areaName);
-                break;
-            case 'S':
-                if (primary && primary === areaName) {
-                    setPrimary(undefined);
-                }
-                {
-                    const a = new Set(additional);
-                    a.add(abbr);
-                    setAdditional([...a]);
-                }
-                break;
-            default:
-                if (primary && primary === areaName) {
-                    setPrimary(undefined);
-                }
-                {
-                    const a = new Set(additional);
-                    a.delete(abbr);
-                    setAdditional([...a]);
-                }
-        }
-    }
-
-    const val = (area) => {
-        if (area.label === primary) {
-            return 'P'
-        }
-        if (additional.includes(area.value)) {
-            return 'S';
-        }
-        return 'N';
-    }
-
-    const handleSubmit = () => {
-        onSubmit({ ...user, smallboats, interests: additional, area: primary }, text)
-    };
-
-    return (
-        <Dialog
-            open={open}
-            aria-labelledby="dialog-update-member-details"
-            maxWidth='md'
-            fullWidth
-        >
-            <ScopedCssBaseline>
-                <DialogTitle>Update Preferences</DialogTitle>
-                <DialogContent>
-                    <DialogContentText>
-                        Set one primary area and any secondary areas you want to receive communications from.
-                    </DialogContentText>
-                    <Stack>
-                        <FormGroup>
-                            <FormControlLabel control={
-                                <Checkbox checked={smallboats} onChange={(_, checked) => setSmallboats(checked)} />
-                            } label="Small boats" />
-                            <FormHelperText>If you check the small boats box, you will be told about events for small boats in all areas</FormHelperText>
-                        </FormGroup>
-                        <FormLabel sx={{ marginTop: 1 }}>Areas</FormLabel>
-                        <FormHelperText>
-                            Your primary area will receive a portion of your membership fee.
-                            Some areas are not currently set up to be primary areas
-                        </FormHelperText>
-                        <Grid2 container>
-                            {areas.map((area) =>
-                                <Grid2 item xs={6}>
-                                    <FormControl>
-                                        <FormLabel id={area.value}>{area.label}</FormLabel>
-                                        <RadioGroup
-                                            value={val(area)}
-                                            onChange={handleAreaChange}
-                                            row
-                                            aria-labelledby="demo-row-radio-buttons-group-label"
-                                            name={`${area.value}-group`}
-                                        >
-                                            <FormControlLabel disabled={!area.funded} value="P" control={<Radio />} label="Primary" />
-                                            <FormControlLabel value="S" control={<Radio />} label="Secondary" />
-                                            <FormControlLabel value="N" control={<Radio />} label="None" />
-                                        </RadioGroup>
-                                    </FormControl>
-                                </Grid2>)}
-                        </Grid2>
-                        <FormLabel><Typography>If anything else needs changing, just ask here.</Typography></FormLabel>
-                        <TextField multiline rows={3} label="Other changes" variant="outlined" onChange={(event) => setText(event.target.value)} />
-                    </Stack>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={onCancel}>Cancel</Button>
-                    <Button onClick={handleSubmit}>Submit</Button>
-                </DialogActions>
-            </ScopedCssBaseline>
-        </Dialog>
-    );
-}
-
 // TODO ReJoin
-
-function UpdateConsent({ member }) {
-    const [open, setOpen] = useState(false);
-    const [snackBarOpen, setSnackBarOpen] = useState(false);
-    const { GDPR } = member;
-    let text = 'Give Consent';
-    let longtext = 'I consent to the indicated details being shared with other members in the members area of the OGA website and printed in the OGA Yearbook';
-    if (GDPR) {
-        text = 'Withdraw Consent';
-        longtext = 'Your request will be processed shortly. You can still find out about events on the website';
-    }
-    const handleClickOpen = () => {
-        setOpen(true);
-    };
-
-    const handleClose = () => {
-        const newData = { ...member, GDPR: !member.GDPR };
-        delete newData.__typename
-        // console.log('newData', newData);
-        postGeneralEnquiry('member', 'profile', newData)
-            .then((response) => {
-                setSnackBarOpen(true);
-            })
-            .catch((error) => {
-                // console.log("post", error);
-                // TODO snackbar from response.data
-            });
-        setOpen(false);
-    };
-
-    const handleCancel = () => {
-        setOpen(false);
-    };
-
-    return (
-        <div>
-            <Button size='small' variant='contained' color='primary' onClick={handleClickOpen}>
-                {text}
-            </Button>
-            <Dialog open={open} onClose={handleClose}>
-                <DialogTitle>{text}</DialogTitle>
-                <DialogContent>
-                    <DialogContentText>
-                        {longtext}
-                    </DialogContentText>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleCancel}>Cancel</Button>
-                    <Button onClick={handleClose}>Send</Button>
-                </DialogActions>
-            </Dialog>
-            <Snackbar
-                anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-                open={snackBarOpen}
-                autoHideDuration={2000}
-                onClose={() => setSnackBarOpen(false)}
-                message="Thanks, we'll get back to you."
-                severity="success"
-            />
-        </div>
-    );
-}
-
-function printedYearbookStatus({ GDPR, status }) {
-    if (status === 'Left OGA') {
-        return 'Not in Yearbook - left OGA';
-    }
-    if (GDPR) {
-        return 'will be in the next printed Yearbook';
-    }
-    return 'Not in Yearbook - consent not given';
-}
-
-function membersAreaStatus({ GDPR, status }) {
-    if (status === 'Left OGA') {
-        return 'Not listed in the members area - left OGA';
-    }
-    if (GDPR) {
-        return <Typography>shown</Typography>;
-    }
-    return 'Not shown - consent not given';
-}
-
-function MemberStatus({ memberNo, members }) {
-    if (members.length === 1) {
-        if (members[0].status !== 'Left OGA') {
-            if (members[0].GDPR) {
-                return <Typography> Your Yearbook entry will be as shown below.</Typography>;
-            } else {
-                return <Typography>
-                    Your Yearbook entry would be as shown below, but you would
-                    have to contact the membership secretary to give consent.
-                </Typography>;
-            }
-        } else {
-            return <Typography>
-                Our records indicate you are no-longer a member. If you want to be in the Yearbook,
-                please rejoin.
-            </Typography>
-        }
-    } else {
-        return <>
-            <Typography variant='h6'>
-                Membership {memberNo} includes the following people:
-            </Typography>
-            <Table>
-                <TableHead>
-                    <TableRow>
-                        <TableCell>Name</TableCell>
-                        <TableCell>Members Area</TableCell>
-                        <TableCell>Yearbook</TableCell>
-                        <TableCell>Give/Withdraw Consent</TableCell>
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    {
-                        members.map((member, i) => (
-                            <TableRow key={i}>
-                                <TableCell>{member.salutation} {member.firstname} {member.lastname}</TableCell>
-                                <TableCell>
-                                    <Typography>{membersAreaStatus(member)}</Typography>
-                                </TableCell>
-                                <TableCell>
-                                    <Typography>{printedYearbookStatus(member)}</Typography>
-                                </TableCell>
-                                <TableCell>
-                                    <UpdateConsent member={member} />
-                                </TableCell>
-                            </TableRow>
-                        ))
-                    }
-                </TableBody>
-            </Table>
-        </>;
-    }
-}
 
 function email_indication(record) {
     if ((record?.email || '').includes('@')) {
@@ -306,49 +41,6 @@ function Update({ setOpen }) {
         </Button>
         <div></div>
     </Stack>;
-}
-
-function Members({ members, boats }) {
-    const yeses = members.filter((m) => m.GDPR);
-    const nos = members.filter((m) => !m.GDPR);
-    if (yeses.length === members.length) {
-        return <>
-            <Typography sx={{ marginTop: '2px' }} variant='h6'>
-                Your {(members.length > 1) ? 'entries' : 'entry'} in the online member list are:
-            </Typography>
-            <MembersAndBoats members={members} boats={boats} components={{}} />
-        </>;
-    
-    }
-    if (nos.length === members.length) {
-        return <>
-            <Typography sx={{ marginTop: '2px' }} variant='h6'>
-                Your {(members.length > 1) ? 'entries' : 'entry'} in the online member list would be:
-            </Typography>
-            <MembersAndBoats members={members} boats={boats} components={{}} />
-        </>;
-    }
-    return <>
-        <Typography sx={{ marginTop: '2px' }} variant='h6'>
-                Your {(members.length > 1) ? 'entries' : 'entry'} in the online member list are:
-        </Typography>
-        <MembersAndBoats members={yeses} boats={boats} components={{}} />
-        <Typography sx={{ marginTop: '2px' }} variant='h6'>
-                You could add:
-        </Typography>
-        <MembersAndBoats members={nos} boats={boats} components={{}} />
-    </>;
-}
-
-function Boats({ boats }) {
-    if (boats.length === 0) {
-        return <Typography>You don't have any boats registered to your membership</Typography>
-    }
-    return <><Typography variant='h6'>
-        Your entries in the online list of members boats {(boats.length > 1) ? 'are' : 'is'}:
-    </Typography>
-        <BoatsAndOwners boats={boats} components={{}} />
-    </>;
 }
 
 function MyDetails() {
@@ -411,8 +103,8 @@ function MyDetails() {
             </List>
             <Stack direction='column'>
                 <MemberStatus key={memberNo} memberNo={memberNo} members={members} />
-                <Members members={members} boats={myBoats}/>
-                <Boats boats={myBoats} />
+                <MembersByMembership members={members} boats={myBoats}/>
+                <BoatsByMembership boats={myBoats} />
                 <Update setOpen={setOpen} />
             </Stack>
             <UpdateMyDetailsDialog user={myRecord} onSubmit={handleSubmit} onCancel={() => setOpen(false)} open={open} />
