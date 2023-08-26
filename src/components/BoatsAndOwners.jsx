@@ -24,7 +24,6 @@ function ownerValueGetter({ value }) {
     if (!value) {
         return '';
     }
-    console.log('P', value);
     const visible = value.filter((m) => m.GDPR);
     if (visible.length === 0) {
         return '(private)';

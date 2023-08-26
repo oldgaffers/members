@@ -289,10 +289,23 @@ function MemberStatus({ memberNo, members }) {
 }
 
 function email_indication(record) {
-    if ((record?.email||'').includes('@')) {
+    if ((record?.email || '').includes('@')) {
         return `The OGA will email you at ${record.email}.`
     }
     return 'You haven\'t provided an email address so you won\t get any emails.';
+}
+
+function Update({ setOpen }) {
+    return <Stack direction='row' spacing={2} sx={{ margin: 2 }}>
+        <div></div>
+        <Button size="small"
+            endIcon={<EditIcon />}
+            variant="contained"
+            color="primary" onClick={() => setOpen(true)}>
+            Update My Interests
+        </Button>
+        <div></div>
+    </Stack>;
 }
 
 function MyDetails() {
@@ -300,7 +313,7 @@ function MyDetails() {
     const [snackBarOpen, setSnackBarOpen] = useState(false);
     const [boats, setBoats] = useState();
     const { user } = useAuth0();
-    const id = user?.["https://oga.org.uk/id"];
+    const id = 1219; // user?.["https://oga.org.uk/id"];
     const memberNo = user?.["https://oga.org.uk/member"];
     const memberResult = useQuery(MEMBER_QUERY, { variables: { members: [memberNo] } });
 
@@ -329,14 +342,12 @@ function MyDetails() {
     if (!memberResult.data) {
         return <CircularProgress />
     }
-    const { members } = memberResult.data;
+    const members = memberResult.data.members.filter((m) => m.member === memberNo);
     const record = members.find((m) => m.id === id);
     const myBoats = membersBoats(boats, members);
 
-    let your = 'Your entry';
-    if (members.length > 1) {
-        your = `Member ${memberNo}'s entry`;
-    }
+    const primary = members.find((m) => m.primary);
+
     return (
         <>
             <Typography variant='h6'>Hi {user.name}.</Typography>
@@ -346,25 +357,27 @@ function MyDetails() {
                     {email_indication(record)}
                 </ListItem>
                 <ListItem>
-                    You {record.primary ? 'are' : 'are not'} the 'primary' member in this membership.
+                    {  (record.primary) ?
+                        `You are the 'primary' member in this membership.
+                        Gaffers Log will be sent to you.`
+                        :
+                        `You are not the 'primary' member in this membership.
+                        Gaffers Log will be sent to ${primary.firstname} ${primary.lastname}`
+                    }
+                    
                 </ListItem>
             </List>
             <Stack direction='column'>
                 <MemberStatus key={memberNo} memberNo={memberNo} members={members} />
-                <Typography sx={{ marginTop: '2px' }} variant='h6'>{your} in the Yearbook members list would be:</Typography>
+                <Typography sx={{ marginTop: '2px' }} variant='h6'>
+                    Your {(members.length > 1) ? 'entries' : 'entry'} in the online member list {(record.GDPR) ? 'is' : 'would be'}:
+                </Typography>
                 <MembersAndBoats members={members} boats={myBoats} components={{}} />
-                <Stack direction='row' spacing={2} sx={{ margin: 2 }}>
-                    <div></div>
-                    <Button size="small"
-                        endIcon={<EditIcon />}
-                        variant="contained"
-                        color="primary" onClick={() => setOpen(true)}>
-                        Update My Interests
-                    </Button>
-                    <div></div>
-                </Stack>
-                <Typography variant='h6'>{your} in the Yearbook boat list would be</Typography>
+                <Typography variant='h6'>
+                    Your entries in the online list of members boats are:
+                </Typography>
                 <BoatsAndOwners boats={myBoats} components={{}} />
+                <Update setOpen={setOpen} />
             </Stack>
             <UpdateMyDetailsDialog user={record} onSubmit={handleSubmit} onCancel={() => setOpen(false)} open={open} />
             <Snackbar
@@ -381,8 +394,8 @@ function MyDetails() {
 
 export default function UpdateMyDetails() {
     return <>
-        <SuggestLogin/>
+        <SuggestLogin />
         <RoleRestricted role='member'><MyDetails /></RoleRestricted>
-        </>
+    </>
         ;
 }
