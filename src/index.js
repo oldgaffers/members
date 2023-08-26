@@ -33,7 +33,7 @@ function Wrapper({ children }) {
 const details = document.getElementById('update_my_details');
 const members = document.getElementById('members');
 const boats = document.getElementById('members_boats');
-
+console.log('X', details, members, boats);
 if (details) {
   ReactDOM.createRoot(details).render(<Wrapper><UpdateMyDetails/></Wrapper>);
 }
