@@ -13,7 +13,7 @@ import BoatsByMembership from './BoatsByMembership';
 import MemberStatus from './MemberStatus';
 import UpdateInterestsDialog from './UpdateInterestsDialog';
 import ContactTheMembershipSecretary from './ContactTheMembershipSecretary';
-import ConfigureCrewing from './ConfigureCrewing';
+import SetSkipperProfile from './SetSkipperProfile';
 
 const MEMBER_QUERY = gql(`query members($members: [Int]!) {
     members(members: $members) {
@@ -32,7 +32,7 @@ function email_indication(record) {
     return 'You haven\'t provided an email address so you won\t get any emails.';
 }
 
-function Update({ openInterestDialog, openContactDialog, openCrewingDialog}) {
+function Update({ openInterestDialog, openContactDialog, openSkipperProfileDialog}) {
     return <Stack direction='row' spacing={2} sx={{ margin: 2 }}>
         <Button size="small"
             endIcon={<EditIcon />}
@@ -49,8 +49,8 @@ function Update({ openInterestDialog, openContactDialog, openCrewingDialog}) {
         <Button size="small"
             endIcon={<EditIcon />}
             variant="contained"
-            color="primary" onClick={() => openCrewingDialog(true)}>
-            Configure Boat Sharing
+            color="primary" onClick={() => openSkipperProfileDialog(true)}>
+            Set My Skipper Profile
         </Button>
     </Stack>;
 }
@@ -58,7 +58,7 @@ function Update({ openInterestDialog, openContactDialog, openCrewingDialog}) {
 function MyDetails() {
     const [openInterests, setOpenInterests] = useState(false);
     const [openContact, setOpenContact] = useState(false);
-    const [openCrewing, setOpenCrewing] = useState(false);
+    const [openSkipperProfile, setOpenSkipperProfile] = useState(false);
     const [snackBarOpen, setSnackBarOpen] = useState(false);
     const [boats, setBoats] = useState();
     const { user } = useAuth0();
@@ -90,9 +90,9 @@ function MyDetails() {
             });
     }
 
-    const handleSubmitCrewing = (text) => {
+    const handleSubmitSkipperProfile = (text) => {
         setOpenContact(false);
-        postGeneralEnquiry('member', 'crewing', { user, text })
+        postGeneralEnquiry('member', 'skipper_profile', { user, text })
             .then((response) => {
                 setSnackBarOpen(true);
             })
@@ -101,6 +101,10 @@ function MyDetails() {
                 // TODO snackbar from response.data
             });
     }
+
+    const hco = () => alert('Crew')
+
+    const hho = () => alert('hire')
 
     useEffect(() => {
         if (!boats) {
@@ -141,16 +145,16 @@ function MyDetails() {
             <Stack direction='column'>
                 <MemberStatus key={memberNo} memberNo={memberNo} members={members} />
                 <MembersByMembership members={members} boats={myBoats}/>
-                <BoatsByMembership boats={myBoats} />
+                <BoatsByMembership boats={myBoats} onSetHireOptions={hho} onsetCrewingOptions={hco} showContactButton={false} />
                 <Update
                 openInterestDialog={setOpenInterests}
                 openContactDialog={setOpenContact}
-                openCrewingDialog={setOpenCrewing}
+                openSkipperProfileDialog={setOpenSkipperProfile}
                 />
             </Stack>
             <UpdateInterestsDialog user={myRecord} onSubmit={handleSubmitInterests} onCancel={() => setOpenInterests(false)} open={openInterests} />
             <ContactTheMembershipSecretary user={user} onSubmit={handleSubmitContact} onCancel={() => setOpenContact(false)} open={openContact} />
-            <ConfigureCrewing user={user} onSubmit={handleSubmitCrewing} onCancel={() => setOpenCrewing(false)} open={openCrewing} />
+            <SetSkipperProfile user={user} onSubmit={handleSubmitSkipperProfile} onCancel={() => setOpenSkipperProfile(false)} open={openSkipperProfile} />
             <Snackbar
                 anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
                 open={snackBarOpen}

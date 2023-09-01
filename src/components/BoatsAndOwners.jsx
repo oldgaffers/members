@@ -57,11 +57,41 @@ function boatFormatter(params) {
     return params.value;
 }
 
-const columns = [
-    { field: 'name', headerName: 'Boat', width: 150, valueFormatter: boatFormatter, renderCell: renderBoat },
-    { field: 'oga_no', headerName: 'No.', width: 90 },
-    { field: 'owners', headerName: 'Owner', flex: 1, valueGetter: ownerValueGetter },
-    {
+const columns = (hire, crewWanted, showContactButton) => {
+    const col = [
+        { field: 'name', headerName: 'Boat', width: 150, valueFormatter: boatFormatter, renderCell: renderBoat },
+        { field: 'oga_no', headerName: 'No.', width: 90 },
+        { field: 'owners', headerName: 'Owner', width: 350, valueGetter: ownerValueGetter },
+    ];
+    if (hire) {
+        col.push({
+            field: 'hire',
+            headerName: 'Set Hire Options',
+            width: 150,
+            renderCell: (params) => <Button
+                padding='5px'
+                size="small"
+                variant="contained"
+                color="primary"
+                onClick={hire}
+            >Set..</Button>,
+        });
+    }
+    if (crewWanted) {
+        col.push({
+            field: 'crewing',
+            headerName: 'Set Crewing Options',
+            width: 150,
+            renderCell: (params) => <Button
+                padding='5px'
+                size="small"
+                variant="contained"
+                color="primary"
+                onClick={crewWanted}
+            >Set..</Button>,
+        });
+    }
+    col.push({
         field: 'url',
         headerName: 'View in the Boat Register',
         width: 250,
@@ -73,16 +103,25 @@ const columns = [
             variant="contained"
             color="primary"
         >More..</Button>,
-    },
-    {
-        field: 'data.email',
-        headerName: 'Contact',
-        width: 150,
-        renderCell: (params) => <Contact member={params.row.id} />,
-    },
-];
+    });
+    if (showContactButton) {
+        col.push({
+            field: 'data.email',
+            headerName: 'Contact',
+            width: 150,
+            renderCell: (params) => <Contact member={params.row.id} />,
+        });
+    }
+    return col;
+}
 
-export default function BoatsAndOwners({ boats = [], components = { Toolbar: CustomToolbar } }) {
+export default function BoatsAndOwners({
+    boats = [],
+    components = { Toolbar: CustomToolbar },
+    onSetHireOptions,
+    onsetCrewingOptions,
+    showContactButton=true,
+ }) {
 
     return (
         <div style={{ display: 'flex', height: '100%' }}>
@@ -90,7 +129,7 @@ export default function BoatsAndOwners({ boats = [], components = { Toolbar: Cus
                 <DataGrid
                     getRowId={(row) => row.oga_no}
                     rows={boats}
-                    columns={columns}
+                    columns={columns(onSetHireOptions, onsetCrewingOptions, showContactButton)}
                     components={components}
                     autoHeight={true}
                     initialState={{
