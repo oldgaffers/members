@@ -1,4 +1,4 @@
-const boatRegisterHome = "https://oldgaffers.github.io";
+const boatRegisterHome = 'https://oldgaffers.github.io';
 
 export function prefix(location) {
   const origin = location.origin || window.location.origin;
@@ -10,8 +10,8 @@ export function prefix(location) {
   const r = `${origin}/boat_register/${test}`;
   return r;
 }
-export function boatUrl(oga_no, location ) {
-  return `${prefix(location)}boat?oga_no=${oga_no}`;
+export function boatUrl(ogaNo, location) {
+  return `${prefix(location)}boat?oga_no=${ogaNo}`;
 }
 
 export async function postGeneralEnquiry(scope, subject, data) {
@@ -20,8 +20,8 @@ export async function postGeneralEnquiry(scope, subject, data) {
     {
       method: 'post',
       body: JSON.stringify(data),
-      headers: { 'content-type': 'application/json' }
-    }
+      headers: { 'content-type': 'application/json' },
+    },
   );
 }
 
