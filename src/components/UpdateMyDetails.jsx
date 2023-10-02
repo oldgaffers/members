@@ -10,7 +10,7 @@ import {
 import RoleRestricted from './RoleRestricted';
 import { getFilterable, postGeneralEnquiry } from '../lib/api';
 import { SuggestLogin } from './LoginButton';
-import membersBoats from '../lib/members_boats';
+import membersBoats from '../lib/members_boats.mjs';
 import MembersByMembership from './MembersByMembership';
 import BoatsByMembership from './BoatsByMembership';
 import MemberStatus from './MemberStatus';

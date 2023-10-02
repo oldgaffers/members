@@ -8,7 +8,7 @@ import { SuggestLogin } from './LoginButton';
 import RoleRestricted from './RoleRestricted';
 import memberPredicate from '../lib/membership';
 import MembersAndBoats from './MembersAndBoats';
-import membersBoats from '../lib/members_boats';
+import membersBoats from '../lib/members_boats.mjs';
 
 function MembersList() {
   const [excludeNotPaid, setExcludeNotPaid] = useState(false);

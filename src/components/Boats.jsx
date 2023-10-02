@@ -5,7 +5,7 @@ import { SuggestLogin } from './LoginButton';
 import RoleRestricted from './RoleRestricted';
 import BoatsAndOwners from './BoatsAndOwners';
 import { getFilterable } from '../lib/api';
-import membersBoats from '../lib/members_boats';
+import membersBoats from '../lib/members_boats.mjs';
 import memberPredicate from '../lib/membership';
 
 function BoatList() {

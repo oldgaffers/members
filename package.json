@@ -27,7 +27,7 @@
   "scripts": {
     "build": "esbuild --bundle --minify --sourcemap  --outdir=build --allow-overwrite src/main.jsx",
     "start": "esbuild --bundle --outdir=public --watch --serve=3000 --servedir=public src/main.jsx",
-    "test": "jest"
+    "test": "NODE_OPTIONS=--experimental-vm-modules npx jest"
   },
   "devDependencies": {
     "@testing-library/react": "^14.0.0",
