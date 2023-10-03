@@ -7,13 +7,9 @@ import {
 import { ReactReallyTinyEditor as ReactTinyEditor } from '@ogauk/react-tiny-editor';
 
 export default function SetSkipperProfile({
-  onCancel, onSubmit, open,
+  onCancel, onSubmit, open, profile,
 }) {
-  const [text, setText] = useState('');
-
-  const handleSubmit = () => {
-    onSubmit(text);
-  };
+  const [text, setText] = useState(profile);
 
   return (
     <Dialog
@@ -36,7 +32,7 @@ export default function SetSkipperProfile({
               <Typography>Create or Edit your Skipper&rsquo;s profile here.</Typography>
             </FormLabel>
             <ReactTinyEditor
-              html="A <strong>test</strong> message"
+              html={text}
               onChange={setText}
             />
           </Stack>
@@ -47,7 +43,7 @@ export default function SetSkipperProfile({
         </DialogContent>
         <DialogActions>
           <Button onClick={onCancel}>Cancel</Button>
-          <Button onClick={handleSubmit}>Submit</Button>
+          <Button onClick={() => onSubmit(text)}>Submit</Button>
         </DialogActions>
       </ScopedCssBaseline>
     </Dialog>

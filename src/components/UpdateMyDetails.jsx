@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import Stack from '@mui/material/Stack';
 import EditIcon from '@mui/icons-material/Edit';
 import { useAuth0 } from '@auth0/auth0-react';
-import { useQuery, gql } from '@apollo/client';
+import { useQuery, gql, useMutation } from '@apollo/client';
 import {
   Button, CircularProgress, List, ListItem, Snackbar, Typography,
 } from '@mui/material';
@@ -25,6 +25,11 @@ const MEMBER_QUERY = gql(`query members($members: [Int]!) {
         interests email primary profile
     }
   }`);
+
+const ADD_PROFILE_MUTATION = gql`
+  mutation profileMutation($id: Int!, $text: String!) {
+    addProfile(id: $id, text: $text) { ok }
+  }`;
 
 // TODO ReJoin
 
@@ -79,6 +84,7 @@ function MyDetails() {
   const id = user?.['https://oga.org.uk/id'];
   const memberNo = user?.['https://oga.org.uk/member'];
   const memberResult = useQuery(MEMBER_QUERY, { variables: { members: [memberNo] } });
+  const [addProfile, { data, loading, error }] = useMutation(ADD_PROFILE_MUTATION);
 
   const handleSubmitInterests = (newData) => {
     setOpenInterests(false);
@@ -131,18 +137,17 @@ function MyDetails() {
   };
 
   const handleSubmitSkipperProfile = (text) => {
-    setOpenContact(false);
-    postGeneralEnquiry('member', 'skipper_profile', { user, text })
-      .then((response) => {
-        setSnackBarOpen(true);
-      })
-      .catch((error) => {
-        // console.log("post", error);
-        // TODO snackbar from response.data
-      });
+    console.log('handleSubmitSkipperProfile', text);
+    // setOpenContact(false);
+    addProfile({ variables: { id: myRecord.id, text } });
   };
 
-  console.log(myRecord);
+  if (loading) return 'Submitting...';
+
+  if (error) return `Submission error! ${error.message}`;
+
+  console.log('data from profile', data);
+
   return (
     <>
       <Typography variant="h6">
@@ -184,9 +189,24 @@ function MyDetails() {
           openSkipperProfileDialog={setOpenSkipperProfile}
         />
       </Stack>
-      <UpdateInterestsDialog user={myRecord} onSubmit={handleSubmitInterests} onCancel={() => setOpenInterests(false)} open={openInterests} />
-      <ContactTheMembershipSecretary user={user} onSubmit={handleSubmitContact} onCancel={() => setOpenContact(false)} open={openContact} />
-      <SetSkipperProfile user={user} onSubmit={handleSubmitSkipperProfile} onCancel={() => setOpenSkipperProfile(false)} open={openSkipperProfile} />
+      <UpdateInterestsDialog
+        user={myRecord}
+        onSubmit={handleSubmitInterests}
+        onCancel={() => setOpenInterests(false)}
+        open={openInterests}
+      />
+      <ContactTheMembershipSecretary
+        user={user}
+        onSubmit={handleSubmitContact}
+        onCancel={() => setOpenContact(false)}
+        open={openContact}
+      />
+      <SetSkipperProfile
+        profile={myRecord.profile}
+        onSubmit={handleSubmitSkipperProfile}
+        onCancel={() => setOpenSkipperProfile(false)}
+        open={openSkipperProfile}
+      />
       <Snackbar
         anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
         open={snackBarOpen}
