@@ -25,6 +25,7 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
+    "postversion": "git push && git push --tags",
     "build": "esbuild --bundle --minify --sourcemap  --outdir=build --allow-overwrite src/main.jsx",
     "start": "esbuild --bundle --outdir=public --watch --serve=3000 --servedir=public src/main.jsx",
     "test": "NODE_OPTIONS=--experimental-vm-modules npx jest"

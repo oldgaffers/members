@@ -137,14 +137,21 @@ function MyDetails() {
   };
 
   const handleSubmitSkipperProfile = (text) => {
-    console.log('handleSubmitSkipperProfile', text);
-    // setOpenContact(false);
     addProfile({ variables: { id: myRecord.id, text } });
   };
 
-  if (loading) return 'Submitting...';
+  if (loading) {
+    if (openSkipperProfile) {
+      setOpenSkipperProfile(false);
+    }
+    console.log('skipper profile loading');
+    return 'Submitting...';
+  }
 
-  if (error) return `Submission error! ${error.message}`;
+  if (error) {
+    console.log('skipper error', error.message);
+    return `Submission error! ${error.message}`;
+  }
 
   console.log('data from profile', data);
 
