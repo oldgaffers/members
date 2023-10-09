@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 import Typography from '@mui/material/Typography';
-import { DataGrid, GridToolbarContainer, GridToolbarFilterButton } from '@mui/x-data-grid';
+import { DataGrid, GridToolbarContainer, GridToolbarFilterButton, GridCellModes } from '@mui/x-data-grid';
 import { Button } from '@mui/material';
 import { boatUrl } from '../lib/api';
 import Contact from './Contact';
@@ -120,10 +120,61 @@ export default function BoatsAndOwners({
   onsetCrewingOptions,
   showContactButton = true,
 }) {
+  const [cellModesModel, setCellModesModel] = useState({});
+
+  const handleCellClick = useCallback(
+    (params, event) => {
+      if (!params.isEditable) {
+        return;
+      }
+
+      // Ignore portal
+      if (!event.currentTarget.contains(event.target)) {
+        return;
+      }
+
+      setCellModesModel((prevModel) => ({
+        // Revert the mode of the other cells from other rows
+        ...Object.keys(prevModel).reduce(
+          (acc, id) => ({
+            ...acc,
+            [id]: Object.keys(prevModel[id]).reduce(
+              (acc2, field) => ({
+                ...acc2,
+                [field]: { mode: GridCellModes.View },
+              }),
+              {},
+            ),
+          }),
+          {},
+        ),
+        [params.id]: {
+          // Revert the mode of other cells in the same row
+          ...Object.keys(prevModel[params.id] || {}).reduce(
+            (acc, field) => ({ ...acc, [field]: { mode: GridCellModes.View } }),
+            {},
+          ),
+          [params.field]: { mode: GridCellModes.View },
+        },
+      }));
+    },
+    [],
+  );
+
+  const handleCellModesModelChange = useCallback(
+    (newModel) => {
+      setCellModesModel(newModel);
+    },
+    [],
+  );
+
   return (
     <div style={{ display: 'flex', height: '100%' }}>
       <div style={{ flexGrow: 1 }}>
         <DataGrid
+          cellModesModel={cellModesModel}
+          onCellModesModelChange={handleCellModesModelChange}
+          onCellClick={handleCellClick}
           getRowId={(row) => row.oga_no}
           rows={boats}
           columns={columns(onSetHireOptions, onsetCrewingOptions, showContactButton)}
