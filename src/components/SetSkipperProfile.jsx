@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import ScopedCssBaseline from '@mui/material/ScopedCssBaseline';
 import {
+  Box,
   Button, Dialog, DialogActions, DialogContent,
-  DialogContentText, DialogTitle, FormLabel, Stack, Typography,
+  DialogContentText, DialogTitle, Stack, Typography,
 } from '@mui/material';
 import { ReactReallyTinyEditor as ReactTinyEditor } from '@ogauk/react-tiny-editor';
 
@@ -28,13 +29,15 @@ export default function SetSkipperProfile({
             This feature is intended for skippers who regularly or occasionally need crew.
           </Typography>
           <Stack>
-            <FormLabel>
-              <Typography>Create or Edit your Skipper&rsquo;s profile here.</Typography>
-            </FormLabel>
-            <ReactTinyEditor
-              html={text}
-              onChange={setText}
-            />
+            <Typography>Create or Edit your Skipper&rsquo;s profile here.</Typography>
+            <Box sx={{ display: 'flex' }}>
+              <Box sx={{
+                m: 1, border: 1, paddingBottom: 1, height: '15rem', width: '100%',
+              }}
+              >
+                <ReactTinyEditor html={text} onChange={setText} />
+              </Box>
+            </Box>
           </Stack>
           <DialogContentText>
             Your skipper&rsquo;s profile will be visible on the boat register to members who view
