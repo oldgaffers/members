@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import Stack from '@mui/material/Stack';
 import EditIcon from '@mui/icons-material/Edit';
 import { useAuth0 } from '@auth0/auth0-react';
@@ -8,7 +8,9 @@ import {
   Button, CircularProgress, List, ListItem, Snackbar, Typography,
 } from '@mui/material';
 import RoleRestricted from './RoleRestricted';
-import { getFilterable, postGeneralEnquiry } from '../lib/api';
+import {
+  getBoat, getFilterable, postGeneralEnquiry, postScopedData,
+} from '../lib/api';
 import { SuggestLogin } from './LoginButton';
 import membersBoats from '../lib/members_boats.mjs';
 import MembersByMembership from './MembersByMembership';
@@ -79,13 +81,16 @@ function MyDetails() {
   const [openContact, setOpenContact] = useState(false);
   const [openSkipperProfile, setOpenSkipperProfile] = useState(false);
   const [snackBarOpen, setSnackBarOpen] = useState(false);
-  const [boats, setBoats] = useState();
-  const { user } = useAuth0();
+  const [members, setMembers] = useState([]);
+  const [boats, setBoats] = useState([]);
+  const [primary, setPrimary] = useState([]);
+  const [myRecord, setMyRecord] = useState([]);
+  const { user, getAccessTokenSilently } = useAuth0();
   const id = user?.['https://oga.org.uk/id'];
   const memberNo = user?.['https://oga.org.uk/member'];
   const memberResult = useQuery(MEMBER_QUERY, { variables: { members: [memberNo] } });
-  const [addProfile, { data, loading, error }] = useMutation(ADD_PROFILE_MUTATION);
 
+  const [addProfile, { data, loading, error }] = useMutation(ADD_PROFILE_MUTATION);
   const handleSubmitInterests = (newData) => {
     setOpenInterests(false);
     postGeneralEnquiry('member', 'profile', { ...newData })
@@ -99,18 +104,31 @@ function MyDetails() {
       });
   };
 
-  const hco = () => alert('Crew');
-
-  const hho = () => alert('hire');
-
   useEffect(() => {
-    if (!boats) {
-      getFilterable()
-        .then((r) => {
-          setBoats(r);
-        }).catch((e) => console.log(e));
+    async function fetchData() {
+      if (boats.length > 0) {
+        return;
+      }
+      try {
+        const r = await getFilterable();
+        const myBoats = membersBoats(r, members);
+        const token = await getAccessTokenSilently();
+        const f = await Promise.all(myBoats.map((b) => getBoat(b.oga_no, token)));
+        const p = f.map((b) => {
+          const n = myBoats.find((l) => l.oga_no === b.oga_no);
+          // set options explicity so switches are always controlled
+          return {
+            ...b, owners: n.owners, hire: b.hire || false, crewing: b.crewing || false,
+          };
+        });
+        p.sort((a, b) => a.oga_no - b.oga_no);
+        setBoats(p);
+      } catch (e) {
+        console.log(e);
+      }
     }
-  }, [boats]);
+    fetchData();
+  }, [boats, members]);
 
   if (memberResult.loading) {
     return <CircularProgress />;
@@ -119,10 +137,13 @@ function MyDetails() {
   if (!memberResult.data) {
     return <CircularProgress />;
   }
-  const members = memberResult.data.members.filter((m) => m.member === memberNo);
-  const myRecord = members.find((m) => m.id === id);
-  const myBoats = membersBoats(boats, members);
-  const primary = members.find((m) => m.primary);
+
+  if (members.length === 0) {
+    const m = memberResult?.data?.members;
+    setMembers(m);
+    setMyRecord(m.find((i) => i.id === id));
+    setPrimary(m.find((i) => i.primary));
+  }
 
   const handleSubmitContact = (text) => {
     setOpenContact(false);
@@ -153,7 +174,32 @@ function MyDetails() {
     return `Submission error! ${error.message}`;
   }
 
-  console.log('data from profile', data);
+  const postCrewingData = async (cd) => {
+    const token = await getAccessTokenSilently();
+    const response = await postScopedData('member', 'crewing', cd, token);
+    if (response.ok) {
+      return true;
+    }
+    throw response;
+  };
+
+  const onChange = (row, field, checked) => {
+    console.log('onswitch', field, checked, row.oga_no);
+    postCrewingData({ oga_no: row.oga_no, [field]: checked })
+      .then(() => {
+        const p = boats.map((b) => {
+          if (b.oga_no === row.oga_no) {
+            return { ...b, [field]: checked };
+          }
+          return b;
+        });
+        p.sort((a, b) => a.oga_no - b.oga_no);
+        setBoats(p);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  };
 
   return (
     <>
@@ -183,12 +229,10 @@ function MyDetails() {
       </List>
       <Stack direction="column">
         <MemberStatus key={memberNo} memberNo={memberNo} members={members} />
-        <MembersByMembership members={members} boats={myBoats} />
+        <MembersByMembership members={members} boats={boats} />
         <BoatsByMembership
-          boats={myBoats}
-          onSetHireOptions={hho}
-          onsetCrewingOptions={hco}
-          showContactButton={false}
+          boats={boats}
+          onChange={onChange}
         />
         <Update
           openInterestDialog={setOpenInterests}
