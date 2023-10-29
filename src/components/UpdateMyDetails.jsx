@@ -176,7 +176,7 @@ function MyDetails() {
 
   const postCrewingData = async (cd) => {
     const token = await getAccessTokenSilently();
-    const response = await postScopedData('member', 'crewing', cd, token);
+    const response = await postScopedData('public', 'crewing', cd, token);
     if (response.ok) {
       return true;
     }
