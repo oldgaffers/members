@@ -77,7 +77,7 @@ export async function getBoat(ogaNo, accessToken) {
     const d = await r.json();
     const { boat } = d.result.pageContext;
     if (accessToken) {
-      const extra = await getScopedData('member', 'crewing', { oga_no: ogaNo }, accessToken);
+      const extra = await getScopedData('public', 'crewing', { oga_no: ogaNo }, accessToken);
       if (extra.Count > 0) {
         return { ...boat, ...extra.Items[0] };
       }
