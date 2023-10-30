@@ -17,11 +17,13 @@
     "@mui/material": "^5.14.4",
     "@mui/x-data-grid": "^6.11.1",
     "@ogauk/react-tiny-editor": "^0.1.11",
+    "@testing-library/jest-dom": "^6.1.2",
+    "@turf/distance": "^6.5.0",
     "apollo-link-context": "^1.0.20",
     "awesome-phonenumber": "^5.10.0",
+    "node-postcodes.io": "^1.0.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "@testing-library/jest-dom": "^6.1.2",
     "web-vitals": "^2.1.4"
   },
   "scripts": {

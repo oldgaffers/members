@@ -1,7 +1,9 @@
 import React from 'react';
+import { useAuth0 } from '@auth0/auth0-react';
 import Typography from '@mui/material/Typography';
 import { DataGrid, GridToolbarContainer, GridToolbarFilterButton } from '@mui/x-data-grid';
 import { parsePhoneNumber } from 'awesome-phonenumber';
+import distance from '@turf/distance';
 import Contact from './Contact';
 
 function CustomToolbar() {
@@ -85,10 +87,10 @@ function areaAbbreviation(value) {
     'Northern Ireland': 'NI',
     'North Wales': 'NWa',
     'North West': 'NW',
-    'Scotland': 'SC',
-    'Solent': 'SO',
+    Scotland: 'SC',
+    Solent: 'SO',
     'South West': 'SW',
-    'Overseas': 'OS',
+    Overseas: 'OS',
     'The Americas': 'AM',
     'Continental Europe': 'EU',
     'Rest of World': 'RW',
@@ -112,8 +114,18 @@ function areaFormatter({ value }) {
   return (<Typography variant="body2">{value}</Typography>);
 }
 
-export default function MembersAndBoats({ members = [], boats = [], components = { Toolbar: CustomToolbar } }) {
+export default function MembersAndBoats({
+  members = [],
+  boats = [],
+  postcodes = [],
+  components = { Toolbar: CustomToolbar },
+}) {
+  const { user } = useAuth0();
+  const id = user['https://oga.org.uk/id'];
+  const me = members.find((m) => m.id === id);
   // console.log('YearbookBoats', members, boats);
+  const r = postcodes.find((pc) => pc.query === me.postcode);
+  const mylocation = r?.result;
 
   function boatGetter({ row }) {
     const { id } = row;
@@ -139,6 +151,22 @@ export default function MembersAndBoats({ members = [], boats = [], components =
 
   function smallboatsFormatter(params) {
     return params.value ? '✓' : '✗';
+  }
+
+  function postCodeGetter(params) {
+    if (mylocation?.longitude) {
+      const rec = postcodes.find((pc) => pc.query === params.value);
+      if (rec?.result?.longitude) {
+        const from = [mylocation.longitude, mylocation.latitude];
+        const to = [rec.result.longitude, rec.result.latitude];
+        const d = distance(from, to, { units: 'miles' });
+        if (d > 1000) {
+          console.log('BIG', rec.result);
+        }
+        return Math.floor(d);
+      }
+    }
+    return 99999;
   }
 
   const members2 = members.map((m) => {
@@ -170,6 +198,13 @@ export default function MembersAndBoats({ members = [], boats = [], components =
       renderCell: (params) => <Contact member={params.row.id} />,
     },
     { field: 'town', headerName: 'Town', width: 120 },
+    {
+      field: 'postcode',
+      headerName: 'Dst from me',
+      width: 120,
+      valueGetter: postCodeGetter,
+      valueFormatter: (params) => ((params.value !== 99999) ? `${params.value} miles` : '?'),
+    },
     {
       field: 'boat', headerName: 'Boat Name', flex: 1, valueGetter: boatGetter, valueFormatter: boatFormatter, renderCell: renderBoat,
     },
