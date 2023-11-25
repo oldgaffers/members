@@ -7,6 +7,7 @@ import OGAProvider from './components/OGAProvider';
 import Members from './components/Members';
 import Boats from './components/Boats';
 import UpdateMyDetails from './components/UpdateMyDetails';
+import FindCrew from './components/FindCrew';
 
 function Wrapper({ children }) {
   return (
@@ -34,6 +35,7 @@ function Wrapper({ children }) {
 const details = document.getElementById('update_my_details');
 const members = document.getElementById('members');
 const boats = document.getElementById('members_boats');
+const crewfinder = document.getElementById('crewfinder');
 
 if (details) {
   ReactDOM.createRoot(details).render(<Wrapper><UpdateMyDetails /></Wrapper>);
@@ -45,6 +47,10 @@ if (members) {
 
 if (boats) {
   ReactDOM.createRoot(boats).render(<Wrapper><Boats /></Wrapper>);
+}
+
+if (crewfinder) {
+  ReactDOM.createRoot(crewfinder).render(<Wrapper><FindCrew /></Wrapper>);
 }
 
 // If you want to start measuring performance in your app, pass a function
