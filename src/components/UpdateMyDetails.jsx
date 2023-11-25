@@ -179,12 +179,6 @@ function MyDetails() {
 
   return (
     <Stack spacing={1}>
-      <Typography variant="h6">
-        Hi
-        {' '}
-        {myRecord.firstname}
-        .
-      </Typography>
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
         <Tabs value={tab} onChange={handleTabChange} aria-label="basic tabs example">
           <Tab label="About You" />

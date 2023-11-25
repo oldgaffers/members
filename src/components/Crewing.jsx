@@ -24,7 +24,6 @@ export default function Crewing({ user }) {
   const [addProfile, { loading, error }] = useMutation(ADD_SKIPPER_PROFILE_MUTATION);
   const [addCrewProfile, cp] = useMutation(ADD_CREW_PROFILE_MUTATION);
 
-  console.log(user);
   if (loading) {
     if (openSkipperProfile) {
       setOpenSkipperProfile(false);

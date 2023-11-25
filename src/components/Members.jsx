@@ -33,28 +33,24 @@ async function getPostcodeData(members) {
   return settled.map((r) => r.value).flat();
 }
 
-function MembersList() {
-  const [excludeNotPaid, setExcludeNotPaid] = useState(false);
-  const [excludeNoConsent, setExcludeNoConsent] = useState(true);
-  const [boats, setBoats] = useState(undefined);
+export function useMembers(excludeNotPaid, excludeNoConsent, crew) {
+  const [filterable, setFilterable] = useState(undefined);
   const [pc, setPc] = useState();
-  const { user } = useAuth0();
 
-  const roles = user['https://oga.org.uk/roles'];
-  const memberNo = user['https://oga.org.uk/member'];
   const membersResult = useQuery(gql`query members { members { 
     salutation firstname lastname member id GDPR postcode
     status telephone mobile town area interests smallboats
+    crewingprofile
    } }`);
 
   useEffect(() => {
-    if (!boats) {
+    if (!filterable) {
       getFilterable()
         .then((r) => {
-          setBoats(r);
+          setFilterable(r);
         }).catch((e) => console.log(e));
     }
-  }, [boats]);
+  }, [filterable]);
 
   useEffect(() => {
     if (membersResult.data && pc?.length === 0) {
@@ -64,27 +60,51 @@ function MembersList() {
     }
   }, [pc]);
 
-  if (!boats) {
-    return <CircularProgress />;
+  if (!filterable) {
+    return { loading: true };
   }
 
   if (membersResult.loading) {
-    return <CircularProgress />;
+    return membersResult;
   }
 
   if (membersResult.error) {
-    return (<div>{JSON.stringify(membersResult.error)}</div>);
+    return membersResult;
   }
-
-  const { members } = membersResult.data;
-  const ybmembers = members
-    .filter((m) => memberPredicate(m.id, m, excludeNotPaid, excludeNoConsent));
 
   if (!pc) {
     setPc([]);
   }
 
-  const wboats = membersBoats(boats, ybmembers);
+  const { members } = membersResult.data;
+
+  const filteredMembers = members
+    .filter((m) => memberPredicate(m.id, m, excludeNotPaid, excludeNoConsent)
+      && (m.crewingprofile || !crew));
+
+  const boats = membersBoats(filterable, filteredMembers);
+
+  const data = { boats, postcodes: pc, members: filteredMembers };
+  return { data };
+}
+
+export function MembersList({ crew }) {
+  const [excludeNotPaid, setExcludeNotPaid] = useState(false);
+  const [excludeNoConsent, setExcludeNoConsent] = useState(true);
+  const { user } = useAuth0();
+  const roles = user['https://oga.org.uk/roles'];
+
+  const { loading, error, data } = useMembers(excludeNotPaid, excludeNoConsent, crew);
+
+  if (loading) {
+    return <CircularProgress />;
+  }
+
+  if (error) {
+    return (<div>{JSON.stringify(error)}</div>);
+  }
+
+  const { boats, postcodes, members } = data;
 
   const handleNotPaidSwitchChange = (event, newValue) => {
     setExcludeNotPaid(newValue);
@@ -97,30 +117,27 @@ function MembersList() {
   return (
     <Box sx={{ width: '100%' }}>
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-        <Typography variant="h6">
-          Hi
-          {' '}
-          {user.name}
-          {' '}
-          (
-          {memberNo}
-          ).
-        </Typography>
         <FormGroup>
           {roles.includes.editor ? <FormControlLabel control={<Switch onChange={handleNotPaidSwitchChange} checked={excludeNotPaid} />} label="Exclude not paid" /> : ''}
           {roles.includes.editor ? <FormControlLabel control={<Switch onChange={handleNoConsentSwitchChange} checked={excludeNoConsent} />} label="Exclude no Consent" /> : ''}
         </FormGroup>
       </Box>
-      <MembersAndBoats members={ybmembers} boats={wboats} postcodes={pc} />
+      <MembersAndBoats members={members} boats={boats} postcodes={postcodes} />
     </Box>
   );
 }
 
 export default function Members() {
+  const { user } = useAuth0();
+  if (!user) {
+    return <SuggestLogin />;
+  }
   return (
     <>
       <SuggestLogin />
-      <RoleRestricted role="member"><MembersList /></RoleRestricted>
+        <RoleRestricted role="member">
+        <MembersList />
+      </RoleRestricted>
     </>
   );
 }
