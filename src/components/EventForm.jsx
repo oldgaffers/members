@@ -12,7 +12,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import 'dayjs/locale/en-gb';
-import MapPicker from 'react-google-map-picker';
+// import MapPicker from 'react-google-map-picker';
 import { ReactReallyTinyEditor as ReactTinyEditor } from '@ogauk/react-tiny-editor';
 import Grid from '@mui/material/Unstable_Grid2/Grid2';
 import membersBoats from '../lib/members_boats.mjs';
@@ -31,6 +31,10 @@ function LocationPicker({ open, onSetLocation }) {
   const handleChangeZoom = (newZoom) => {
     setZoom(newZoom);
   };
+
+  function MapPicker() {
+    return 'TODO';
+  }
 
   return (
     <Dialog open={open} fullWidth>
