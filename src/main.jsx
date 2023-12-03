@@ -8,6 +8,7 @@ import Members from './components/Members';
 import Boats from './components/Boats';
 import UpdateMyDetails from './components/UpdateMyDetails';
 import FindCrew from './components/FindCrew';
+import FindACruise from './components/FindACruise';
 
 function Wrapper({ children }) {
   return (
@@ -36,6 +37,7 @@ const details = document.getElementById('update_my_details');
 const members = document.getElementById('members');
 const boats = document.getElementById('members_boats');
 const crewfinder = document.getElementById('crewfinder');
+const cruisefinder = document.getElementById('cruisefinder');
 
 if (details) {
   ReactDOM.createRoot(details).render(<Wrapper><UpdateMyDetails /></Wrapper>);
@@ -51,6 +53,10 @@ if (boats) {
 
 if (crewfinder) {
   ReactDOM.createRoot(crewfinder).render(<Wrapper><FindCrew /></Wrapper>);
+}
+
+if (cruisefinder) {
+  ReactDOM.createRoot(cruisefinder).render(<Wrapper><FindACruise /></Wrapper>);
 }
 
 // If you want to start measuring performance in your app, pass a function

@@ -1,8 +1,12 @@
-import { Button, CircularProgress, Stack, Typography } from '@mui/material';
 import React from 'react';
+import {
+  Button, CircularProgress, Stack, Typography,
+} from '@mui/material';
 import { SuggestLogin } from './LoginButton';
 import RoleRestricted from './RoleRestricted';
 import { useMembers } from './Members';
+import MyCalendar from './calendar/Calendar';
+import EventForm from './EventForm';
 
 export function CrewCard({ member }) {
   const {
@@ -19,8 +23,8 @@ export function CrewCard({ member }) {
         component="div"
         dangerouslySetInnerHTML={{ __html: crewingprofile.trim() }}
       />
-      <Button>Add to Invite</Button>
-      <Button>Contact</Button>
+      <Button disabled>Add to Invite</Button>
+      <Button disabled>Contact</Button>
     </Stack>
   );
 }
@@ -32,6 +36,10 @@ export function CrewCards({ members }) {
 export default function FindCrew() {
   const { loading, error, data } = useMembers(true, true, true);
 
+  const handleCreate = (event) => {
+    console.log('handleCreate', event);
+  };
+  
   if (loading) {
     return <CircularProgress />;
   }
@@ -40,14 +48,12 @@ export default function FindCrew() {
     return (<div>{JSON.stringify(error)}</div>);
   }
 
-  const { members } = data;
+  const { members } = data; // .filter((m) => true); // filter out current user and current participants
 
   return (
     <Stack spacing={1}>
       <SuggestLogin />
-      <Typography>Looking for crew for your your cruising or racing adventures?</Typography>
-      <Typography>Create a crewing opportunity here.</Typography>
-      <Typography>Specify dates and locations and link to the boat.</Typography>
+      <EventForm onCreate={handleCreate} />
       <Typography>
         Opportunities can be public, visible to members or hidden.
       </Typography>
@@ -60,7 +66,17 @@ export default function FindCrew() {
         email sent to members you want to invite.
       </Typography>
       <Typography>Here are the members who have created a crew profile.</Typography>
-      <RoleRestricted role="member"><CrewCards members={members} /></RoleRestricted>
+      <RoleRestricted role="member"><CrewCards inviteEnabled contactEnabled members={members} /></RoleRestricted>
+      <Typography>
+        Here is our current event list. When you submit your event it will be added
+      </Typography>
+      <MyCalendar />
+      <Typography>
+        We'd also like to support Area Events. Such an event can have multiple boats attending and multiple
+        people attending, either as crew or on foot. Knowing who is on which boat would be useful.
+      </Typography>
+      <Typography>If you allow it people will be able sign-up for your event.</Typography>
+      <Typography>An event might be a rally, a race, or a cruise in company.</Typography>
     </Stack>
   );
 }
