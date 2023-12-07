@@ -9,9 +9,22 @@ import { Button, Switch, Typography } from '@mui/material';
 import { boatUrl } from './lib/api.mts';
 import { ownerList, ownerValueGetter } from './lib/ownership.mts';
 
+type Boat = {
+  oga_no: number
+  name: string
+  owners: any[]
+  hire?: boolean
+  crewing?: boolean
+}
+
+type BoatsByMembershipProps = {
+  boats: Boat[]
+  onChange: Function
+}
+
 export default function BoatsByMembership({
   boats, onChange,
-}) {
+}: BoatsByMembershipProps) {
   if (boats.length === 0) {
     return <Typography>You don't have any boats registered to your membership</Typography>;
   }
@@ -50,7 +63,7 @@ export default function BoatsByMembership({
                 <TableCell align="right"><Switch onChange={(e) => onChange(row, 'crewing', e.target.checked)} checked={row.crewing} /></TableCell>
                 <TableCell align="right">
                   <Button
-                    padding="5px"
+                    sx= {{padding: "5px"}}
                     size="small"
                     component="a"
                     href={boatUrl(row.oga_no, {})}

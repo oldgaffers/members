@@ -49,15 +49,15 @@ const initialEvents = [
 ];
 
 export default function MyCalendar() {
-  const calendarRef = createRef();
+  const calendarRef = createRef<Calendar>();
 
-  const onChangeDate = (newValue) => {
+  const onChangeDate = (value: { $d: any }) => {
     const calendarInstance = calendarRef.current.getInstance();
-    calendarInstance.setDate(newValue.$d);
+    calendarInstance.setDate(value.$d);
     calendarInstance.setCalendarVisibility(calendars.map((c) => c.id), true);
   };
 
-  const onAfterRenderEvent = (event) => {
+  const onAfterRenderEvent = (event: { title: any; }) => {
     console.log(event.title);
   };
 

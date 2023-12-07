@@ -1,7 +1,13 @@
+import { PropsWithChildren } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 import { Typography } from "@mui/material";
 
-export default function RoleRestricted({ role, children, hide=true }) {
+type RoleRestrictedProps = {
+    role: string
+    hide?: boolean
+}
+
+export default function RoleRestricted({ role, children, hide=true }: PropsWithChildren<RoleRestrictedProps>) {
     const { user, isAuthenticated } = useAuth0();
     if (role) {
         if (!isAuthenticated) {

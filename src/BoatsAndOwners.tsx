@@ -78,17 +78,35 @@ const columns = (hire, crewWanted, showContactButton) => {
   return col;
 };
 
+type Boat = {
+  oga_no: number
+}
+
+type Member = {
+  id: number
+}
+
+type BoatsAndOwnersProps = {
+  boats: Boat[]
+  members: Member[]
+  components?: any
+  onSetHireOptions?: Function
+  onsetCrewingOptions?: Function
+  showContactButton?: boolean
+}
+
 export default function BoatsAndOwners({
   boats = [],
+  members,
   components = { Toolbar: CustomToolbar },
   onSetHireOptions,
   onsetCrewingOptions,
   showContactButton = true,
-}) {
+}: BoatsAndOwnersProps) {
   const [cellModesModel, setCellModesModel] = useState({});
 
   const handleCellClick = useCallback(
-    (params, event) => {
+    (params: any, event: any) => {
       if (!params.isEditable) {
         return;
       }
@@ -98,7 +116,7 @@ export default function BoatsAndOwners({
         return;
       }
 
-      setCellModesModel((prevModel) => ({
+      setCellModesModel((prevModel: { [id: string]: any}) => ({
         // Revert the mode of the other cells from other rows
         ...Object.keys(prevModel).reduce(
           (acc, id) => ({
@@ -127,7 +145,7 @@ export default function BoatsAndOwners({
   );
 
   const handleCellModesModelChange = useCallback(
-    (newModel) => {
+    (newModel: any) => {
       setCellModesModel(newModel);
     },
     [],

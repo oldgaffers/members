@@ -37,7 +37,7 @@ function BoatList() {
   }
 
   const { members } = membersResult.data;
-  const ybmembers = members.filter((m) => memberPredicate(m.id, m, false, false));
+  const ybmembers = members.filter((m: any) => memberPredicate(m.id, m, false, false));
 
   const wboats = membersBoats(boats, ybmembers);
 

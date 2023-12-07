@@ -1,14 +1,18 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, PropsWithChildren } from 'react';
 import { InMemoryCache, ApolloClient, createHttpLink } from '@apollo/client';
 import { setContext } from "@apollo/client/link/context";
 import { ApolloProvider } from '@apollo/react-hooks';
 import { useAuth0 } from "@auth0/auth0-react";
 
+type OGAProviderProps = {
+  uri?: string
+}
+
 const uri = 'https://5li1jytxma.execute-api.eu-west-1.amazonaws.com/default/graphql';
 
 const httpLink = createHttpLink({ uri });
 
-export default function OGAProvider({ children }) {
+export default function OGAProvider({ children }: PropsWithChildren<OGAProviderProps>) {
   const [client, setClient] = useState(new ApolloClient({
     link: httpLink,
     cache: new InMemoryCache(),

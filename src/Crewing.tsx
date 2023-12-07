@@ -7,6 +7,12 @@ import { gql, useMutation } from '@apollo/client';
 import SetSkipperProfile from './SetSkipperProfile';
 import SetCrewProfile from './SetCrewProfile';
 
+type User = {
+  id: number
+  profile?: string
+  crewingprofile?: string
+}
+
 const ADD_SKIPPER_PROFILE_MUTATION = gql`
   mutation skipperProfileMutation($id: Int!, $text: String!) {
     addSkipperProfile(id: $id, text: $text) { ok }
@@ -17,7 +23,7 @@ const ADD_CREW_PROFILE_MUTATION = gql`
     addCrewProfile(id: $id, text: $text) { ok }
   }`;
 
-export default function Crewing({ user }) {
+export default function Crewing({ user }: { user: User }) {
   const [openSkipperProfile, setOpenSkipperProfile] = useState(false);
   const [openCrewProfile, setOpenCrewProfile] = useState(false);
 
@@ -38,11 +44,11 @@ export default function Crewing({ user }) {
     return 'Submitting...';
   }
 
-  const handleSubmitSkipperProfile = (text) => {
+  const handleSubmitSkipperProfile = (text: string) => {
     addProfile({ variables: { id: user.id, text } });
   };
 
-  const handleSubmitCrewProfile = (text) => {
+  const handleSubmitCrewProfile = (text: string) => {
     addCrewProfile({ variables: { id: user.id, text } });
   };
 

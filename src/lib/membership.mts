@@ -1,4 +1,10 @@
-function memberPredicate(id, member, excludeNotPaid = true, excludeNoConsent = true) {
+type Member = {
+  id: number
+  status: string
+  GDPR: boolean
+}
+
+function memberPredicate(id: number, member: Member, excludeNotPaid = true, excludeNoConsent = true) {
   if (!member) {
     return false;
   }
