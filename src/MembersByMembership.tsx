@@ -1,7 +1,14 @@
 import { Typography } from '@mui/material';
 import MembersAndBoats from './MembersAndBoats';
+import { Member } from './lib/membership.mts';
+import { Boat } from './lib/api.mts';
 
-export default function MembersByMembership({ members, boats }) {
+type MembersByMembershipProps = {
+  members: Member[]
+  boats: Boat[]
+}
+
+export default function MembersByMembership({ members, boats }: MembersByMembershipProps) {
   const yeses = members.filter((m) => m.GDPR);
   const nos = members.filter((m) => !m.GDPR);
   if (yeses.length === members.length) {

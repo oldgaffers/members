@@ -1,9 +1,11 @@
 import { Stack } from '@mui/system';
-import Grid2 from '@mui/material/Unstable_Grid2/Grid2';
+import Grid from '@mui/material/Unstable_Grid2/Grid2';
 import {
   Box, Checkbox, FormControlLabel, FormGroup, FormLabel, MenuItem, Select, Typography,
 } from '@mui/material';
 import { emailIndication, infoOrEmpty, membershipType } from './lib/utils.mts';
+import { Member } from './lib/membership.mts';
+import { ReactElement, JSXElementConstructor, ReactNode, ReactPortal } from 'react';
 
 const areas = [
   { label: 'Bristol Channel', value: 'BC', funded: true },
@@ -20,9 +22,15 @@ const areas = [
   { label: 'Rest of World', value: 'RW', funded: false },
 ];
 
-export default function Interests({ user, members, onChange }) {
+type InterestsProps = {
+  user: any
+  members: Member[]
+  onChange: Function
+}
 
-  const handleCheckChange = (a, checked) => {
+export default function Interests({ user, members, onChange }: InterestsProps) {
+
+  const handleCheckChange = (a: unknown, checked: boolean) => {
     const s = new Set(user.interests);
     if (checked) {
       s.add(a);
@@ -32,13 +40,16 @@ export default function Interests({ user, members, onChange }) {
     onChange({...user, interests: [...s]});
   };
 
-  const handleChangePrimaryArea = (a, { props }) => {
+  const handleChangePrimaryArea = (_a: any, { props }: any) => {
     onChange({...user, area: props.value});
   };
 
   const thePrimaryMember = () => {
     const p = members.find((m) => m.primary);
-    return `${p.firstname} ${p.lastname}`;
+    if (p) {
+      return `${p.firstname} ${p.lastname}`;
+    }
+    return 'none of the members in this membership seem to be the primary member';
   }
 
   return (
@@ -75,7 +86,7 @@ export default function Interests({ user, members, onChange }) {
           {' '}
           {user.lastname}
         </Typography>
-        {user.address.filter((line) => line.trim() !== '').map((line) => (
+        {user.address.filter((line: string) => line.trim() !== '').map((line: string | number | boolean | ReactElement<any, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | null | undefined) => (
           <Typography>
             {line}
             ,
@@ -161,9 +172,9 @@ export default function Interests({ user, members, onChange }) {
       <FormGroup>
         <FormLabel sx={{ marginTop: 1 }}>Areas</FormLabel>
         <Typography>You will receive updates for checked areas</Typography>
-        <Grid2 container>
+        <Grid container>
           {areas.map((area) => (
-            <Grid2 item xs={3} key={area.label}>
+            <Grid item xs={3} key={area.label}>
               <FormControlLabel
                 label={area.label}
                 control={(
@@ -174,9 +185,9 @@ export default function Interests({ user, members, onChange }) {
                   />
                 )}
               />
-            </Grid2>
+            </Grid>
           ))}
-        </Grid2>
+        </Grid>
       </FormGroup>
     </Stack>
   );

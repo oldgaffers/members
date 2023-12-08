@@ -9,12 +9,12 @@ import * as postcodes from 'node-postcodes.io';
 import { SuggestLogin } from './LoginButton';
 import RoleRestricted from './RoleRestricted';
 import MembersAndBoats from './MembersAndBoats';
-import memberPredicate from './lib/membership.mts';
+import memberPredicate, { Member } from './lib/membership.mts';
 import membersBoats from './lib/members_boats.mts';
 import { getFilterable } from './lib/api.mts';
 
-async function getPostcodeData(members) {
-  const pcs = [...(new Set(members.map((m) => m.postcode).filter((p) => p)))];
+async function getPostcodeData(members: Member[]) {
+  const pcs: string[] = [...(new Set(members.map((m) => m.postcode).filter((p) => p)))];
   pcs.sort();
   const chunkSize = 100;
   const chunks = [];
@@ -29,12 +29,16 @@ async function getPostcodeData(members) {
     }
     return undefined;
   }));
-  return settled.map((r) => r.value).flat();
+  return settled.map((r: any) => r.value).flat();
 }
 
-export function useMembers(excludeNotPaid, excludeNoConsent, crew) {
+export function useMembers(
+  excludeNotPaid: boolean,
+  excludeNoConsent: boolean, 
+  crew: boolean,
+  ) {
   const [filterable, setFilterable] = useState(undefined);
-  const [pc, setPc] = useState();
+  const [pc, setPc] = useState<any[]>([]);
 
   const membersResult = useQuery(gql`query members { members { 
     salutation firstname lastname member id GDPR postcode
@@ -52,7 +56,7 @@ export function useMembers(excludeNotPaid, excludeNoConsent, crew) {
   }, [filterable]);
 
   useEffect(() => {
-    if (membersResult.data && pc?.length === 0) {
+    if (membersResult.data && pc.length === 0) {
       getPostcodeData(membersResult.data.members).then((r) => {
         setPc(r);
       });
@@ -78,7 +82,7 @@ export function useMembers(excludeNotPaid, excludeNoConsent, crew) {
   const { members } = membersResult.data;
 
   const filteredMembers = members
-    .filter((m) => memberPredicate(m.id, m, excludeNotPaid, excludeNoConsent)
+    .filter((m: Member) => memberPredicate(m.id, m, excludeNotPaid, excludeNoConsent)
       && (m.crewingprofile || !crew));
 
   const boats = membersBoats(filterable, filteredMembers);
@@ -87,29 +91,25 @@ export function useMembers(excludeNotPaid, excludeNoConsent, crew) {
   return { data };
 }
 
-export function MembersList({ crew }) {
+export function MembersList({ crew=false }) {
   const [excludeNotPaid, setExcludeNotPaid] = useState(false);
   const [excludeNoConsent, setExcludeNoConsent] = useState(true);
   const { user } = useAuth0();
-  const roles = user['https://oga.org.uk/roles'];
+  const roles = user?.['https://oga.org.uk/roles'] ?? [];
 
-  const { loading, error, data } = useMembers(excludeNotPaid, excludeNoConsent, crew);
+  const { loading, data } = useMembers(excludeNotPaid, excludeNoConsent, crew);
 
   if (loading) {
     return <CircularProgress />;
   }
 
-  if (error) {
-    return (<div>{JSON.stringify(error)}</div>);
-  }
-
   const { boats, postcodes, members } = data;
 
-  const handleNotPaidSwitchChange = (event, newValue) => {
+  const handleNotPaidSwitchChange = (_event: any, newValue: boolean | ((prevState: boolean) => boolean)) => {
     setExcludeNotPaid(newValue);
   };
 
-  const handleNoConsentSwitchChange = (event, newValue) => {
+  const handleNoConsentSwitchChange = (_event: any, newValue: boolean | ((prevState: boolean) => boolean)) => {
     setExcludeNoConsent(newValue);
   };
 

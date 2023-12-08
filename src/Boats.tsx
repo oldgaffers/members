@@ -41,7 +41,7 @@ function BoatList() {
 
   const wboats = membersBoats(boats, ybmembers);
 
-  return <BoatsAndOwners members={ybmembers} boats={wboats} />;
+  return <BoatsAndOwners boats={wboats} />;
 }
 
 export default function Boats() {

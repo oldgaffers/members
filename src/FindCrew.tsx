@@ -1,17 +1,27 @@
-import React from 'react';
 import {
   Button, CircularProgress, Stack, Typography,
 } from '@mui/material';
 import { SuggestLogin } from './LoginButton';
 import RoleRestricted from './RoleRestricted';
 import { useMembers } from './Members';
-import MyCalendar from './calendar/Calendar';
+import MyCalendar from './Calendar';
 import EventForm from './EventForm';
+import { Member } from './lib/membership.mts';
 
-export function CrewCard({ member }) {
-  const {
-    firstname, lastname, telephone, mobile, crewingprofile,
-  } = member;
+export type CrewCardProps = {
+  member: Member
+  contactEnabled: boolean
+  inviteEnabled: boolean
+}
+
+export type CrewCardsProps = {
+  members: Member[]
+  contactEnabled: boolean
+  inviteEnabled: boolean
+}
+
+export function CrewCard({ member, contactEnabled, inviteEnabled }: CrewCardProps) {
+  const { firstname, lastname, crewingprofile } = member;
   return (
     <Stack direction="row" spacing={2}>
       <Typography>
@@ -23,29 +33,25 @@ export function CrewCard({ member }) {
         component="div"
         dangerouslySetInnerHTML={{ __html: crewingprofile.trim() }}
       />
-      <Button disabled>Add to Invite</Button>
-      <Button disabled>Contact</Button>
+      <Button disabled={!inviteEnabled}>Add to Invite</Button>
+      <Button disabled={!contactEnabled}>Contact</Button>
     </Stack>
   );
 }
 
-export function CrewCards({ members }) {
-  return (<>{members.map((m) => <CrewCard key={m.id} member={m} />)}</>);
+export function CrewCards({ members, contactEnabled, inviteEnabled}: CrewCardsProps) {
+  return (<>{members.map((m) => <CrewCard contactEnabled={contactEnabled} inviteEnabled={inviteEnabled} key={m.id} member={m} />)}</>);
 }
 
 export default function FindCrew() {
-  const { loading, error, data } = useMembers(true, true, true);
+  const { loading, data } = useMembers(true, true, true);
 
-  const handleCreate = (event) => {
+  const handleCreate = (event: any) => {
     console.log('handleCreate', event);
   };
   
   if (loading) {
     return <CircularProgress />;
-  }
-
-  if (error) {
-    return (<div>{JSON.stringify(error)}</div>);
   }
 
   const { members } = data; // .filter((m) => true); // filter out current user and current participants

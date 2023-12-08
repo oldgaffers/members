@@ -1,9 +1,10 @@
 /* eslint-disable no-console */
-import { useEffect, useState } from 'react';
+import { PropsWithChildren, SetStateAction, useEffect, useState } from 'react';
 import EditIcon from '@mui/icons-material/Edit';
 import { useAuth0 } from '@auth0/auth0-react';
 import { useQuery, gql } from '@apollo/client';
 import {
+  Alert,
   Box, Button, CircularProgress, Snackbar, Stack, Tab, Tabs, Typography,
 } from '@mui/material';
 import RoleRestricted from './RoleRestricted';
@@ -14,8 +15,9 @@ import MemberStatus from './MemberStatus';
 import Interests from './MemberDetails';
 import ContactTheMembershipSecretary from './ContactTheMembershipSecretary';
 import Crewing from './Crewing';
-import { getBoat, getFilterable, postGeneralEnquiry, postScopedData } from './lib/api.mts';
+import { Boat, getBoat, getFilterable, postGeneralEnquiry, postScopedData } from './lib/api.mts';
 import membersBoats from './lib/members_boats.mts';
+import { Member } from './lib/membership.mts';
 
 const MEMBER_QUERY = gql(`query members($members: [Int]!) {
     members(members: $members) {
@@ -28,7 +30,7 @@ const MEMBER_QUERY = gql(`query members($members: [Int]!) {
 
 // TODO ReJoin
 
-function recordToHtml(d) {
+function recordToHtml(d: Member) {
   return `Dear OGA Membership Secretary,
 <br />my Membership number is ${d.member} and my GOLD Id is ${d.id}.
 <br />I would like my membership data to match the following:
@@ -51,7 +53,12 @@ function recordToHtml(d) {
 `;
 }
 
-function CustomTabPanel(props) {
+type CustomTabPanelProps = {
+  value: number
+  index: number
+}
+
+function CustomTabPanel(props: PropsWithChildren<CustomTabPanelProps>) {
   const {
     children, value, index, ...other
   } = props;
@@ -76,20 +83,20 @@ function CustomTabPanel(props) {
 function MyDetails() {
   const [openContact, setOpenContact] = useState(false);
   const [snackBarOpen, setSnackBarOpen] = useState(false);
-  const [members, setMembers] = useState([]);
-  const [boats, setBoats] = useState([]);
-  const [myRecord, setMyRecord] = useState([]);
+  const [members, setMembers] = useState<Member[]>([]);
+  const [boats, setBoats] = useState<Boat[]>([]);
+  const [myRecord, setMyRecord] = useState<string[]>([]);
   const { user, getAccessTokenSilently } = useAuth0();
   const id = user?.['https://oga.org.uk/id'];
   const memberNo = user?.['https://oga.org.uk/member'];
   const memberResult = useQuery(MEMBER_QUERY, { variables: { members: [memberNo] } });
   const [tab, setTab] = useState(0);
 
-  const handleTabChange = (event, newValue) => {
+  const handleTabChange = (_event: any, newValue: SetStateAction<number>) => {
     setTab(newValue);
   };
 
-  const handleInterestChange = (data) => {
+  const handleInterestChange = (data: string[]) => {
     console.log('handleInterestChange', data);
     setMyRecord(data);
   };
@@ -103,13 +110,19 @@ function MyDetails() {
         const r = await getFilterable();
         const myBoats = membersBoats(r, members);
         const token = await getAccessTokenSilently();
-        const f = await Promise.all(myBoats.map((b) => getBoat(b.oga_no, token)));
-        const p = f.map((b) => {
+        const f: Boat[] = [];
+        const f1 = await Promise.all(myBoats.map((b) => (getBoat(b.oga_no, token))));
+        f1.forEach((b) => {
+          if (b) {
+            f.push(b);
+          }
+        })
+        const p = f.map((b: Boat) => {
           const n = myBoats.find((l) => l.oga_no === b.oga_no);
           // set options explicity so switches are always controlled
           return {
-            ...b, owners: n.owners, hire: b.hire || false, crewing: b.crewing || false,
-          };
+            ...b, owners: n?.owners, hire: b.hire || false, crewing: b.crewing || false,
+          } as Boat;
         });
         p.sort((a, b) => a.oga_no - b.oga_no);
         setBoats(p);
@@ -132,23 +145,24 @@ function MyDetails() {
     const m = memberResult?.data?.members;
     if (m) {
       setMembers(m);
-      setMyRecord((m).find((i) => i.id === id));
+      setMyRecord((m).find((i: { id: any; }) => i.id === id));
     }
   }
 
-  const handleSubmitContact = (text) => {
+  const handleSubmitContact = (text: any) => {
     setOpenContact(false);
     postGeneralEnquiry('member', 'profile', { user, text })
       .then((response) => {
+        console.log(response);
         setSnackBarOpen(true);
       })
       .catch((error) => {
-        // console.log("post", error);
+        console.log("post", error);
         // TODO snackbar from response.data
       });
   };
 
-  const postCrewingData = async (cd) => {
+  const postCrewingData = async (cd: { [x: number]: any; oga_no: any; }) => {
     const token = await getAccessTokenSilently();
     const response = await postScopedData('public', 'crewing', cd, token);
     if (response.ok) {
@@ -157,7 +171,7 @@ function MyDetails() {
     throw response;
   };
 
-  const onChange = (row, field, checked) => {
+  const onChange = (row: { oga_no: number; }, field: any, checked: any) => {
     console.log('onswitch', field, checked, row.oga_no);
     postCrewingData({ oga_no: row.oga_no, [field]: checked })
       .then(() => {
@@ -174,6 +188,10 @@ function MyDetails() {
         console.log(e);
       });
   };
+
+  if (!user) {
+    return 'please log in';
+  }
 
   return (
     <Stack spacing={1}>
@@ -216,7 +234,7 @@ function MyDetails() {
         />
       </CustomTabPanel>
       <CustomTabPanel value={tab} index={3}>
-        <Crewing user={myRecord} />
+        <Crewing member={myRecord} />
       </CustomTabPanel>
       <ContactTheMembershipSecretary
         user={user}
@@ -230,9 +248,9 @@ function MyDetails() {
         open={snackBarOpen}
         autoHideDuration={2000}
         onClose={() => setSnackBarOpen(false)}
-        message="Thanks, we'll get back to you."
-        severity="success"
-      />
+      >
+        <Alert severity='success'>Thanks, we'll get back to you.</Alert>
+      </Snackbar>
     </Stack>
   );
 }

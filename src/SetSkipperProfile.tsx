@@ -7,9 +7,16 @@ import {
 } from '@mui/material';
 import { ReactReallyTinyEditor as ReactTinyEditor } from '@ogauk/react-tiny-editor';
 
+type SetSkipperProfileProps = {
+  open: boolean
+  profile: string
+  onCancel: Function
+  onSubmit: Function
+}
+
 export default function SetSkipperProfile({
   onCancel, onSubmit, open, profile,
-}) {
+}: SetSkipperProfileProps) {
   const [text, setText] = useState(profile);
 
   return (
@@ -45,7 +52,7 @@ export default function SetSkipperProfile({
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={onCancel}>Cancel</Button>
+          <Button onClick={() => onCancel()}>Cancel</Button>
           <Button onClick={() => onSubmit(text)}>Submit</Button>
         </DialogActions>
       </ScopedCssBaseline>

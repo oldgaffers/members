@@ -1,11 +1,21 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 
-export function ResourceGroups({ items, onChange }) {
+type Item = {
+  id: string
+  name: string
+}
+
+type ResourceGroupsProps = {
+  items: Item[]
+  onChange: Function
+}
+
+export function ResourceGroups({ items, onChange }: ResourceGroupsProps) {
   const initialSelectedValue = items && items.length > 0 ? items[0].id : '';
   const [selectedValue, setSelectedValue] = useState(initialSelectedValue);
   const selectRef = useRef(null);
 
-  const doOnChange = useCallback((item) => {
+  const doOnChange = useCallback((item: Item | undefined) => {
     const args = { selected: item };
     if (onChange) {
       onChange(args);
@@ -20,9 +30,9 @@ export function ResourceGroups({ items, onChange }) {
     }
   }, [items, selectedValue, doOnChange]); // Include doOnChange in the dependencies
 
-  const find = (id) => (items ? items.find((item) => item.id === id) : null);
+  const find = (id: string) => (items ? items.find((item) => item.id === id): undefined);
 
-  const change = (ev) => {
+  const change = (ev: { target: { value: any; }; }) => {
     const { value } = ev.target;
     setSelectedValue(value);
     const item = find(value);

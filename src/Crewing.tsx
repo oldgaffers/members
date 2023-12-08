@@ -7,11 +7,6 @@ import { gql, useMutation } from '@apollo/client';
 import SetSkipperProfile from './SetSkipperProfile';
 import SetCrewProfile from './SetCrewProfile';
 
-type User = {
-  id: number
-  profile?: string
-  crewingprofile?: string
-}
 
 const ADD_SKIPPER_PROFILE_MUTATION = gql`
   mutation skipperProfileMutation($id: Int!, $text: String!) {
@@ -23,7 +18,7 @@ const ADD_CREW_PROFILE_MUTATION = gql`
     addCrewProfile(id: $id, text: $text) { ok }
   }`;
 
-export default function Crewing({ user }: { user: User }) {
+export default function Crewing({ member }: { member: Member }) {
   const [openSkipperProfile, setOpenSkipperProfile] = useState(false);
   const [openCrewProfile, setOpenCrewProfile] = useState(false);
 
@@ -45,11 +40,11 @@ export default function Crewing({ user }: { user: User }) {
   }
 
   const handleSubmitSkipperProfile = (text: string) => {
-    addProfile({ variables: { id: user.id, text } });
+    addProfile({ variables: { id: member.id, text } });
   };
 
   const handleSubmitCrewProfile = (text: string) => {
-    addCrewProfile({ variables: { id: user.id, text } });
+    addCrewProfile({ variables: { id: member.id, text } });
   };
 
   if (error) {
@@ -97,13 +92,13 @@ export default function Crewing({ user }: { user: User }) {
         </Button>
       </Box>
       <SetSkipperProfile
-        profile={user.profile}
+        profile={member.profile ?? ''}
         onSubmit={handleSubmitSkipperProfile}
         onCancel={() => setOpenSkipperProfile(false)}
         open={openSkipperProfile}
       />
       <SetCrewProfile
-        profile={user.crewingprofile || ''}
+        profile={member.crewingprofile || ''}
         onSubmit={handleSubmitCrewProfile}
         onCancel={() => setOpenCrewProfile(false)}
         open={openCrewProfile}

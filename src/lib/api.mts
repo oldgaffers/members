@@ -1,8 +1,18 @@
+import { User } from "@auth0/auth0-react"
+
+export type Boat = {
+  oga_no: number
+  name: string
+  owners: any[]
+  hire?: boolean
+  crewing?: boolean
+}
+
 const boatRegisterHome = 'https://oldgaffers.github.io';
 
 const api1 = 'https://5li1jytxma.execute-api.eu-west-1.amazonaws.com';
 
-export function prefix(location) {
+export function prefix(location: { origin: string; pathname: string }) {
   const origin = location.origin || window.location.origin;
   const pathname = location.pathname || window.location.pathname;
   let test = '';
@@ -12,11 +22,12 @@ export function prefix(location) {
   const r = `${origin}/boat_register/${test}`;
   return r;
 }
-export function boatUrl(ogaNo, location) {
+
+export function boatUrl(ogaNo: number, location: { origin: string; pathname: string }) {
   return `${prefix(location)}boat?oga_no=${ogaNo}`;
 }
 
-export async function postGeneralEnquiry(scope, subject, data) {
+export async function postGeneralEnquiry(scope: string, subject: string, data: { GDPR?: boolean; id?: number; salutation?: string; firstname?: string; lastname?: string; status?: string; postcode?: string; area?: string; mobile?: string; telephone?: string; interests?: string[]; __typename?: string | undefined; user?: User | undefined; text?: any }) {
   return fetch(
     `${api1}/default/${scope}/${subject}`,
     {
@@ -27,8 +38,8 @@ export async function postGeneralEnquiry(scope, subject, data) {
   );
 }
 
-export async function postScopedData(scope, subject, data, accessToken) {
-  const headers = {
+export async function postScopedData(scope: string, subject: string, data: any, accessToken: string) {
+  const headers: Record<string, string> = {
     'content-type': 'application/json',
   };
   if (accessToken) {
@@ -44,8 +55,8 @@ export async function postScopedData(scope, subject, data, accessToken) {
   );
 }
 
-export async function getScopedData(scope, subject, filters, accessToken) {
-  const headers = {
+export async function getScopedData(scope: string, subject: string, filters: string | URLSearchParams | Record<string, string> | string[][] | undefined, accessToken: any) {
+  const headers: Record<string, string> = {
     'content-type': 'application/json',
   };
   if (accessToken) {
@@ -71,13 +82,13 @@ export async function getFilterable() {
   return [];
 }
 
-export async function getBoat(ogaNo, accessToken) {
+export async function getBoat(ogaNo: number, accessToken: string): Promise<Boat | undefined> {
   const r = await fetch(`${boatRegisterHome}/boatregister/page-data/boat/${ogaNo}/page-data.json`);
   if (r.ok) {
     const d = await r.json();
     const { boat } = d.result.pageContext;
     if (accessToken) {
-      const extra = await getScopedData('public', 'crewing', { oga_no: ogaNo }, accessToken);
+      const extra = await getScopedData('public', 'crewing', { oga_no: `${ogaNo}` }, accessToken);
       if (extra.Count > 0) {
         return { ...boat, ...extra.Items[0] };
       }

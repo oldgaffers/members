@@ -1,7 +1,13 @@
 import { Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material';
 import UpdateConsent from './UpdateConsent';
+import { Member } from './lib/membership.mts';
 
-function printedYearbookStatus({ GDPR, status }) {
+type MemberStatusProps = {
+    memberNo: number
+    members: Member[]
+}
+
+function printedYearbookStatus({ GDPR, status }: Member) {
     if (status === 'Left OGA') {
         return 'Not in Yearbook - left OGA';
     }
@@ -11,7 +17,7 @@ function printedYearbookStatus({ GDPR, status }) {
     return 'Not in Yearbook - consent not given';
 }
 
-function membersAreaStatus({ GDPR, status }) {
+function membersAreaStatus({ GDPR, status }: Member) {
     if (status === 'Left OGA') {
         return 'Not listed in the members area - left OGA';
     }
@@ -21,7 +27,7 @@ function membersAreaStatus({ GDPR, status }) {
     return 'Not shown - consent not given';
 }
 
-export default function MemberStatus({ memberNo, members }) {
+export default function MemberStatus({ memberNo, members }: MemberStatusProps) {
     if (members.length === 1) {
         if (members[0].status !== 'Left OGA') {
             if (members[0].GDPR) {

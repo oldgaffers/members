@@ -1,9 +1,18 @@
 import { useAuth0 } from '@auth0/auth0-react';
 import Typography from '@mui/material/Typography';
 import { DataGrid, GridToolbarContainer, GridToolbarFilterButton } from '@mui/x-data-grid';
-import { parsePhoneNumber } from 'awesome-phonenumber';
+import { ParsedPhoneNumber, parsePhoneNumber } from 'awesome-phonenumber';
 import distance from '@turf/distance';
 import Contact from './Contact';
+import { Member } from './lib/membership.mts';
+import { Boat } from './lib/api.mts';
+
+type MembersAndBoatsProps = {
+  members: Member[],
+  boats: Boat[],
+  postcodes?: any[],
+  components?: any
+}
 
 function CustomToolbar() {
   return (
@@ -13,11 +22,11 @@ function CustomToolbar() {
   );
 }
 
-function nameGetter({ row }) {
+function nameGetter({ row }: { row: Member}) {
   return `${row.salutation} ${row.firstname}`;
 }
 
-function fettlePhone(n, area) {
+function fettlePhone(n: string, area: string) {
   if (!n) {
     return undefined;
   }
@@ -40,7 +49,7 @@ function fettlePhone(n, area) {
   return parsePhoneNumber(n, { regionCode: 'GB' });
 }
 
-function formatPhone(pn) {
+function formatPhone(pn: ParsedPhoneNumber | undefined) {
   if (pn) {
     if (pn.valid) {
       if (pn.countryCode === 44) {
@@ -52,7 +61,7 @@ function formatPhone(pn) {
   return undefined;
 }
 
-function phoneGetter({ row }) {
+function phoneGetter({ row }: { row: Member }) {
   const mobile = formatPhone(fettlePhone(row.mobile, row.area));
   const landline = formatPhone(fettlePhone(row.telephone, row.area));
   const n = [];
@@ -77,7 +86,7 @@ function phoneGetter({ row }) {
   return `*** M: ${row.mobile} T: ${row.telephone} ***`;
 }
 
-function areaAbbreviation(value) {
+function areaAbbreviation(value: string) {
   const abbrev = {
     'Bristol Channel': 'BC',
     'Dublin Bay': 'DB',
@@ -97,7 +106,7 @@ function areaAbbreviation(value) {
   return abbrev;
 }
 
-function areaFormatter({ value }) {
+function areaFormatter({ value }: { value: string }) {
   const [area, ...others] = value.split(',');
   if (others.length > 0) {
     return (
@@ -118,41 +127,41 @@ export default function MembersAndBoats({
   boats = [],
   postcodes = [],
   components = { Toolbar: CustomToolbar },
-}) {
+}: MembersAndBoatsProps) {
   const { user } = useAuth0();
-  const id = user['https://oga.org.uk/id'];
+  const id = user?.['https://oga.org.uk/id'];
   const me = members.find((m) => m.id === id);
   // console.log('YearbookBoats', members, boats);
-  const r = postcodes.find((pc) => pc.query === me.postcode);
+  const r = postcodes.find((pc) => pc.query === me?.postcode);
   const mylocation = r?.result;
 
-  function boatGetter({ row }) {
+  function boatGetter({ row }: { row: Member }) {
     const { id } = row;
     const theirBoats = boats.filter((b) => b.owners?.find((o) => o?.id === id));
     return theirBoats.map((b) => b.name).sort().join(', ');
   }
 
-  function renderBoat(params) {
+  function renderBoat(params: { value: string }) {
     return (<Typography variant="body2" fontStyle="italic">{params.value}</Typography>);
   }
 
-  function boatFormatter(params) {
+  function boatFormatter(params: { value: string; }) {
     return params.value;
   }
 
-  function renderLastname(params) {
+  function renderLastname(params: { value: string }) {
     return (<Typography variant="body2" fontWeight="bold">{params.value}</Typography>);
   }
 
-  function lastnameFormatter(params) {
+  function lastnameFormatter(params: { value: string; }) {
     return params.value;
   }
 
-  function smallboatsFormatter(params) {
+  function smallboatsFormatter(params: { value: boolean; }) {
     return params.value ? '✓' : '✗';
   }
 
-  function postCodeGetter(params) {
+  function distanceGetter(params: { value: string; }): number {
     if (mylocation?.longitude) {
       const rec = postcodes.find((pc) => pc.query === params.value);
       if (rec?.result?.longitude) {
@@ -194,15 +203,15 @@ export default function MembersAndBoats({
       field: 'url',
       headerName: 'Details',
       width: 150,
-      renderCell: (params) => <Contact member={params.row.id} />,
+      renderCell: ({row}: { row: { id: number }}) => <Contact member={row.id} />,
     },
     { field: 'town', headerName: 'Town', width: 120 },
     {
-      field: 'postcode',
+      field: 'distance',
       headerName: 'Dst from me',
       width: 120,
-      valueGetter: postCodeGetter,
-      valueFormatter: (params) => ((params.value !== 99999) ? `${params.value} miles` : '?'),
+      valueGetter: distanceGetter,
+      valueFormatter: (params: { value: number; }) => ((params.value !== 99999) ? `${params.value} miles` : '?'),
     },
     {
       field: 'boat', headerName: 'Boat Name', flex: 1, valueGetter: boatGetter, valueFormatter: boatFormatter, renderCell: renderBoat,

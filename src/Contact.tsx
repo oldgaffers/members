@@ -11,6 +11,22 @@ import SendIcon from "@mui/icons-material/Send";
 import MailIcon from "@mui/icons-material/Mail";
 import { useAuth0 } from "@auth0/auth0-react";
 import { postGeneralEnquiry } from "./lib/api.mts";
+import { Alert } from "@mui/material";
+
+type ContactDialogProps = {
+    open: boolean
+    title: string
+    topic: string
+    user: any
+    member: number
+    onSend: Function
+    onCancel: Function
+}
+
+type ContactProps = {
+    member: number
+    text?: string
+}
 
 function ContactDialog({
     open,
@@ -20,7 +36,7 @@ function ContactDialog({
     onCancel,
     title,
     topic
-}) {
+}: ContactDialogProps) {
     const [email, setEmail] = useState(user?.email || '');
     const [text, setText] = useState("");
     const [valid, setValid] = useState(!!email);
@@ -29,7 +45,7 @@ function ContactDialog({
         onSend({ type: topic, text, email, member });
     }
 
-    const handleEmailChange = (e) => {
+    const handleEmailChange = (e: { target: { value: any; reportValidity: () => boolean | ((prevState: boolean) => boolean); }; }) => {
         setEmail(e.target.value);
         setValid(e.target.reportValidity());
     };
@@ -37,7 +53,7 @@ function ContactDialog({
     return (
         <Dialog
             open={open}
-            onClose={onCancel}
+            onClose={() => onCancel()}
             aria-labelledby="form-dialog-title"
         >
             <DialogTitle id="form-dialog-title">{title}</DialogTitle>
@@ -64,7 +80,7 @@ function ContactDialog({
                 />
             </DialogContent>
             <DialogActions>
-                <Button onClick={onCancel} color="primary">
+                <Button onClick={() => onCancel()} color="primary">
                     Cancel
                 </Button>
                 <Button
@@ -80,7 +96,7 @@ function ContactDialog({
     );
 }
 
-export default function Contact({ member, text = 'Contact' }) {
+export default function Contact({ member, text = 'Contact' }: ContactProps) {
     const [open, setOpen] = useState(false);
     const [snackBarOpen, setSnackBarOpen] = useState(false);
     const { user } = useAuth0();
@@ -97,18 +113,19 @@ export default function Contact({ member, text = 'Contact' }) {
         setSnackBarOpen(false);
     }
 
-    const handleSend = ({ id, boat_name, oga_no, type, email, text, owners }) => {
+    const handleSend = (params: object) => {
         setOpen(false);
-        const data = { type, id, boat_name, oga_no, email, text, owners, member };
+        const data: any = { ...params, member };
         if (user?.name) {
             data.name = user.name;
         }
         postGeneralEnquiry('public', 'contact', data)
             .then((response) => {
+                console.log(response)
                 setSnackBarOpen(true);
             })
             .catch((error) => {
-                // console.log("post", error);
+                console.log("post", error);
                 // TODO snackbar from response.data
             });
     };
@@ -127,7 +144,7 @@ export default function Contact({ member, text = 'Contact' }) {
             <ContactDialog
                 open={open}
                 user={user}
-                members={member}
+                member={member}
                 onCancel={handleCancel}
                 onSend={handleSend}
                 title={text}
@@ -137,10 +154,10 @@ export default function Contact({ member, text = 'Contact' }) {
                 anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
                 open={snackBarOpen}
                 autoHideDuration={2000}
-                onClose={handleSnackBarClose}
-                message="Thanks, we'll get back to you."
-                severity="success"
-            />
+                onClose={handleSnackBarClose}                
+            >
+                <Alert severity="success">Thanks, we'll get back to you.</Alert>
+                </Snackbar>
         </>
     );
 }

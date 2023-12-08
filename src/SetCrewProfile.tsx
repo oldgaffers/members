@@ -7,9 +7,16 @@ import {
 } from '@mui/material';
 import { ReactReallyTinyEditor as ReactTinyEditor } from '@ogauk/react-tiny-editor';
 
+type SetCrewProfileProps = {
+  open: boolean
+  profile: string
+  onCancel: Function
+  onSubmit: Function
+}
+
 export default function SetCrewProfile({
   onCancel, onSubmit, open, profile,
-}) {
+}: SetCrewProfileProps) {
   const [text, setText] = useState(profile);
 
   return (
@@ -44,7 +51,7 @@ export default function SetCrewProfile({
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={onCancel}>Cancel</Button>
+          <Button onClick={() => onCancel()}>Cancel</Button>
           <Button onClick={() => onSubmit(text)}>Submit</Button>
         </DialogActions>
       </ScopedCssBaseline>

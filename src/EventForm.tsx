@@ -6,35 +6,42 @@ import FormHelperText from '@mui/material/FormHelperText';
 import Input from '@mui/material/Input';
 import InputLabel from '@mui/material/InputLabel';
 import {
-  Autocomplete, Button, CircularProgress, Dialog, Stack, TextField, Typography,
+  Autocomplete, Button, CircularProgress, Dialog, TextField, Typography,
 } from '@mui/material';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import 'dayjs/locale/en-gb';
-// import MapPicker from 'react-google-map-picker';
+import MapPicker from 'react-google-map-picker';
 import { ReactReallyTinyEditor as ReactTinyEditor } from '@ogauk/react-tiny-editor';
 import Grid from '@mui/material/Unstable_Grid2/Grid2';
-import membersBoats from '../lib/members_boats.mjs';
-import { getFilterable } from '../lib/api';
+import membersBoats from './lib/members_boats.mts';
+import { Boat, getFilterable } from './lib/api.mts';
+
+type LocationPickerProps = {
+  open: boolean
+  onSetLocation: Function
+}
+
+type EventFormProps = {
+  onCreate: Function
+}
 
 const defaultLocation = { lat: 52.68, lng: -1.24 };
 const DefaultZoom = 6;
 
-function LocationPicker({ open, onSetLocation }) {
+function LocationPicker({ open, onSetLocation }: LocationPickerProps) {
   const [zoom, setZoom] = useState(DefaultZoom);
 
-  const handleChangeLocation = (lat, lng) => {
+  const handleChangeLocation = (lat: any, lng: any) => {
     onSetLocation({ lat, lng });
   };
 
-  const handleChangeZoom = (newZoom) => {
+  const handleChangeZoom = (newZoom: React.SetStateAction<number>) => {
     setZoom(newZoom);
   };
 
-  function MapPicker() {
-    return 'TODO';
-  }
+  //  function MapPicker() {    return 'TODO';  }
 
   return (
     <Dialog open={open} fullWidth>
@@ -51,8 +58,8 @@ function LocationPicker({ open, onSetLocation }) {
   );
 }
 
-const useGetMyBoats = (members) => {
-  const [b, setB] = useState();
+const useGetMyBoats = (members: any[] | undefined): { data?: Boat[], loading?: boolean } => {
+  const [b, setB] = useState<Boat[]>([]);
 
   useEffect(() => {
     const get = async () => {
@@ -68,43 +75,47 @@ const useGetMyBoats = (members) => {
   return { loading: true };
 };
 
-export default function EventForm({ onCreate }) {
-  const ref = createRef();
+
+export default function EventForm({ onCreate }: EventFormProps) {
+  const ref = createRef<HTMLFormElement>();
   const [location, setLocation] = useState(defaultLocation);
   const [specifics, setSpecifics] = useState('');
   const [start, setStart] = useState('');
   const [end, setEnd] = useState('');
   const [open, setOpen] = useState(false);
   const { user } = useAuth0();
-  const q = Object.entries(user).map(([k, v]) => [k.replace('https://oga.org.uk/', ''), v]);
+  const q = Object.entries(user ?? {}).map(([k, v]) => [k.replace('https://oga.org.uk/', ''), v]);
   const member = Object.fromEntries(q);
   const { loading, data } = useGetMyBoats([member]);
 
   const handleCreate = () => {
     const form = ref.current;
-    const event = {
-      title: form.title.value,
-      skipper: form.skipper.value,
-      boat: form.boat.value,
-      type: form.type.value,
-      visibility: form.visibility.value,
-      distance: form.distance.value,
-      start,
-      end,
-      location,
-      specifics,
-    };
-    onCreate(event);
+    if (form) {
+      const event = {
+        title: form.eventTitle.value,
+        skipper: form.skipper.value,
+        boat: form.boat.value,
+        type: form.type.value,
+        visibility: form.visibility.value,
+        distance: form.distance.value,
+        start,
+        end,
+        location,
+        specifics,
+      };
+      onCreate(event);
+    }
   };
 
-  const handleSetLocation = (loc) => {
+  const handleSetLocation = (loc: React.SetStateAction<{ lat: number; lng: number; }>) => {
     setOpen(false);
     setLocation(loc);
   };
 
-  if (loading) {
+  if (loading || !data) {
     return <CircularProgress />;
   }
+
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="en-gb">
       <Box
@@ -123,7 +134,7 @@ export default function EventForm({ onCreate }) {
           <Grid xs="auto">
             <FormControl variant="standard">
               <InputLabel htmlFor="component-title">Title</InputLabel>
-              <Input name="title" id="component-title" defaultValue="My Summer Cruise" />
+              <Input name="eventTitle" id="component-title" defaultValue="My Summer Cruise" />
             </FormControl>
           </Grid>
           <Grid xs="auto">
@@ -132,7 +143,7 @@ export default function EventForm({ onCreate }) {
               <Input
                 name="skipper"
                 id="component-skipper"
-                defaultValue={user.name}
+                defaultValue={user?.name ?? ''}
                 aria-describedby="component-skipper-text"
               />
               <FormHelperText id="component-skipper-text">
@@ -145,7 +156,10 @@ export default function EventForm({ onCreate }) {
               disablePortal
               id="component-boat"
               defaultValue={data[0].name}
-              options={data.map((b) => ({ id: b.oga_no, label: b.name }))}
+              options={
+                // data.map((b: Boat) => ({ id: b.oga_no, label: b.name }))
+                data.map((b: Boat) => (b.name))
+              }
               sx={{ width: 300 }}
               renderInput={(params) => <TextField name="boat" {...params} label="Boat" />}
             />
@@ -155,10 +169,12 @@ export default function EventForm({ onCreate }) {
               disablePortal
               id="component-visibility"
               defaultValue="members only"
-              options={[
+              options={['hidden', 'members only', 'public',
+                /*
                 { id: 1, label: 'hidden' },
                 { id: 2, label: 'members only' },
                 { id: 3, label: 'public' },
+                */
               ]}
               sx={{ width: 300 }}
               renderInput={(params) => <TextField name="visibility" {...params} label="Visibility" />}
@@ -166,13 +182,13 @@ export default function EventForm({ onCreate }) {
           </Grid>
           <Grid xs="auto">
             <FormControl variant="standard">
-              <DatePicker label="Start" id="component-start" onChange={(value) => setStart(value)} />
+              <DatePicker label="Start" onChange={(value) => setStart(value as string)} />
               <FormHelperText>first day on board</FormHelperText>
             </FormControl>
           </Grid>
           <Grid xs="auto">
             <FormControl variant="standard">
-              <DatePicker label="End" id="component-end" onChange={(value) => setEnd(value)} />
+              <DatePicker label="End" onChange={(value) => setEnd(value as string)} />
               <FormHelperText>last day on board</FormHelperText>
             </FormControl>
           </Grid>
@@ -182,12 +198,15 @@ export default function EventForm({ onCreate }) {
               disablePortal
               id="component-event-type"
               options={[
-                { id: 1, label: 'race' },
-                { id: 2, label: 'round trip cruise' },
-                { id: 3, label: 'delivery trip' },
-                { id: 4, label: 'leg of a longer cruise' },
-                { id: 6, label: 'rally' },
-                { id: 6, label: 'cruise in company' },
+                /*
+                  { id: 1, label: 'race' },
+                  { id: 2, label: 'round trip cruise' },
+                  { id: 3, label: 'delivery trip' },
+                  { id: 4, label: 'leg of a longer cruise' },
+                  { id: 5, label: 'rally' },
+                  { id: 6, label: 'cruise in company' },
+                  */
+                'race', 'round trip cruise', 'delivery trip', 'leg of a longer cruise', 'rally', 'cruise in company',
               ]}
               sx={{ width: 300 }}
               renderInput={(params) => <TextField name="type" {...params} label="Type of Sailing" />}
@@ -215,7 +234,7 @@ export default function EventForm({ onCreate }) {
               ,
               {' '}
               {location.lng}
-&nbsp;
+              &nbsp;
             </Typography>
             <Button variant="contained" onClick={() => setOpen(true)}>Choose on a Map</Button>
           </Grid>

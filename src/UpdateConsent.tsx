@@ -1,8 +1,13 @@
 import { useState } from 'react';
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Snackbar } from '@mui/material';
+import { Alert, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Snackbar } from '@mui/material';
 import { postGeneralEnquiry } from './lib/api.mts';
+import { type Member } from './lib/membership.mts';
 
-export default function UpdateConsent({ member }) {
+type UpdateConsentProps = {
+    member: Member
+}
+
+export default function UpdateConsent({ member }: UpdateConsentProps) {
     const [open, setOpen] = useState(false);
     const [snackBarOpen, setSnackBarOpen] = useState(false);
     const { GDPR } = member;
@@ -22,10 +27,11 @@ export default function UpdateConsent({ member }) {
         // console.log('newData', newData);
         postGeneralEnquiry('member', 'profile', newData)
             .then((response) => {
+                console.log("post", response);
                 setSnackBarOpen(true);
             })
             .catch((error) => {
-                // console.log("post", error);
+                console.log("post", error);
                 // TODO snackbar from response.data
             });
         setOpen(false);
@@ -56,10 +62,10 @@ export default function UpdateConsent({ member }) {
                 anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
                 open={snackBarOpen}
                 autoHideDuration={2000}
-                onClose={() => setSnackBarOpen(false)}
-                message="Thanks, we'll get back to you."
-                severity="success"
-            />
+                onClose={() => setSnackBarOpen(false)}                
+            >
+                <Alert severity="success">Thanks, we'll get back to you.</Alert>
+            </Snackbar>
         </div>
     );
 }

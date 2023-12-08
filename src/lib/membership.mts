@@ -1,7 +1,25 @@
-type Member = {
+export type Member = {
   id: number
+  member: number
+  salutation: string
+  firstname: string
+  lastname: string
+  address: string[]
+  country: string
+  email: string
   status: string
   GDPR: boolean
+  smallboats: boolean
+  youngergaffers: boolean
+  primary: boolean
+  postcode: string
+  area: string
+  mobile: string
+  telephone: string
+  interests: string[]
+  profile: string
+  crewingprofile: string
+  __typename?: string
 }
 
 function memberPredicate(id: number, member: Member, excludeNotPaid = true, excludeNoConsent = true) {

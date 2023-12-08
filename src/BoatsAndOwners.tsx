@@ -1,10 +1,18 @@
-import { useCallback, useState } from 'react';
+import { JSXElementConstructor, ReactElement, ReactNode, ReactPortal, useCallback, useState } from 'react';
 import Typography from '@mui/material/Typography';
 import { DataGrid, GridToolbarContainer, GridToolbarFilterButton, GridCellModes } from '@mui/x-data-grid';
 import { Button } from '@mui/material';
 import Contact from './Contact';
-import { boatUrl } from './lib/api.mts';
+import { Boat, boatUrl } from './lib/api.mts';
 import { ownerValueGetter } from './lib/ownership.mts';
+
+type BoatsAndOwnersProps = {
+  boats: Boat[]
+  components?: any
+  onSetHireOptions?: Function
+  onsetCrewingOptions?: Function
+  showContactButton?: boolean
+}
 
 function CustomToolbar() {
   return (
@@ -14,15 +22,15 @@ function CustomToolbar() {
   );
 }
 
-function renderBoat(params) {
+function renderBoat(params: { value: string | number | boolean | ReactElement<any, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | null | undefined; }) {
   return (<Typography variant="body2" fontStyle="italic">{params.value}</Typography>);
 }
 
-function boatFormatter(params) {
+function boatFormatter(params: { value: any; }) {
   return params.value;
 }
 
-const columns = (hire, crewWanted, showContactButton) => {
+const columns = (hire: Function | undefined, crewWanted: Function | undefined, showContactButton: boolean) => {
   const col = [
     {
       field: 'name', headerName: 'Boat', width: 150, valueFormatter: boatFormatter, renderCell: renderBoat,
@@ -54,9 +62,9 @@ const columns = (hire, crewWanted, showContactButton) => {
     field: 'url',
     headerName: 'View in the Boat Register',
     width: 250,
-    renderCell: (params) => (
+    renderCell: (params: { row: { oga_no: number; }; }) => (
       <Button
-        padding="5px"
+        sx= {{padding:"5px"}}
         size="small"
         component="a"
         href={boatUrl(params.row.oga_no, {})}
@@ -72,32 +80,14 @@ const columns = (hire, crewWanted, showContactButton) => {
       field: 'data.email',
       headerName: 'Contact',
       width: 150,
-      renderCell: (params) => <Contact member={params.row.id} />,
+      renderCell: (params: { row: { id: number; }; }) => <Contact member={params.row.id} />,
     });
   }
   return col;
 };
 
-type Boat = {
-  oga_no: number
-}
-
-type Member = {
-  id: number
-}
-
-type BoatsAndOwnersProps = {
-  boats: Boat[]
-  members: Member[]
-  components?: any
-  onSetHireOptions?: Function
-  onsetCrewingOptions?: Function
-  showContactButton?: boolean
-}
-
 export default function BoatsAndOwners({
   boats = [],
-  members,
   components = { Toolbar: CustomToolbar },
   onSetHireOptions,
   onsetCrewingOptions,

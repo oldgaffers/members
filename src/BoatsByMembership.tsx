@@ -6,16 +6,8 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { Button, Switch, Typography } from '@mui/material';
-import { boatUrl } from './lib/api.mts';
+import { Boat, boatUrl } from './lib/api.mts';
 import { ownerList, ownerValueGetter } from './lib/ownership.mts';
-
-type Boat = {
-  oga_no: number
-  name: string
-  owners: any[]
-  hire?: boolean
-  crewing?: boolean
-}
 
 type BoatsByMembershipProps = {
   boats: Boat[]
