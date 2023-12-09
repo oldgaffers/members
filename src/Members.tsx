@@ -56,12 +56,13 @@ export function useMembers(
   }, [filterable]);
 
   useEffect(() => {
-    if (membersResult.data && pc.length === 0) {
-      getPostcodeData(membersResult.data.members).then((r) => {
-        setPc(r);
-      });
-    }
-  }, [pc]);
+    async function fetchPostcodeData() {
+      if (membersResult.data && pc.length === 0) {
+        setPc(await getPostcodeData(membersResult.data.members));
+      }  
+    };
+    fetchPostcodeData();
+  }, [pc, membersResult]);
 
   if (!filterable) {
     return { loading: true };

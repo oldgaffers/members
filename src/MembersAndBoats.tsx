@@ -130,7 +130,6 @@ export default function MembersAndBoats({
   const { user } = useAuth0();
   const id = user?.['https://oga.org.uk/id'];
   const me = members.find((m) => m.id === id);
-  // console.log('YearbookBoats', members, boats);
   const r = postcodes.find((pc) => pc.query === me?.postcode);
   const mylocation = r?.result;
 
@@ -206,14 +205,14 @@ export default function MembersAndBoats({
     },
     { field: 'town', headerName: 'Town', width: 120 },
     {
-      field: 'distance',
+      field: 'postcode',
       headerName: 'Dst from me',
-      width: 120,
+      width: 160,
       valueGetter: distanceGetter,
       valueFormatter: (params: { value: number; }) => ((params.value !== 99999) ? `${params.value} miles` : '?'),
     },
     {
-      field: 'boat', headerName: 'Boat Name', flex: 1, valueGetter: boatGetter, valueFormatter: boatFormatter, renderCell: renderBoat,
+      field: 'boat', headerName: 'Boat Name', width: 200, valueGetter: boatGetter, valueFormatter: boatFormatter, renderCell: renderBoat,
     },
     {
       field: 'areas', headerName: 'Areas', width: 100, renderCell: areaFormatter,
