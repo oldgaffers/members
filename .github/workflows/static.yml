@@ -38,6 +38,7 @@ jobs:
     - name: test
       run: |
         npm ci
+        ./patches/apply.sh
         npm test
     - name: build
       run: |
