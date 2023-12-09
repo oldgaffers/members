@@ -187,7 +187,7 @@ export default function EventForm({ onCreate }: EventFormProps) {
         noValidate
         autoComplete="off"
       >
-        <Typography variant="h6">Looking for crew for your your cruising or racing adventures? Create your sailing event here</Typography>
+        <Typography variant="h6">Looking for crew for your your cruising or racing adventures? Create your voyage invitation here</Typography>
         <Grid container spacing={3}>
           <Grid xs="auto">
             <FormControl variant="standard">
