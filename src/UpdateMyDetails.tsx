@@ -30,7 +30,10 @@ const MEMBER_QUERY = gql(`query members($members: [Int]!) {
 
 // TODO ReJoin
 
-function recordToHtml(d: Member) {
+function recordToHtml(d: Member | undefined) {
+  if (!d) {
+    return '';
+  }
   return `Dear OGA Membership Secretary,
 <br />my Membership number is ${d.member} and my GOLD Id is ${d.id}.
 <br />I would like my membership data to match the following:
@@ -85,7 +88,7 @@ function MyDetails() {
   const [snackBarOpen, setSnackBarOpen] = useState(false);
   const [members, setMembers] = useState<Member[]>([]);
   const [boats, setBoats] = useState<Boat[]>([]);
-  const [myRecord, setMyRecord] = useState<string[]>([]);
+  const [myRecord, setMyRecord] = useState<Member | undefined>();
   const { user, getAccessTokenSilently } = useAuth0();
   const id = user?.['https://oga.org.uk/id'];
   const memberNo = user?.['https://oga.org.uk/member'];
@@ -96,7 +99,7 @@ function MyDetails() {
     setTab(newValue);
   };
 
-  const handleInterestChange = (data: string[]) => {
+  const handleInterestChange = (data: Member) => {
     console.log('handleInterestChange', data);
     setMyRecord(data);
   };
@@ -191,6 +194,10 @@ function MyDetails() {
 
   if (!user) {
     return 'please log in';
+  }
+
+  if (!myRecord) {
+    return <CircularProgress />;
   }
 
   return (

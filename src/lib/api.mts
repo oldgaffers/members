@@ -55,7 +55,12 @@ export async function postScopedData(scope: string, subject: string, data: any, 
   );
 }
 
-export async function getScopedData(scope: string, subject: string, filters: string | URLSearchParams | Record<string, string> | string[][] | undefined, accessToken: any) {
+export async function getScopedData(
+  scope: string,
+  subject: string,
+  filters?: string | URLSearchParams | Record<string, string> | string[][] | undefined,
+  accessToken?: string,
+  ): Promise<object[]> {
   const headers: Record<string, string> = {
     'content-type': 'application/json',
   };
@@ -69,7 +74,8 @@ export async function getScopedData(scope: string, subject: string, filters: str
     },
   );
   if (r.ok) {
-    return r.json();
+    const d = await r.json();
+    return d.data?.Items;
   }
   return [];
 }
@@ -89,8 +95,8 @@ export async function getBoat(ogaNo: number, accessToken: string): Promise<Boat 
     const { boat } = d.result.pageContext;
     if (accessToken) {
       const extra = await getScopedData('public', 'crewing', { oga_no: `${ogaNo}` }, accessToken);
-      if (extra.Count > 0) {
-        return { ...boat, ...extra.Items[0] };
+      if (extra.length > 0) {
+        return { ...boat, ...extra[0] };
       }
     }
     return boat;

@@ -174,7 +174,7 @@ export default function Interests({ user, members, onChange }: InterestsProps) {
         <Typography>You will receive updates for checked areas</Typography>
         <Grid container>
           {areas.map((area) => (
-            <Grid item xs={3} key={area.label}>
+            <Grid xs={3} key={area.label}>
               <FormControlLabel
                 label={area.label}
                 control={(

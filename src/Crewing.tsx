@@ -6,6 +6,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import { gql, useMutation } from '@apollo/client';
 import SetSkipperProfile from './SetSkipperProfile';
 import SetCrewProfile from './SetCrewProfile';
+import { Member } from './lib/membership.mts';
 
 
 const ADD_SKIPPER_PROFILE_MUTATION = gql`

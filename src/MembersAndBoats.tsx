@@ -1,6 +1,6 @@
 import { useAuth0 } from '@auth0/auth0-react';
 import Typography from '@mui/material/Typography';
-import { DataGrid, GridToolbarContainer, GridToolbarFilterButton } from '@mui/x-data-grid';
+import { DataGrid, GridColDef, GridRenderCellParams, GridToolbarContainer, GridToolbarFilterButton, GridTreeNodeWithRender } from '@mui/x-data-grid';
 import { ParsedPhoneNumber, parsePhoneNumber } from 'awesome-phonenumber';
 import distance from '@turf/distance';
 import Contact from './Contact';
@@ -106,8 +106,8 @@ function areaAbbreviation(value: string) {
   return abbrev;
 }
 
-function areaFormatter({ value }: { value: string }) {
-  const [area, ...others] = value.split(',');
+function areaFormatter(params: GridRenderCellParams<any, any, any, GridTreeNodeWithRender>) {
+  const [area, ...others] = params.value.split(',');
   if (others.length > 0) {
     return (
       <>
@@ -119,14 +119,13 @@ function areaFormatter({ value }: { value: string }) {
       </>
     );
   }
-  return (<Typography variant="body2">{value}</Typography>);
+  return (<Typography variant="body2">{params.value}</Typography>);
 }
 
 export default function MembersAndBoats({
   members = [],
   boats = [],
   postcodes = [],
-  components = { Toolbar: CustomToolbar },
 }: MembersAndBoatsProps) {
   const { user } = useAuth0();
   const id = user?.['https://oga.org.uk/id'];
@@ -141,7 +140,7 @@ export default function MembersAndBoats({
     return theirBoats.map((b) => b.name).sort().join(', ');
   }
 
-  function renderBoat(params: { value: string }) {
+  function renderBoat(params: GridRenderCellParams<Boat, any, any, GridTreeNodeWithRender>) {
     return (<Typography variant="body2" fontStyle="italic">{params.value}</Typography>);
   }
 
@@ -149,7 +148,7 @@ export default function MembersAndBoats({
     return params.value;
   }
 
-  function renderLastname(params: { value: string }) {
+  function renderLastname(params: GridRenderCellParams<any, any, any, GridTreeNodeWithRender>) {
     return (<Typography variant="body2" fontWeight="bold">{params.value}</Typography>);
   }
 
@@ -188,7 +187,7 @@ export default function MembersAndBoats({
     return { ...m, areas: main };
   });
 
-  const columns = [
+  const columns: GridColDef<any>[] = [
     {
       field: 'lastname', headerName: 'Last Name', width: 90, valueFormatter: lastnameFormatter, renderCell: renderLastname,
     },
@@ -228,7 +227,7 @@ export default function MembersAndBoats({
         <DataGrid
           rows={members2}
           columns={columns}
-          components={components}
+          slots={{ toolbar: CustomToolbar }}
           autoHeight
           initialState={{
             sorting: {

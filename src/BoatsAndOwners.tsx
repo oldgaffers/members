@@ -1,6 +1,6 @@
-import { JSXElementConstructor, ReactElement, ReactNode, ReactPortal, useCallback, useState } from 'react';
+import { useCallback, useState } from 'react';
 import Typography from '@mui/material/Typography';
-import { DataGrid, GridToolbarContainer, GridToolbarFilterButton, GridCellModes } from '@mui/x-data-grid';
+import { DataGrid, GridToolbarContainer, GridToolbarFilterButton, GridCellModes, GridColDef, GridRenderCellParams, GridTreeNodeWithRender } from '@mui/x-data-grid';
 import { Button } from '@mui/material';
 import Contact from './Contact';
 import { Boat, boatUrl } from './lib/api.mts';
@@ -8,10 +8,6 @@ import { ownerValueGetter } from './lib/ownership.mts';
 
 type BoatsAndOwnersProps = {
   boats: Boat[]
-  components?: any
-  onSetHireOptions?: Function
-  onsetCrewingOptions?: Function
-  showContactButton?: boolean
 }
 
 function CustomToolbar() {
@@ -22,7 +18,7 @@ function CustomToolbar() {
   );
 }
 
-function renderBoat(params: { value: string | number | boolean | ReactElement<any, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | null | undefined; }) {
+function renderBoat(params: GridRenderCellParams<Boat, any, any, GridTreeNodeWithRender>) {
   return (<Typography variant="body2" fontStyle="italic">{params.value}</Typography>);
 }
 
@@ -30,8 +26,8 @@ function boatFormatter(params: { value: any; }) {
   return params.value;
 }
 
-const columns = (hire: Function | undefined, crewWanted: Function | undefined, showContactButton: boolean) => {
-  const col = [
+const columns = (hire: boolean, crewWanted: boolean, showContactButton: boolean): GridColDef<Boat>[] => {
+  const col: GridColDef<Boat>[] = [
     {
       field: 'name', headerName: 'Boat', width: 150, valueFormatter: boatFormatter, renderCell: renderBoat,
     },
@@ -67,7 +63,10 @@ const columns = (hire: Function | undefined, crewWanted: Function | undefined, s
         sx= {{padding:"5px"}}
         size="small"
         component="a"
-        href={boatUrl(params.row.oga_no, {})}
+        href={boatUrl(params.row.oga_no, {
+          origin: '',
+          pathname: ''
+        })}
         variant="contained"
         color="primary"
       >
@@ -80,7 +79,7 @@ const columns = (hire: Function | undefined, crewWanted: Function | undefined, s
       field: 'data.email',
       headerName: 'Contact',
       width: 150,
-      renderCell: (params: { row: { id: number; }; }) => <Contact member={params.row.id} />,
+      renderCell: (params) => <Contact member={params.row.owners[0].id} />,
     });
   }
   return col;
@@ -88,10 +87,6 @@ const columns = (hire: Function | undefined, crewWanted: Function | undefined, s
 
 export default function BoatsAndOwners({
   boats = [],
-  components = { Toolbar: CustomToolbar },
-  onSetHireOptions,
-  onsetCrewingOptions,
-  showContactButton = true,
 }: BoatsAndOwnersProps) {
   const [cellModesModel, setCellModesModel] = useState({});
 
@@ -150,8 +145,8 @@ export default function BoatsAndOwners({
           onCellClick={handleCellClick}
           getRowId={(row) => row.oga_no}
           rows={boats}
-          columns={columns(onSetHireOptions, onsetCrewingOptions, showContactButton)}
-          components={components}
+          columns={columns(false, false, true)}
+          slots={{ toolbar: CustomToolbar }}
           autoHeight
           initialState={{
             sorting: {

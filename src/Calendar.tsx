@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 import { createRef } from 'react';
-import Calendar from '@toast-ui/react-calendar';
-import '@toast-ui/calendar/dist/toastui-calendar.min.css';
+import ToastUIReactCalendar from '@toast-ui/react-calendar';
+import '@toast-ui/calendar/toastui-calendar.min.css';
 import 'tui-date-picker/dist/tui-date-picker.css';
 import 'tui-time-picker/dist/tui-time-picker.css';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -49,12 +49,14 @@ const initialEvents = [
 ];
 
 export default function MyCalendar() {
-  const calendarRef = createRef<Calendar>();
+  const calendarRef = createRef<ToastUIReactCalendar>();
 
-  const onChangeDate = (value: { $d: any }) => {
-    const calendarInstance = calendarRef.current.getInstance();
-    calendarInstance.setDate(value.$d);
-    calendarInstance.setCalendarVisibility(calendars.map((c) => c.id), true);
+  const onChangeDate = (value: { $d: any } | null) => {
+    const calendarInstance = calendarRef.current?.getInstance();
+    if (calendarInstance) {
+      calendarInstance.setDate(value?.$d);
+      calendarInstance.setCalendarVisibility(calendars.map((c) => c.id), true);
+    }
   };
 
   const onAfterRenderEvent = (event: { title: any; }) => {
@@ -72,7 +74,7 @@ export default function MyCalendar() {
       >
         <DateCalendar sx={{ gridColumn: '1' }} onChange={onChangeDate} />
         <Box sx={{ gridColumn: '2 / 8' }}>
-          <Calendar
+          <ToastUIReactCalendar
             ref={calendarRef}
             height="500px"
             view="month"

@@ -58,7 +58,10 @@ export default function BoatsByMembership({
                     sx= {{padding: "5px"}}
                     size="small"
                     component="a"
-                    href={boatUrl(row.oga_no, {})}
+                    href={boatUrl(row.oga_no, {
+                      origin: '',
+                      pathname: ''
+                    })}
                     variant="contained"
                     color="primary"
                   >
