@@ -42,8 +42,8 @@ jobs:
         npm test
     - name: build
       run: |
+        .patches.apply.sh
         cat node_modules/@toast-ui/react-calendar/package.json
-        npm install
         npm run build --if-present
         echo build complete
     - name: Setup Pages
