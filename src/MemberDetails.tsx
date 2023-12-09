@@ -5,7 +5,6 @@ import {
 } from '@mui/material';
 import { emailIndication, infoOrEmpty, membershipType } from './lib/utils.mts';
 import { Member } from './lib/membership.mts';
-import { ReactElement, JSXElementConstructor, ReactNode, ReactPortal } from 'react';
 
 const areas = [
   { label: 'Bristol Channel', value: 'BC', funded: true },

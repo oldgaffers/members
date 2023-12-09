@@ -93,7 +93,7 @@ function LocationPicker({ open, data, onCancel, onClose }: LocationPickerProps) 
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-        <MapComponent data={markers} onChangeMarkers={(m) => setMarkers(m)}/>
+        <MapComponent data={markers} onChangeMarkers={(m: LatLng[]) => setMarkers(m)}/>
       </MapContainer>
       <Typography marginLeft={1}>Click on the map to add places you may visit, including your home port.</Typography>
       <Typography marginLeft={1}>Click on a marker if you want to remove it.</Typography>
