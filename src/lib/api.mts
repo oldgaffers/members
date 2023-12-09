@@ -75,7 +75,7 @@ export async function getScopedData(
   );
   if (r.ok) {
     const d = await r.json();
-    return d.data?.Items;
+    return d?.Items;
   }
   return [];
 }

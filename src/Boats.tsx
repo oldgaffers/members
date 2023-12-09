@@ -45,6 +45,7 @@ function BoatList() {
 }
 
 export default function Boats() {
+  console.log('Boats');
   return (
     <>
       <SuggestLogin />

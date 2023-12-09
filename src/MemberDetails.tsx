@@ -86,8 +86,8 @@ export default function Interests({ user, members, onChange }: InterestsProps) {
           {' '}
           {user.lastname}
         </Typography>
-        {user.address.filter((line: string) => line.trim() !== '').map((line: string | number | boolean | ReactElement<any, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | null | undefined) => (
-          <Typography>
+        {user.address.filter((line: string) => line.trim() !== '').map((line: any) => (
+          <Typography key={line}>
             {line}
             ,
           </Typography>
@@ -156,7 +156,7 @@ export default function Interests({ user, members, onChange }: InterestsProps) {
                 onChange={handleChangePrimaryArea}
               >
                 {areas
-                  .map((area) => (<MenuItem value={area.label}>{area.label}</MenuItem>))}
+                  .map((area) => (<MenuItem key={area.label} value={area.label}>{area.label}</MenuItem>))}
               </Select>
 )}
           />
