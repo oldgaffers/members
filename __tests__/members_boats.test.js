@@ -1,5 +1,7 @@
 
+import { expect, test } from 'vitest'
+import membersBoats from '../src/lib/members_boats';
+
 test('mb', async () => {
-  const membersBoats = (await import('../src/lib/members_boats')).default;
   expect(membersBoats).toBeDefined();
 });
