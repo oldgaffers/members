@@ -55,8 +55,8 @@ export default function MembersAndBoats({
   function distanceGetter(params: { value: string; }): number {
     if (mylocation?.longitude) {
       const rec = postcodes.find((pc) => pc.query === params.value);
-      if (rec?.result?.longitude) {
-        return distanceInNM(mylocation, rec);
+      if (rec?.result?.longitude) {        
+        return distanceInNM(mylocation, rec.result);
       }
     }
     return 99999;
