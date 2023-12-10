@@ -1,11 +1,10 @@
 import { useAuth0 } from '@auth0/auth0-react';
 import Typography from '@mui/material/Typography';
 import { DataGrid, GridColDef, GridRenderCellParams, GridToolbarContainer, GridToolbarFilterButton, GridTreeNodeWithRender } from '@mui/x-data-grid';
-import { ParsedPhoneNumber, parsePhoneNumber } from 'awesome-phonenumber';
-import distance from '@turf/distance';
 import Contact from './Contact';
-import { Member } from './lib/membership.mts';
+import { Member, areaAbbreviation } from './lib/membership.mts';
 import { Boat } from './lib/api.mts';
+import { distanceFormatter, distanceInNM, phoneGetter } from './lib/utils.mts';
 
 type MembersAndBoatsProps = {
   members: Member[],
@@ -22,88 +21,8 @@ function CustomToolbar() {
   );
 }
 
-function nameGetter({ row }: { row: Member}) {
+function nameGetter({ row }: { row: Member }) {
   return `${row.salutation} ${row.firstname}`;
-}
-
-function fettlePhone(n: string, area: string) {
-  if (!n) {
-    return undefined;
-  }
-  if (n.trim() === '') {
-    return undefined;
-  }
-  if (n.startsWith('+')) {
-    return parsePhoneNumber(n);
-  } if (n.startsWith('00')) {
-    return parsePhoneNumber(n.replace('00', '+'));
-  } if (area === 'Dublin Bay') {
-    const pn = parsePhoneNumber(n, { regionCode: 'IE' });
-    if (pn.valid) {
-      return pn;
-    }
-    return parsePhoneNumber(n, { regionCode: 'GB' });
-  } if (area === 'Overseas') {
-    return parsePhoneNumber(`+${n}`);
-  }
-  return parsePhoneNumber(n, { regionCode: 'GB' });
-}
-
-function formatPhone(pn: ParsedPhoneNumber | undefined) {
-  if (pn) {
-    if (pn.valid) {
-      if (pn.countryCode === 44) {
-        return pn.number.national;
-      }
-      return pn.number.international;
-    }
-  }
-  return undefined;
-}
-
-function phoneGetter({ row }: { row: Member }) {
-  const mobile = formatPhone(fettlePhone(row.mobile, row.area));
-  const landline = formatPhone(fettlePhone(row.telephone, row.area));
-  const n = [];
-  if (mobile) {
-    n.push(mobile);
-  }
-  if (landline) {
-    n.push(landline);
-  }
-  if (n.length > 0) {
-    return n.join(' / ');
-  }
-  if (row.mobile === '' && row.telephone === '') {
-    return '';
-  }
-  if (row.mobile.includes('@')) {
-    return row.mobile;
-  }
-  if (row.telephone.includes('@')) {
-    return row.telephone;
-  }
-  return `*** M: ${row.mobile} T: ${row.telephone} ***`;
-}
-
-function areaAbbreviation(value: string) {
-  const abbrev = {
-    'Bristol Channel': 'BC',
-    'Dublin Bay': 'DB',
-    'East Coast': 'EC',
-    'North East': 'NE',
-    'Northern Ireland': 'NI',
-    'North Wales': 'NWa',
-    'North West': 'NW',
-    Scotland: 'SC',
-    Solent: 'SO',
-    'South West': 'SW',
-    Overseas: 'OS',
-    'The Americas': 'AM',
-    'Continental Europe': 'EU',
-    'Rest of World': 'RW',
-  }[value];
-  return abbrev;
 }
 
 function areaFormatter(params: GridRenderCellParams<any, any, any, GridTreeNodeWithRender>) {
@@ -133,6 +52,16 @@ export default function MembersAndBoats({
   const r = postcodes.find((pc) => pc.query === me?.postcode);
   const mylocation = r?.result;
 
+  function distanceGetter(params: { value: string; }): number {
+    if (mylocation?.longitude) {
+      const rec = postcodes.find((pc) => pc.query === params.value);
+      if (rec?.result?.longitude) {
+        return distanceInNM(mylocation, rec);
+      }
+    }
+    return 99999;
+  }
+
   function boatGetter({ row }: { row: Member }) {
     const { id } = row;
     const theirBoats = boats.filter((b) => b.owners?.find((o) => o?.id === id));
@@ -157,22 +86,6 @@ export default function MembersAndBoats({
 
   function smallboatsFormatter(params: { value: boolean; }) {
     return params.value ? '✓' : '✗';
-  }
-
-  function distanceGetter(params: { value: string; }): number {
-    if (mylocation?.longitude) {
-      const rec = postcodes.find((pc) => pc.query === params.value);
-      if (rec?.result?.longitude) {
-        const from = [mylocation.longitude, mylocation.latitude];
-        const to = [rec.result.longitude, rec.result.latitude];
-        const d = distance(from, to, { units: 'miles' });
-        if (d > 1000) {
-          console.log('BIG', rec.result);
-        }
-        return Math.floor(d);
-      }
-    }
-    return 99999;
   }
 
   const members2 = members.map((m) => {
@@ -201,15 +114,15 @@ export default function MembersAndBoats({
       field: 'url',
       headerName: 'Details',
       width: 150,
-      renderCell: ({row}: { row: { id: number }}) => <Contact member={row.id} />,
+      renderCell: ({ row }: { row: { id: number } }) => <Contact member={row.id} />,
     },
     { field: 'town', headerName: 'Town', width: 120 },
     {
       field: 'postcode',
-      headerName: 'Dst from me',
+      headerName: 'Proximity',
       width: 160,
       valueGetter: distanceGetter,
-      valueFormatter: (params: { value: number; }) => ((params.value !== 99999) ? `${params.value} miles` : '?'),
+      valueFormatter: distanceFormatter,
     },
     {
       field: 'boat', headerName: 'Boat Name', width: 200, valueGetter: boatGetter, valueFormatter: boatFormatter, renderCell: renderBoat,

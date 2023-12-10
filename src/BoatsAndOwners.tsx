@@ -5,10 +5,8 @@ import { Button } from '@mui/material';
 import Contact from './Contact';
 import { Boat, boatUrl } from './lib/api.mts';
 import { ownerValueGetter } from './lib/ownership.mts';
-
-type BoatsAndOwnersProps = {
-  boats: Boat[]
-}
+import { areaAbbreviation } from './lib/membership.mts';
+import { distanceFormatter, distanceInNM } from './lib/utils.mts';
 
 function CustomToolbar() {
   return (
@@ -22,18 +20,38 @@ function renderBoat(params: GridRenderCellParams<Boat, any, any, GridTreeNodeWit
   return (<Typography variant="body2" fontStyle="italic">{params.value}</Typography>);
 }
 
-function boatFormatter(params: { value: any; }) {
+function boatFormatter(params: { value: any }) {
   return params.value;
 }
 
-const columns = (hire: boolean, crewWanted: boolean, showContactButton: boolean): GridColDef<Boat>[] => {
+const columns = (
+  hire: boolean,
+  crewWanted: boolean,
+  showContactButton: boolean,
+  proximityTo: { lat: number, lng: number }
+): GridColDef<Boat>[] => {
   const col: GridColDef<Boat>[] = [
     {
       field: 'name', headerName: 'Boat', width: 150, valueFormatter: boatFormatter, renderCell: renderBoat,
     },
     { field: 'oga_no', headerName: 'No.', width: 90 },
     {
-      field: 'owners', headerName: 'Owner', width: 350, valueGetter: ownerValueGetter,
+      field: 'owners', headerName: 'Owner', width: 320, valueGetter: ownerValueGetter,
+    },
+    {
+      field: 'home_port', headerName: 'Home Port', width: 150,
+    },
+    {
+      field: 'area', headerName: 'Area', width: 90,
+    },
+    {
+      field: 'home_location',
+      headerName: 'Proximity',
+      width: 150,
+      valueGetter: (params: { value: any }): number => {
+        return distanceInNM(proximityTo, params.value);
+      },
+      valueFormatter: distanceFormatter,
     },
   ];
   if (hire) {
@@ -56,8 +74,8 @@ const columns = (hire: boolean, crewWanted: boolean, showContactButton: boolean)
   }
   col.push({
     field: 'url',
-    headerName: 'View in the Boat Register',
-    width: 250,
+    headerName: 'Details',
+    width: 150,
     renderCell: (params: { row: { oga_no: number; }; }) => (
       <Button
         sx= {{padding:"5px"}}
@@ -87,8 +105,13 @@ const columns = (hire: boolean, crewWanted: boolean, showContactButton: boolean)
 
 export default function BoatsAndOwners({
   boats = [],
-}: BoatsAndOwnersProps) {
+  proximityTo,
+}: { boats: Boat[], proximityTo: any }) {
   const [cellModesModel, setCellModesModel] = useState({});
+
+  boats.forEach((boat) => {
+    boat.area = areaAbbreviation(boat.owners[0].area);
+  });
 
   const handleCellClick = useCallback(
     (params: any, event: any) => {
@@ -145,7 +168,7 @@ export default function BoatsAndOwners({
           onCellClick={handleCellClick}
           getRowId={(row) => row.oga_no}
           rows={boats}
-          columns={columns(false, false, true)}
+          columns={columns(false, false, true, proximityTo)}
           slots={{ toolbar: CustomToolbar }}
           autoHeight
           initialState={{

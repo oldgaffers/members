@@ -21,6 +21,17 @@ export function namelist(value: any[]) {
   return r;
 }
 
+export function ownerAreaValueGetter({ value }: { value: Member[] }) {
+  if (!value) {
+    return '';
+  }
+  const visible = value.filter((m) => m.GDPR);
+  if (visible.length === 0) {
+    return '(private)';
+  }
+  return value[0].area;
+}
+
 export function ownerValueGetter({ value }: { value: Member[] }) {
   if (!value) {
     return '';

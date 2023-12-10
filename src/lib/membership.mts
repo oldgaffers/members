@@ -22,6 +22,26 @@ export type Member = {
   __typename?: string
 }
 
+export function areaAbbreviation(value: string) {
+  const abbrev = {
+    'Bristol Channel': 'BC',
+    'Dublin Bay': 'DB',
+    'East Coast': 'EC',
+    'North East': 'NE',
+    'Northern Ireland': 'NI',
+    'North Wales': 'NWa',
+    'North West': 'NW',
+    Scotland: 'SC',
+    Solent: 'SO',
+    'South West': 'SW',
+    Overseas: 'OS',
+    'The Americas': 'AM',
+    'Continental Europe': 'EU',
+    'Rest of World': 'RW',
+  }[value];
+  return abbrev;
+}
+
 function memberPredicate(id: number, member: Member, excludeNotPaid = true, excludeNoConsent = true) {
   if (!member) {
     return false;

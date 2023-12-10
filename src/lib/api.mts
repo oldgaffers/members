@@ -1,9 +1,13 @@
 import { User } from "@auth0/auth0-react"
 
 export type Boat = {
+  home_location?: any
+  area: any
   oga_no: number
   name: string
+  home_port: string
   owners: any[]
+  ownerships: any[]
   hire?: boolean
   crewing?: boolean
 }
@@ -26,6 +30,15 @@ export function prefix(location: { origin: string; pathname: string }) {
 export function boatUrl(ogaNo: number, location: { origin: string; pathname: string }) {
   return `${prefix(location)}boat?oga_no=${ogaNo}`;
 }
+
+export async function geolocate(place: string) {
+  const r = await fetch(`${api1}/default/public/place?name=${place}`)
+  if (r.ok) {
+    return r.json()
+  }
+  return undefined;
+}
+
 
 export async function postGeneralEnquiry(scope: string, subject: string, data: { GDPR?: boolean; id?: number; salutation?: string; firstname?: string; lastname?: string; status?: string; postcode?: string; area?: string; mobile?: string; telephone?: string; interests?: string[]; __typename?: string | undefined; user?: User | undefined; text?: any }) {
   return fetch(
@@ -102,4 +115,16 @@ export async function getBoat(ogaNo: number, accessToken: string): Promise<Boat 
     return boat;
   }
   return undefined;
+}
+
+export async function geolocateGeonames(place: string) {
+  const p = new URLSearchParams();
+  p.append('username', 'oga_boatregister');
+  p.append('country', 'uk');
+  p.append('country', 'ie');
+  p.append('name', place);
+  const r = await fetch(`https://secure.geonames.org/searchJSON?${p}`);
+  if (r.ok) {
+    return r.json();
+  }
 }
