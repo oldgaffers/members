@@ -17,7 +17,10 @@ import { ReactReallyTinyEditor as ReactTinyEditor } from '@ogauk/react-tiny-edit
 import Grid from '@mui/material/Unstable_Grid2/Grid2';
 import membersBoats from './lib/members_boats.mts';
 import { Boat, getFilterable } from './lib/api.mts';
-import { LatLng } from 'leaflet';
+import { Icon, LatLng } from 'leaflet';
+// import iconRetinaUrl from 'leaflet/images/marker-icon-2x.png';
+// import iconUrl from 'leaflet/images/marker-icon.png';
+// import shadowUrl from 'leaflet/images/marker-shadow.png';
 
 type LocationPickerProps = {
   open: boolean
@@ -32,9 +35,12 @@ type EventFormProps = {
 
 const defaultLocation = { lat: 54.5, lng: -3 };
 
+
 function MapComponent({ data, onChangeMarkers }: { data: LatLng[], onChangeMarkers: Function }) {
   const [markers, setMarkers] = useState<LatLng[]>(data);
   const [hack, setHack] = useState<{ x: number, y: number}>();
+
+  Icon.Default.prototype.options.imagePath = 'https://unpkg.com/browse/leaflet@1.9.4/dist/images/';
 
   useEffect(() => {
     onChangeMarkers(markers);
