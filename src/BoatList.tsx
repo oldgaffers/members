@@ -89,6 +89,7 @@ export default function BoatList({ places }: { places: any[] }) {
             options={placenames}
             onChange={(_e, value) => setDistanceFrom(value ?? undefined)}
         />
+        <Typography>Location data for home ports is provided by GeoNames.org.</Typography>
         </Stack>
         <BoatsAndOwners boats={wboats} proximityTo={places.find((p) => p.name === distanceFrom)} />;
     </>
