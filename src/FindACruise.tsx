@@ -16,7 +16,6 @@ export default function FindACruise() {
 
   return (
     <Stack spacing={1}>
-      <SuggestLogin />
       <Typography>Looking for cruising or racing adventures?</Typography>
       <Typography>Create a crewing profile and browse our offers.</Typography>
       <Typography>

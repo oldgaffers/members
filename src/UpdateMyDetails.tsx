@@ -8,7 +8,6 @@ import {
   Box, Button, CircularProgress, Snackbar, Stack, Tab, Tabs, Typography,
 } from '@mui/material';
 import RoleRestricted from './RoleRestricted';
-import { SuggestLogin } from './LoginButton';
 import MembersByMembership from './MembersByMembership';
 import BoatsByMembership from './BoatsByMembership';
 import MemberStatus from './MemberStatus';
@@ -264,9 +263,6 @@ function MyDetails() {
 
 export default function UpdateMyDetails() {
   return (
-    <>
-      <SuggestLogin />
-      <RoleRestricted role="member"><MyDetails /></RoleRestricted>
-    </>
+    <RoleRestricted role="member"><MyDetails /></RoleRestricted>
   );
 }

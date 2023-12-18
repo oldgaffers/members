@@ -6,7 +6,6 @@ import {
 import { gql, useQuery } from '@apollo/client';
 import { useAuth0 } from '@auth0/auth0-react';
 import * as postcodes from 'node-postcodes.io';
-import { SuggestLogin } from './LoginButton';
 import RoleRestricted from './RoleRestricted';
 import MembersAndBoats from './MembersAndBoats';
 import memberPredicate, { Member } from './lib/membership.mts';
@@ -128,16 +127,9 @@ export function MembersList({ crew=false }) {
 }
 
 export default function Members() {
-  const { user } = useAuth0();
-  if (!user) {
-    return <SuggestLogin />;
-  }
   return (
-    <>
-      <SuggestLogin />
-        <RoleRestricted role="member">
-        <MembersList />
-      </RoleRestricted>
-    </>
+    <RoleRestricted role="member">
+      <MembersList />
+    </RoleRestricted>
   );
 }

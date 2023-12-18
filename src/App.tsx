@@ -2,6 +2,7 @@ import React, { PropsWithChildren } from 'react'
 import { Auth0Provider } from '@auth0/auth0-react';
 import './App.css'
 import OGAProvider from './OGAProvider';
+import { SuggestLogin } from './LoginButton';
 
 type AppProps = {
   name?: string
@@ -23,6 +24,7 @@ function App({ children }: PropsWithChildren<AppProps>) {
         useRefreshTokensFallback
         cacheLocation="localstorage"
       >
+        <SuggestLogin />
         <OGAProvider>
           {children}
         </OGAProvider>

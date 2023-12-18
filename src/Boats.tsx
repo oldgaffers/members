@@ -1,4 +1,3 @@
-import { SuggestLogin } from './LoginButton';
 import RoleRestricted from './RoleRestricted';
 import BoatList from './BoatList';
 
@@ -32,9 +31,6 @@ const places = [
 
 export default function Boats() {
   return (
-    <>
-      <SuggestLogin />
-      <RoleRestricted role="member"><BoatList places={places}/></RoleRestricted>
-    </>
+    <RoleRestricted role="member"><BoatList places={places}/></RoleRestricted>
   );
 }

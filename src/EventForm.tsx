@@ -40,6 +40,14 @@ function MapComponent({ data, onChangeMarkers }: { data: LatLng[], onChangeMarke
   const [markers, setMarkers] = useState<LatLng[]>(data);
   const [hack, setHack] = useState<{ x: number, y: number}>();
 
+  const o = Icon.Default.prototype.options;
+  console.log('iconUrl', o.iconUrl);
+  console.log('shadowUrl', o.shadowUrl);
+  console.log('iconSize', o.iconSize);
+  console.log('shadowSize', o.shadowSize);
+  console.log('iconAnchor', o.iconAnchor);
+  console.log('shadowAnchor', o.shadowAnchor);
+  console.log('popupAnchor', o.popupAnchor);
   Icon.Default.prototype.options.imagePath = 'https://unpkg.com/browse/leaflet@1.9.4/dist/images/';
 
   useEffect(() => {

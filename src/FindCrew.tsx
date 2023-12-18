@@ -1,7 +1,6 @@
 import {
   Button, CircularProgress, Stack, Typography,
 } from '@mui/material';
-import { SuggestLogin } from './LoginButton';
 import RoleRestricted from './RoleRestricted';
 import { useMembers } from './Members';
 import MyCalendar from './Calendar';
@@ -50,7 +49,7 @@ export default function FindCrew() {
     console.log('handleCreate', event);
   };
   
-  if (loading) {
+  if (loading || data === undefined) {
     return <CircularProgress />;
   }
 
@@ -58,7 +57,6 @@ export default function FindCrew() {
 
   return (
     <Stack spacing={1}>
-      <SuggestLogin />
       <EventForm onCreate={handleCreate} />
       <Typography>
         Opportunities can be public, visible to members or hidden.
