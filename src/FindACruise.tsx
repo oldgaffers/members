@@ -1,5 +1,4 @@
 import { CircularProgress, Stack, Typography } from '@mui/material';
-import { SuggestLogin } from './LoginButton.tsx';
 import RoleRestricted from './RoleRestricted.tsx';
 import { useMembers } from './Members.tsx';
 import MyCalendar from './Calendar.tsx';

@@ -5,7 +5,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import { Autocomplete, Button, CircularProgress, Link, Stack, Switch, TextField, Typography } from '@mui/material';
+import { Autocomplete, Button, CircularProgress, Stack, Switch, TextField, Typography } from '@mui/material';
 import { Boat, boatUrl, getFilterable } from './lib/api.mts';
 import { ownerList, ownerValueGetter } from './lib/ownership.mts';
 import { useEffect, useState } from 'react';
@@ -47,7 +47,7 @@ function ChooseABoat({ boats }: { boats: Boat[] }) {
 
   const ex = boats.map((b) => b.oga_no);
 
-  const names = filterable.map((b) => `${b.name} (${b.oga_no})`).filter((b) => !ex.includes(b.oga_no));
+  const names = filterable.filter((b) => !ex.includes(b.oga_no)).map((b) => `${b.name} (${b.oga_no})`);
   return <>
     <Autocomplete
       options={names}
@@ -67,7 +67,7 @@ function BoatsByMembershipFooter({ boats }: { boats: Boat[] }) {
       <Typography variant='h6'>
       If your boat is already on the register you can claim ownership here.</Typography>
       <ChooseABoat boats={boats} />
-      <Typography variant='h6'>If your boat isn't on the list, then you add it on the <Link component='span' href='/browse_the_register/index.html'>boat register</Link>.</Typography>
+      <Typography variant='h6'>If your boat isn't on the list, then you add it on the <a href='/browse_the_register/index.html'>boat register</a>.</Typography>
   
       </Stack>;
 }
