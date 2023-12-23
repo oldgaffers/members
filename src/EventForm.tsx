@@ -17,10 +17,7 @@ import { ReactReallyTinyEditor as ReactTinyEditor } from '@ogauk/react-tiny-edit
 import Grid from '@mui/material/Unstable_Grid2/Grid2';
 import membersBoats from './lib/members_boats.mts';
 import { Boat, getFilterable } from './lib/api.mts';
-import { Icon, LatLng } from 'leaflet';
-// import iconRetinaUrl from 'leaflet/images/marker-icon-2x.png';
-// import iconUrl from 'leaflet/images/marker-icon.png';
-// import shadowUrl from 'leaflet/images/marker-shadow.png';
+import L, { Icon, LatLng } from 'leaflet';
 
 type LocationPickerProps = {
   open: boolean
@@ -35,20 +32,23 @@ type EventFormProps = {
 
 const defaultLocation = { lat: 54.5, lng: -3 };
 
+// https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png
+// https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png
+// https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png
+
+const defaultIcon = L.icon({
+      iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+      shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+      iconSize: [25, 41], // size of the icon
+      shadowSize: [41, 41], // size of the shadow
+      iconAnchor: [12, 41], // point of the icon which will correspond to marker's location
+      shadowAnchor: [16, 34],  // the same for the shadow
+      popupAnchor: [1, -34] // point from which the popup should open relative to the iconAnchor
+});
 
 function MapComponent({ data, onChangeMarkers }: { data: LatLng[], onChangeMarkers: Function }) {
   const [markers, setMarkers] = useState<LatLng[]>(data);
   const [hack, setHack] = useState<{ x: number, y: number}>();
-
-  const o = Icon.Default.prototype.options;
-  console.log('iconUrl', o.iconUrl);
-  console.log('shadowUrl', o.shadowUrl);
-  console.log('iconSize', o.iconSize);
-  console.log('shadowSize', o.shadowSize);
-  console.log('iconAnchor', o.iconAnchor);
-  console.log('shadowAnchor', o.shadowAnchor);
-  console.log('popupAnchor', o.popupAnchor);
-  Icon.Default.prototype.options.imagePath = 'https://unpkg.com/browse/leaflet@1.9.4/dist/images/';
 
   useEffect(() => {
     onChangeMarkers(markers);
@@ -79,7 +79,7 @@ function MapComponent({ data, onChangeMarkers }: { data: LatLng[], onChangeMarke
     setMarkers(others);
   };
   
-  return (<>{markers?.map((m) => <Marker key={JSON.stringify(m)} position={m}>
+  return (<>{markers?.map((m) => <Marker key={JSON.stringify(m)} position={m} icon={defaultIcon}>
     <Popup>
       <Button onClick={(e) => {
           console.log(e);
