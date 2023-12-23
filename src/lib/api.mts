@@ -51,7 +51,7 @@ export async function postGeneralEnquiry(scope: string, subject: string, data: {
   );
 }
 
-export async function postScopedData(scope: string, subject: string, data: any, accessToken: string) {
+export async function postScopedData(scope: string, subject: string, data: any, accessToken?: string) {
   const headers: Record<string, string> = {
     'content-type': 'application/json',
   };

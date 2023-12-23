@@ -1,11 +1,14 @@
+import { useAuth0 } from "@auth0/auth0-react";
 import {
   Button, CircularProgress, Stack, Typography,
 } from '@mui/material';
 import RoleRestricted from './RoleRestricted';
 import { useMembers } from './Members';
-import MyCalendar from './Calendar';
+// import MyCalendar from './Calendar';
 import EventForm from './EventForm';
 import { Member } from './lib/membership.mts';
+import { postScopedData } from './lib/api.mts';
+import AYearOfEvents from "./AYearOfEvents";
 
 export type CrewCardProps = {
   member: Member
@@ -39,14 +42,35 @@ export function CrewCard({ member, contactEnabled, inviteEnabled }: CrewCardProp
 }
 
 export function CrewCards({ members, contactEnabled, inviteEnabled}: CrewCardsProps) {
+  console.log('CrewCards', members);
   return (<>{members.map((m) => <CrewCard contactEnabled={contactEnabled} inviteEnabled={inviteEnabled} key={m.id} member={m} />)}</>);
 }
 
 export default function FindCrew() {
-  const { loading, data } = useMembers(true, true, true);
-
+  const { loading, data } = useMembers(false, true, true); // don't exclude not paid at this time of the year
+  const { getAccessTokenSilently } = useAuth0();
   const handleCreate = (event: any) => {
-    console.log('handleCreate', event);
+    // console.log('handleCreate', event);
+    if (event.visibility === 'public') {
+      postScopedData('public', 'voyage', event).then(
+        (answer: any) => console.log(answer),
+        (reason: any) => console.log('BAD', reason),
+      );
+    } else {
+      getAccessTokenSilently().then((token: string) => {
+        postScopedData('member', 'voyage', event, token)
+        .then(
+          (response: any) => {
+            if (response.ok) {
+              console.log('ok');
+            } else {
+              console.log(response);
+            }
+          },
+          (reason: any) => console.log('BAD', reason),
+        );
+      });
+    }
   };
   
   if (loading || data === undefined) {
@@ -54,27 +78,17 @@ export default function FindCrew() {
   }
 
   const { members } = data; // .filter((m) => true); // filter out current user and current participants
-
+console.log('M', members);
   return (
     <Stack spacing={1}>
       <EventForm onCreate={handleCreate} />
-      <Typography>
-        Opportunities can be public, visible to members or hidden.
-      </Typography>
-      <Typography>
-        If you make an opportunity visible, then people will be able to contact you
-        to express interest in crewing.
-      </Typography>
-      <Typography>
-        If you hide the opportunity it will be included in the text of the
-        email sent to members you want to invite.
-      </Typography>
       <Typography>Here are the members who have created a crew profile.</Typography>
       <RoleRestricted role="member"><CrewCards inviteEnabled contactEnabled members={members} /></RoleRestricted>
       <Typography>
         Here is our current event list. When you submit your event it will be added
       </Typography>
-      <MyCalendar />
+      { /*<MyCalendar /> */}
+      <AYearOfEvents />
       <Typography>
         We'd also like to support Area Events. Such an event can have multiple boats attending and multiple
         people attending, either as crew or on foot. Knowing who is on which boat would be useful.
