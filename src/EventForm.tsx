@@ -17,7 +17,7 @@ import { ReactReallyTinyEditor as ReactTinyEditor } from '@ogauk/react-tiny-edit
 import Grid from '@mui/material/Unstable_Grid2/Grid2';
 import membersBoats from './lib/members_boats.mts';
 import { Boat, getFilterable } from './lib/api.mts';
-import L, { Icon, LatLng } from 'leaflet';
+import L, { LatLng } from 'leaflet';
 
 type LocationPickerProps = {
   open: boolean
