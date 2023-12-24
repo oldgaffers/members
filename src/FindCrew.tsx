@@ -1,5 +1,5 @@
 import { useAuth0 } from "@auth0/auth0-react";
-import { CircularProgress, Stack, Typography } from '@mui/material';
+import { CircularProgress, Grid, Stack, Typography } from '@mui/material';
 import RoleRestricted from './RoleRestricted';
 import { useMembers } from './Members';
 // import MyCalendar from './Calendar';
@@ -17,7 +17,52 @@ export type CrewCardsProps = {
 
 export function CrewCards({ members, contactEnabled, inviteEnabled}: CrewCardsProps) {
   console.log('CrewCards', members);
-  return (<>{members.map((m) => <CrewCard contactEnabled={contactEnabled} inviteEnabled={inviteEnabled} key={m.id} member={m} />)}</>);
+  const m = [...members];
+  m.push(...[
+    {
+      id: -1,
+      firstname: 'James',
+      lastname: 'Turner',
+      crewingprofile: 'AkA Captain Flint',
+    },
+    {
+      id: -2,
+      firstname: 'Missee',
+      lastname: 'Lee',
+      crewingprofile: 'She\'s really good at latin. Experienced at sailing Junk rigged vessels.',
+    },
+    {
+      id: -3,
+      firstname: 'Jack',
+      lastname: 'Sparrow',
+      crewingprofile: 'He can be treacherous and survives mostly by using wit and negotiation rather than by force, opting to flee most dangerous situations and to fight only when necessary.',
+    },
+    {
+      id: -4,
+      firstname: 'Peggy',
+      lastname: 'Blacket',
+      crewingprofile: 'You need her in your crew',
+    },
+    {
+      id: -5,
+      firstname: 'Titty',
+      lastname: 'Walker',
+      crewingprofile: 'Able Seaman of the Swallow.',
+    },
+    {
+      id: -6,
+      firstname: 'Dick',
+      lastname: 'Callum',
+      crewingprofile: 'Astronomer, scientist, naturalist and master of the Scarab.',
+    },
+    {
+      id: -7,
+      firstname: 'Dorothea',
+      lastname: 'Callum',
+      crewingprofile: 'Sailing and adventure do not come naturally to her but her loyalty and bravery make her worth having on-board.',
+    }
+  ]);
+  return (<Grid container>{m.map((m) => <Grid xs={4} key={m.id}><CrewCard contactEnabled={contactEnabled} inviteEnabled={inviteEnabled} member={m} /></Grid>)}</Grid>);
 }
 
 export default function FindCrew() {
