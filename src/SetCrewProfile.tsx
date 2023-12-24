@@ -6,18 +6,20 @@ import {
   DialogContentText, DialogTitle, Stack, Typography,
 } from '@mui/material';
 import { ReactReallyTinyEditor as ReactTinyEditor } from '@ogauk/react-tiny-editor';
+import { Member } from './lib/membership.mts';
+import PhotoUploader from './PhotoUploader';
 
 type SetCrewProfileProps = {
   open: boolean
-  profile: string
+  member: Member
   onCancel: Function
   onSubmit: Function
 }
 
 export default function SetCrewProfile({
-  onCancel, onSubmit, open, profile,
+  onCancel, onSubmit, open, member,
 }: SetCrewProfileProps) {
-  const [text, setText] = useState(profile);
+  const [text, setText] = useState(member?.profile);
 
   return (
     <Dialog
@@ -45,6 +47,7 @@ export default function SetCrewProfile({
                 <ReactTinyEditor html={text} onChange={setText} />
               </Box>
             </Box>
+            <PhotoUploader member={member} />
           </Stack>
           <DialogContentText>
             Your Crew&rsquo;s profile will be visible in the new 'Find Crew' menu in the member&rsquo;s area.

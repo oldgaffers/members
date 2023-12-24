@@ -1,7 +1,5 @@
 import { useAuth0 } from "@auth0/auth0-react";
-import {
-  Button, CircularProgress, Stack, Typography,
-} from '@mui/material';
+import { CircularProgress, Stack, Typography } from '@mui/material';
 import RoleRestricted from './RoleRestricted';
 import { useMembers } from './Members';
 // import MyCalendar from './Calendar';
@@ -9,36 +7,12 @@ import EventForm from './EventForm';
 import { Member } from './lib/membership.mts';
 import { postScopedData } from './lib/api.mts';
 import AYearOfEvents from "./AYearOfEvents";
-
-export type CrewCardProps = {
-  member: Member
-  contactEnabled: boolean
-  inviteEnabled: boolean
-}
+import CrewCard from "./CrewCard";
 
 export type CrewCardsProps = {
   members: Member[]
   contactEnabled: boolean
   inviteEnabled: boolean
-}
-
-export function CrewCard({ member, contactEnabled, inviteEnabled }: CrewCardProps) {
-  const { firstname, lastname, crewingprofile } = member;
-  return (
-    <Stack direction="row" spacing={2}>
-      <Typography>
-        {firstname}
-        {' '}
-        {lastname}
-      </Typography>
-      <Typography
-        component="div"
-        dangerouslySetInnerHTML={{ __html: crewingprofile.trim() }}
-      />
-      <Button disabled={!inviteEnabled}>Add to Invite</Button>
-      <Button disabled={!contactEnabled}>Contact</Button>
-    </Stack>
-  );
 }
 
 export function CrewCards({ members, contactEnabled, inviteEnabled}: CrewCardsProps) {
@@ -78,10 +52,8 @@ export default function FindCrew() {
   }
 
   const { members } = data; // .filter((m) => true); // filter out current user and current participants
-console.log('M', members);
   return (
     <Stack spacing={1}>
-      <EventForm onCreate={handleCreate} />
       <Typography>Here are the members who have created a crew profile.</Typography>
       <RoleRestricted role="member"><CrewCards inviteEnabled contactEnabled members={members} /></RoleRestricted>
       <Typography>
@@ -89,6 +61,7 @@ console.log('M', members);
       </Typography>
       { /*<MyCalendar /> */}
       <AYearOfEvents />
+      <EventForm onCreate={handleCreate} />
       <Typography>
         We'd also like to support Area Events. Such an event can have multiple boats attending and multiple
         people attending, either as crew or on foot. Knowing who is on which boat would be useful.

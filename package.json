@@ -17,6 +17,9 @@
     "@apollo/client": "^3.8.8",
     "@apollo/react-hooks": "^4.0.0",
     "@auth0/auth0-react": "^2.2.3",
+    "@aws-sdk/client-s3": "^3.478.0",
+    "@aws-sdk/credential-providers": "^3.478.0",
+    "@aws-sdk/lib-storage": "^3.478.0",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
     "@mui/icons-material": "^5.14.19",
@@ -34,6 +37,7 @@
     "node-postcodes.io": "^1.0.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-dropzone": "^14.2.3",
     "react-leaflet": "^4.2.1"
   },
   "devDependencies": {

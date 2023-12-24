@@ -15,6 +15,8 @@ export type Boat = {
 const boatRegisterHome = 'https://oldgaffers.github.io';
 
 const api1 = 'https://5li1jytxma.execute-api.eu-west-1.amazonaws.com';
+const api2 = 'https://7epryku6aipef3mzdoxtds3e5i0yfgwn.lambda-url.eu-west-1.on.aws';
+const api3 = 'https://n5sfnt3ewfaq3lp4wqg64lzen40gzpdq.lambda-url.eu-west-1.on.aws';
 
 export function prefix(location: { origin: string; pathname: string }) {
   const origin = location.origin || window.location.origin;
@@ -127,4 +129,21 @@ export async function geolocateGeonames(place: string) {
   if (r.ok) {
     return r.json();
   }
+}
+
+export async function createPhotoAlbum(name: string, id: number) {
+  const r = await fetch(`${api2}/`,
+    {
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ name, id: id }),
+      method: 'POST',
+    }
+  );
+  if (r.ok) {
+    return r.json();
+  }
+}
+
+export async function getUploadCredentials() {
+  return (await fetch(`${api3}/`)).json();
 }

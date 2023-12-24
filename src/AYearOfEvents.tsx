@@ -1,7 +1,7 @@
 import { useAuth0 } from "@auth0/auth0-react";
 import { getScopedData } from "./lib/api.mts";
 import { useEffect, useRef, useState } from "react";
-import { Stack, Typography } from "@mui/material";
+import { Stack } from "@mui/material";
 import mermaid from 'mermaid';
 
 mermaid.initialize({ startOnLoad: false, gantt: { displayMode: 'compact', axisFormat: '%b' } });

@@ -19,6 +19,7 @@ export type Member = {
   interests: string[]
   profile: string
   crewingprofile: string
+  pictures?: string[]
   __typename?: string
 }
 
