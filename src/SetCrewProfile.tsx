@@ -47,7 +47,7 @@ export default function SetCrewProfile({
                 <ReactTinyEditor html={text} onChange={setText} />
               </Box>
             </Box>
-            <PhotoUploader member={member} />
+            <PhotoUploader />
           </Stack>
           <DialogContentText>
             Your Crew&rsquo;s profile will be visible in the new 'Find Crew' menu in the member&rsquo;s area.

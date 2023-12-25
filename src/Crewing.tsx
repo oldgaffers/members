@@ -99,7 +99,7 @@ export default function Crewing({ member }: { member: Member }) {
         open={openSkipperProfile}
       />
       <SetCrewProfile
-        profile={member.crewingprofile || ''}
+        member={member}
         onSubmit={handleSubmitCrewProfile}
         onCancel={() => setOpenCrewProfile(false)}
         open={openCrewProfile}

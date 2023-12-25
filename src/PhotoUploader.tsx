@@ -5,18 +5,10 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import { useAuth0 } from "@auth0/auth0-react";
 import { postPhotos } from "./lib/postphotos";
-import { createPhotoAlbum } from './lib/api.mjs';
 import Photodrop from './PhotoDrop';
 import { CircularProgress } from "@mui/material";
-import { Member } from "./lib/membership.mts";
 
-type PhotoUploaderProps = {
-  member: Member
-  onNewAlbum: Function
-}
-
-export default function PhotoUploader(props: PhotoUploaderProps) {
-  const { member, onNewAlbum } = props;
+export default function PhotoUploader() {
   const { user } = useAuth0();
   const [pictures, setPictures] = useState([]);
   const [copyright, setCopyright] = useState(''); // user && user.name);
@@ -27,16 +19,7 @@ export default function PhotoUploader(props: PhotoUploaderProps) {
   };
 
   const onUpload = async () => {
-    const { image_key, id } = member;
-    let albumKey;
-    if (image_key) {
-      albumKey = image_key;
-    } else {
-      const r = await createPhotoAlbum(`${member.firstname} ${member.lastname}`, id);
-      albumKey = r.albumKey;
-    }
-    await postPhotos(pictures, copyright, user?.email || '', albumKey, setProgress);
-    onNewAlbum(albumKey);
+    await postPhotos(pictures, copyright, user?.email || '', undefined, setProgress);
   };
 
   const ready = () => {

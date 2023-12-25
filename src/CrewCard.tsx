@@ -145,7 +145,13 @@ function Profile({ text, onChange }: { text: string, onChange: Function | undefi
     />
 }
 
-function EditProfileButton({ editEnabled, editing, onEdit, onSave, onCancel }) {
+function EditProfileButton({ editEnabled, editing, onEdit, onSave, onCancel }: {
+    editEnabled : boolean,
+    editing: boolean,
+    onEdit: MouseEventHandler,
+    onSave: MouseEventHandler,
+    onCancel: MouseEventHandler
+}) {
     if (editing) {
         return <>
             <IconButton onClick={onSave} ><PublishedWithChangesIcon /></IconButton>
@@ -177,9 +183,10 @@ export default function CrewCard({
     })));
     const handleTextChange = editProfile ? (value: string) => setText(value) : undefined;
 
-
     function handleDelete(index: number) {
-        setPictures(pictures.toSpliced(index, 1));
+        const p = [...pictures];
+        p.splice(index, 1)
+        setPictures(p);
     }
 
     function handleSave() {
