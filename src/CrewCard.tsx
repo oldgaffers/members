@@ -229,9 +229,9 @@ export default function CrewCard({
                 <Profile text={text} onChange={handleTextChange} />
             </CardContent>
             <CardActions>
-                <Button size='small' disabled={!inviteEnabled}>More</Button>
-                <Button size='small' disabled={!inviteEnabled}>Invite</Button>
-                <Button size='small' disabled={!contactEnabled}>Contact</Button>
+                <Button onClick={() => alert('not done')} size='small' disabled={!inviteEnabled}>More</Button>
+                <Button onClick={() => alert('not done')} size='small' disabled={!inviteEnabled}>Invite</Button>
+                <Button onClick={() => alert('not done')} size='small' disabled={!contactEnabled}>Contact</Button>
             </CardActions>
         </Card>
     );
