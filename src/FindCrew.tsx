@@ -64,7 +64,7 @@ export function CrewCards({ members, contactEnabled, inviteEnabled }: CrewCardsP
     }
   ]);
   return (
-    <Box overflow='auto' height={400}>
+    <Box overflow='auto' width='90vw'>
       <Stack direction='row'>{m.map((m) => <CrewCard key={m.id} contactEnabled={contactEnabled} inviteEnabled={inviteEnabled} member={m} />)}</Stack>
     </Box>
   );
