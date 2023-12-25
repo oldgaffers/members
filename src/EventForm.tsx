@@ -42,8 +42,8 @@ const useGetMyBoats = (members: any[] | undefined): { data?: Boat[], loading?: b
 export default function EventForm({ onCreate }: EventFormProps) {
   const ref = createRef<HTMLFormElement>();
   const [specifics, setSpecifics] = useState('');
-  const [start, setStart] = useState('');
-  const [end, setEnd] = useState('');
+  const [start, setStart] = useState<string | undefined>();
+  const [end, setEnd] = useState<string | undefined>();
   const [places, setPlaces] = useState<LatLng[]>();
   const [open, setOpen] = useState(false);
   const { user } = useAuth0();
@@ -250,7 +250,11 @@ export default function EventForm({ onCreate }: EventFormProps) {
                   If you hide it, only it will still be used in the email sent to members you want to invite.
           </Grid>
           <Grid xs="auto">
-            <Button variant="contained" onClick={handleCreate}>Create an Entry</Button>
+            <Button
+              variant="contained"
+              onClick={handleCreate}
+              disabled={!start || !end}
+            >Create an Entry</Button>
           </Grid>
         </Grid>
       </Box>
