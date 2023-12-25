@@ -44,8 +44,8 @@ jobs:
     - name: build
       run: |
         npm run build --if-present
-        cp build/assets/*.js build/main.js
-        cp build/assets/*.css build/main.css
+        cp build/assets/index-*.js build/main.js
+        cp build/assets/index-*.css build/main.css
         echo build complete
     - name: Setup Pages
       uses: actions/configure-pages@v2
