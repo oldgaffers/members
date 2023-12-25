@@ -1,5 +1,5 @@
 import { useAuth0 } from "@auth0/auth0-react";
-import { Box, CircularProgress, Grid, Stack, Typography } from '@mui/material';
+import { Box, CircularProgress, Stack, Typography } from '@mui/material';
 import RoleRestricted from './RoleRestricted';
 import { useMembers } from './Members';
 // import MyCalendar from './Calendar';

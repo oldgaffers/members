@@ -8,7 +8,7 @@ import IconButton from '@mui/material/IconButton';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import { Member } from './lib/membership.mts';
-import { Box, Skeleton, Stack } from '@mui/material';
+import { Box, Stack } from '@mui/material';
 import { ReactReallyTinyEditor as ReactTinyEditor } from '@ogauk/react-tiny-editor';
 import { MouseEventHandler, useState } from 'react';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
