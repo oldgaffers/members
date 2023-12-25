@@ -1,5 +1,5 @@
 import { useAuth0 } from "@auth0/auth0-react";
-import { CircularProgress, Grid, Stack, Typography } from '@mui/material';
+import { Box, CircularProgress, Grid, Stack, Typography } from '@mui/material';
 import RoleRestricted from './RoleRestricted';
 import { useMembers } from './Members';
 // import MyCalendar from './Calendar';
@@ -15,7 +15,7 @@ export type CrewCardsProps = {
   inviteEnabled: boolean
 }
 
-export function CrewCards({ members, contactEnabled, inviteEnabled}: CrewCardsProps) {
+export function CrewCards({ members, contactEnabled, inviteEnabled }: CrewCardsProps) {
   console.log('CrewCards', members);
   const m = [...members];
   m.push(...[
@@ -36,6 +36,7 @@ export function CrewCards({ members, contactEnabled, inviteEnabled}: CrewCardsPr
       firstname: 'Jack',
       lastname: 'Sparrow',
       crewingprofile: 'He can be treacherous and survives mostly by using wit and negotiation rather than by force, opting to flee most dangerous situations and to fight only when necessary.',
+      pictures: ['https://www.disneyfanatic.com/wp-content/uploads/2023/10/jim-carrey-replace-johnny-depp--620x330.jpg']
     },
     {
       id: -4,
@@ -62,7 +63,11 @@ export function CrewCards({ members, contactEnabled, inviteEnabled}: CrewCardsPr
       crewingprofile: 'Sailing and adventure do not come naturally to her but her loyalty and bravery make her worth having on-board.',
     }
   ]);
-  return (<Grid container>{m.map((m) => <Grid xs={4} key={m.id}><CrewCard contactEnabled={contactEnabled} inviteEnabled={inviteEnabled} member={m} /></Grid>)}</Grid>);
+  return (
+    <Box overflow='auto' height={400}>
+      <Stack direction='row'>{m.map((m) => <CrewCard key={m.id} contactEnabled={contactEnabled} inviteEnabled={inviteEnabled} member={m} />)}</Stack>
+    </Box>
+  );
 }
 
 export default function FindCrew() {
@@ -78,20 +83,20 @@ export default function FindCrew() {
     } else {
       getAccessTokenSilently().then((token: string) => {
         postScopedData('member', 'voyage', event, token)
-        .then(
-          (response: any) => {
-            if (response.ok) {
-              console.log('ok');
-            } else {
-              console.log(response);
-            }
-          },
-          (reason: any) => console.log('BAD', reason),
-        );
+          .then(
+            (response: any) => {
+              if (response.ok) {
+                console.log('ok');
+              } else {
+                console.log(response);
+              }
+            },
+            (reason: any) => console.log('BAD', reason),
+          );
       });
     }
   };
-  
+
   if (loading || data === undefined) {
     return <CircularProgress />;
   }

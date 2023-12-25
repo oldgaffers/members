@@ -40,22 +40,29 @@ type Picture = {
     primary: boolean
 }
 
-function srcset(image: string, width: number, height: number, rows = 1, cols = 1) {
-    return {
-        src: `${image}?w=${width * cols}&h=${height * rows}&fit=crop&auto=format`,
-        srcSet: `${image}?w=${width * cols}&h=${height * rows}&fit=crop&auto=format&dpr=2 2x`,
-    };
+function HeroImage({ src, alt, width, height }: { src: string, alt: string, width: number, height: number }) {
+    const rows = 1;
+    const cols = 1;
+    const s = `${src}?w=${width * cols}&h=${height * rows}&fit=crop&auto=format`;
+    return <img
+        style={{ width: '100%' }}
+        src={s}
+        srcSet={`${s}&dpr=2 2x`}
+        alt={alt}
+        loading="lazy"
+    />;
 }
 
-function CustomImageListItem({ item, onDelete }: { item: any, onDelete: MouseEventHandler }) {
+type CustomImageListItemProps = {
+    item: any
+    onDelete: MouseEventHandler
+}
+
+function CustomImageListItem({ item, onDelete }: CustomImageListItemProps) {
     const [favourite, setFavourite] = useState(false);
 
     return <ImageListItem key={item.img} cols={2} rows={1}>
-        <img
-            {...srcset(item.img, 320, 300, 1, 1)}
-            alt={item.title}
-            loading="lazy"
-        />
+        <HeroImage src={item.img} alt={item.title} width={320} height={300} />
         <ImageListItemBar
             sx={{
                 background:
@@ -96,9 +103,15 @@ function CustomImageListItem({ item, onDelete }: { item: any, onDelete: MouseEve
     </ImageListItem>;
 }
 
-function CustomImageList({ pictures, onDelete }: { pictures: Picture[], onDelete: Function }) {
+function CustomImageList({ pictures, onDelete, editEnabled }: CardImageProps) {
     function handleDelete(index: number) {
         onDelete(index)
+    }
+    if (!editEnabled) {
+        if (pictures.length === 0) {
+            return '';
+        }
+        return <HeroImage src={pictures[0].img} alt={pictures[0].title} width={300} height={300} />;
     }
     return (
         <ImageList
@@ -119,11 +132,12 @@ function CustomImageList({ pictures, onDelete }: { pictures: Picture[], onDelete
     );
 }
 
-function CardImage({ pictures, onDelete }: CardImageProps) {
+function CardImage({ pictures, onDelete, editEnabled }: CardImageProps) {
     if (pictures.length > 0) {
-        return <CustomImageList pictures={pictures} onDelete={onDelete} />
+        return <CustomImageList editEnabled={editEnabled} pictures={pictures} onDelete={onDelete} />
     }
-    return <Skeleton variant="rounded" animation='wave' width='100%' height={240} />
+    return '';
+    // return <Skeleton variant="rounded" animation='wave' width='100%' height={240} />
 }
 
 function Profile({ text, onChange }: { text: string, onChange: Function | undefined }) {
@@ -146,7 +160,7 @@ function Profile({ text, onChange }: { text: string, onChange: Function | undefi
 }
 
 function EditProfileButton({ editEnabled, editing, onEdit, onSave, onCancel }: {
-    editEnabled : boolean,
+    editEnabled: boolean,
     editing: boolean,
     onEdit: MouseEventHandler,
     onSave: MouseEventHandler,
@@ -156,7 +170,7 @@ function EditProfileButton({ editEnabled, editing, onEdit, onSave, onCancel }: {
         return <>
             <IconButton onClick={onSave} ><PublishedWithChangesIcon /></IconButton>
             <IconButton onClick={onCancel} ><CancelIcon /></IconButton>
-            </>;
+        </>;
     }
     if (editEnabled) {
         return <IconButton onClick={onEdit} ><ModeEditIcon /></IconButton>;
@@ -197,7 +211,7 @@ export default function CrewCard({
     }
 
     return (
-        <Card sx={{ maxWidth: 345 }}>
+        <Card sx={{ maxWidth: 345, minWidth: 250 }}>
             <CardImage pictures={pictures} editEnabled={editEnabled} onDelete={handleDelete} />
             <CardContent>
                 <Stack direction='row' justifyContent='space-between'>
