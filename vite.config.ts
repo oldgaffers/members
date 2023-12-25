@@ -8,5 +8,11 @@ export default defineConfig({
     copyPublicDir: false,
     outDir: 'build',
     emptyOutDir: false,
+    rollupOptions: {
+      output: {
+        entryFileNames: 'main.js',
+        assetFileNames: 'main.css',
+      }
+    }
   },
 })
