@@ -89,8 +89,8 @@ export default function MembersAndBoats({
   }
 
   const members2 = members.map((m) => {
-    const main = areaAbbreviation(m.area);
-    const others = m.interests.filter((o) => o !== main);
+    const main = areaAbbreviation(m.area ?? '');
+    const others = (m.interests ?? []).filter((o) => o !== main);
     if (others.length > 0) {
       const a = [main, ...others].join(',');
       // console.log(a)

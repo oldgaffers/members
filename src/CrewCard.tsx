@@ -172,7 +172,7 @@ export default function CrewCard({
     profile = 'crewingprofile',
     onSave,
 }: CrewCardProps) {
-    const [text, setText] = useState<string>((profile === 'profile') ? member.profile : member.crewingprofile);
+    const [text, setText] = useState<string>(((profile === 'profile') ? member.profile : member.crewingprofile) ?? '');
     const [editProfile, setEditProfile] = useState(false);
     const name = `${member.firstname} ${member.lastname}`;
     const [pictures, setPictures] = useState<Picture[]>((member.pictures || []).map((p) => ({

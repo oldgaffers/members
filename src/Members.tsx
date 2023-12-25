@@ -13,7 +13,7 @@ import membersBoats from './lib/members_boats.mts';
 import { getFilterable } from './lib/api.mts';
 
 async function getPostcodeData(members: Member[]) {
-  const pcs: string[] = [...(new Set(members.map((m) => m.postcode).filter((p) => p)))];
+  const pcs: string[] = [...(new Set(members.map((m) => m.postcode ?? '').filter((p) => p)))];
   pcs.sort();
   const chunkSize = 100;
   const chunks = [];

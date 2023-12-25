@@ -29,7 +29,7 @@ export function membershipType(user: { type: string; yob: number; payment: any; 
   return `Your membership type is ${user.type} and you pay by ${user.payment}.`;
 }
 
-function fettlePhone(n: string, area: string) {
+function fettlePhone(n: string | undefined, area: string | undefined) {
   if (!n) {
     return undefined;
   }
@@ -77,13 +77,13 @@ export function phoneGetter({ row }: { row: Member }) {
   if (n.length > 0) {
     return n.join(' / ');
   }
-  if (row.mobile === '' && row.telephone === '') {
+  if ((row.mobile ?? '') === '' && (row.telephone ?? '') === '') {
     return '';
   }
-  if (row.mobile.includes('@')) {
+  if (row.mobile?.includes('@')) {
     return row.mobile;
   }
-  if (row.telephone.includes('@')) {
+  if (row.telephone?.includes('@')) {
     return row.telephone;
   }
   return `*** M: ${row.mobile} T: ${row.telephone} ***`;

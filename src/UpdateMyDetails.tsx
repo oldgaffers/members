@@ -113,7 +113,7 @@ function Profile({ member, profile, user }: { member: Member, profile: string, u
   function onDrop(files: File[]) {
     console.log('ondrop', files);
     setUploading(true);
-    postPhotos(files, '', member.email, undefined, setProgress).then(
+    postPhotos(files, '', member.email ?? '', undefined, setProgress).then(
       () => {
         console.log('uploaded');
         setUploading(false);
