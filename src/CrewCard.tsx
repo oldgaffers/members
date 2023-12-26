@@ -8,7 +8,7 @@ import IconButton from '@mui/material/IconButton';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import { Member } from './lib/membership.mts';
-import { Box, Stack } from '@mui/material';
+import { Box, Checkbox, FormControlLabel, Stack } from '@mui/material';
 import { ReactReallyTinyEditor as ReactTinyEditor } from '@ogauk/react-tiny-editor';
 import { MouseEventHandler, useState } from 'react';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
@@ -17,6 +17,7 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
 import CancelIcon from '@mui/icons-material/Cancel';
+import Contact from './Contact';
 
 export type CrewCardProps = {
     member: Member
@@ -183,12 +184,13 @@ export default function CrewCard({
     contactEnabled = false,
     inviteEnabled = false,
     editEnabled = false,
-    profile = 'crewingprofile',
+    profile = 'crewing',
     onSave,
 }: CrewCardProps) {
-    const [text, setText] = useState<string>(((profile === 'profile') ? member.profile : member.crewingprofile) ?? '');
+    const [text, setText] = useState<string>(((profile === 'skipper') ? member.profile : member.crewingprofile) ?? '');
     const [editProfile, setEditProfile] = useState(false);
     const name = `${member.firstname} ${member.lastname}`;
+    const [invited, setInvited] = useState<boolean>(false);
     const [pictures, setPictures] = useState<Picture[]>((member.pictures || []).map((p) => ({
         title: name,
         img: p,
@@ -212,6 +214,8 @@ export default function CrewCard({
 
     return (
         <Card sx={{ maxWidth: 345, minWidth: 250 }}>
+            <Stack direction='column' justifyContent='space-between' height='100%'>
+            <Stack direction='column'>
             <CardImage pictures={pictures} editEnabled={editEnabled} onDelete={handleDelete} />
             <CardContent>
                 <Stack direction='row' justifyContent='space-between'>
@@ -228,11 +232,18 @@ export default function CrewCard({
                 </Stack>
                 <Profile text={text} onChange={handleTextChange} />
             </CardContent>
+            </Stack>
             <CardActions>
-                <Button onClick={() => alert('not done')} size='small' disabled={!inviteEnabled}>More</Button>
-                <Button onClick={() => alert('not done')} size='small' disabled={!inviteEnabled}>Invite</Button>
-                <Button onClick={() => alert('not done')} size='small' disabled={!contactEnabled}>Contact</Button>
+                <FormControlLabel
+                    control={<Checkbox
+                        disabled={!inviteEnabled} onChange={(e) => setInvited(e.target.checked)} checked={invited}
+                    />}
+                    label="Invite"
+                />
+                {contactEnabled ? <Contact memberGoldId={member.id} /> : ''}
+                {/*<Button onClick={() => alert('not done')} size='small' disabled={!inviteEnabled}>More</Button>*/}
             </CardActions>
+            </Stack>
         </Card>
     );
 }

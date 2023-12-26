@@ -1,30 +1,20 @@
-import { CircularProgress, Stack, Typography } from '@mui/material';
+import { Stack, Typography } from '@mui/material';
 import RoleRestricted from './RoleRestricted.tsx';
-import { useMembers } from './Members.tsx';
-import MyCalendar from './Calendar.tsx';
-import { CrewCards } from './FindCrew.tsx';
+import { CrewCards } from './CrewCards.tsx';
+import AYearOfEvents from './AYearOfEvents.tsx';
 
 export default function FindACruise() {
-  const { loading, data } = useMembers(true, true, true);
-
-  if (loading) {
-    return <CircularProgress />;
-  }
-
-  const { members } = data;
-
   return (
     <Stack spacing={1}>
       <Typography>Looking for cruising or racing adventures?</Typography>
-      <Typography>Create a crewing profile and browse our offers.</Typography>
+      <Typography>Go to your member page to create your crewing profile.</Typography>
       <Typography>
-        Here is our current event list.
-        Add to it, or add your boat or yourself to an existing event
+        Here is our current list of voyages.
       </Typography>
-      <MyCalendar />
+      <AYearOfEvents />
       <Typography>Here are the other members who have created a crew profile.</Typography>
       <RoleRestricted role="member">
-        <CrewCards members={members} contactEnabled={true} inviteEnabled={false} />
+        <CrewCards contactEnabled={true} inviteEnabled={false} />
       </RoleRestricted>
     </Stack>
   );

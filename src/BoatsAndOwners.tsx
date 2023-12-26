@@ -97,7 +97,7 @@ const columns = (
       field: 'data.email',
       headerName: 'Contact',
       width: 150,
-      renderCell: (params) => <Contact member={params.row.owners[0].id} />,
+      renderCell: (params) => <Contact memberGoldId={params.row.owners[0].id} />,
     });
   }
   return col;

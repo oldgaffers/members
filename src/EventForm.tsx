@@ -1,9 +1,9 @@
 import { createRef, useEffect, useState } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 import {
-  Autocomplete, Box, Button, CircularProgress, 
+  Autocomplete, Box, Button, CircularProgress,
   FormControl, FormHelperText,
-  Input, InputLabel, 
+  Input, InputLabel,
   TextField, Typography,
 } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2/Grid2';
@@ -17,6 +17,8 @@ import { ReactReallyTinyEditor as ReactTinyEditor } from '@ogauk/react-tiny-edit
 import membersBoats from './lib/members_boats.mts';
 import { Boat, getFilterable } from './lib/api.mts';
 import LocationPicker from './LocationPicker';
+import { CrewCards } from './CrewCards'
+import { Member } from './lib/membership.mts';
 
 type EventFormProps = {
   onCreate: Function
@@ -110,6 +112,8 @@ export default function EventForm({ onCreate }: EventFormProps) {
     }
   };
 
+  const ready = start && end;
+
   if (loading || !data || data.length < 1) {
     return <CircularProgress />;
   }
@@ -117,7 +121,7 @@ export default function EventForm({ onCreate }: EventFormProps) {
     <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="en-gb">
       <Box
         ref={ref}
-        width="80%"
+        width="100%"
         border={1}
         component="form"
         sx={{
@@ -126,12 +130,18 @@ export default function EventForm({ onCreate }: EventFormProps) {
         noValidate
         autoComplete="off"
       >
-        <Typography variant="h6">Looking for crew for your your cruising or racing adventures? Create your voyage invitation here</Typography>
+        <Typography variant="h6">Create your voyage invitation here</Typography>
         <Grid container spacing={3}>
+          <Grid>
+            <Typography></Typography>
+          </Grid>
           <Grid xs="auto">
             <FormControl variant="standard">
               <InputLabel htmlFor="component-title">Title</InputLabel>
               <Input name="eventTitle" id="component-title" defaultValue="My Summer Cruise" />
+              <FormHelperText>
+                Must be different from any other of your voyages
+              </FormHelperText>
             </FormControl>
           </Grid>
           <Grid xs="auto">
@@ -149,15 +159,20 @@ export default function EventForm({ onCreate }: EventFormProps) {
             </FormControl>
           </Grid>
           <Grid xs="auto">
-            <Autocomplete
-              disablePortal
-              freeSolo
-              id="component-boat"
-              defaultValue={boats.find(() => true)}
-              options={boats}
-              sx={{ width: 300 }}
-              renderInput={(params) => <TextField name="boat" {...params} label="Boat" />}
-            />
+            <FormControl>
+              <Autocomplete
+                disablePortal
+                freeSolo
+                id="component-boat"
+                defaultValue={boats.find(() => true)}
+                options={boats}
+                sx={{ width: 300 }}
+                renderInput={(params) => <TextField name="boat" {...params} label="Boat" />}
+              />
+              <FormHelperText>
+                You can type any boat name here
+              </FormHelperText>
+            </FormControl>
           </Grid>
           <Grid xs="auto">
             <FormControl>
@@ -245,16 +260,24 @@ export default function EventForm({ onCreate }: EventFormProps) {
             </FormControl>
           </Grid>
           <Grid>
-          * If you make an opportunity visible, then people will be able to contact you
-                  and express interest in crewing.
-                  If you hide it, only it will still be used in the email sent to members you want to invite.
+            <Typography>
+              Here are the members who have created a crew profile.
+              If you check the invite box they will be emailed the details of your event and encouraged
+              to get back to you.
+            </Typography>
+            <CrewCards inviteEnabled contactEnabled />
           </Grid>
-          <Grid xs="auto">
+          <Grid>
+            * If you make an opportunity visible, then people will be able to contact you
+            and express interest in crewing.
+            If you hide it, only it will still be used in the email sent to members you want to invite.
+          </Grid>
+          <Grid xs={12}>
             <Button
               variant="contained"
               onClick={handleCreate}
-              disabled={!start || !end}
-            >Create an Entry</Button>
+              disabled={!ready}
+            >{ready ? '' : 'Set the start and end dates to '}Create an Entry</Button>
           </Grid>
         </Grid>
       </Box>

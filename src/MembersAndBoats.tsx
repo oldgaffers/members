@@ -114,7 +114,7 @@ export default function MembersAndBoats({
       field: 'url',
       headerName: 'Details',
       width: 150,
-      renderCell: ({ row }: { row: { id: number } }) => <Contact member={row.id} />,
+      renderCell: ({ row }: { row: { id: number } }) => <Contact memberGoldId={row.id} />,
     },
     { field: 'town', headerName: 'Town', width: 120 },
     {

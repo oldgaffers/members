@@ -13,25 +13,25 @@ import { useAuth0 } from "@auth0/auth0-react";
 import { postGeneralEnquiry } from "./lib/api.mts";
 import { Alert } from "@mui/material";
 
+type ContactProps = {
+    memberGoldId: number
+    text?: string
+}
+
 type ContactDialogProps = {
     open: boolean
     title: string
     topic: string
     user: any
-    member: number
+    memberGoldId: number
     onSend: Function
     onCancel: Function
-}
-
-type ContactProps = {
-    member: number
-    text?: string
 }
 
 function ContactDialog({
     open,
     user,
-    member,
+    memberGoldId,
     onSend,
     onCancel,
     title,
@@ -42,7 +42,7 @@ function ContactDialog({
     const [valid, setValid] = useState(!!email);
 
     const onClickSend = () => {
-        onSend({ type: topic, text, email, member });
+        onSend({ type: topic, text, email, member: memberGoldId });
     }
 
     const handleEmailChange = (e: { target: { value: any; reportValidity: () => boolean | ((prevState: boolean) => boolean); }; }) => {
@@ -96,7 +96,7 @@ function ContactDialog({
     );
 }
 
-export default function Contact({ member, text = 'Contact' }: ContactProps) {
+export default function Contact({ memberGoldId, text = 'Contact' }: ContactProps) {
     const [open, setOpen] = useState(false);
     const [snackBarOpen, setSnackBarOpen] = useState(false);
     const { user } = useAuth0();
@@ -115,7 +115,7 @@ export default function Contact({ member, text = 'Contact' }: ContactProps) {
 
     const handleSend = (params: object) => {
         setOpen(false);
-        const data: any = { ...params, member };
+        const data: any = { ...params, memberGoldId };
         if (user?.name) {
             data.name = user.name;
         }
@@ -144,7 +144,7 @@ export default function Contact({ member, text = 'Contact' }: ContactProps) {
             <ContactDialog
                 open={open}
                 user={user}
-                member={member}
+                memberGoldId={memberGoldId}
                 onCancel={handleCancel}
                 onSend={handleSend}
                 title={text}
@@ -156,7 +156,7 @@ export default function Contact({ member, text = 'Contact' }: ContactProps) {
                 autoHideDuration={2000}
                 onClose={handleSnackBarClose}                
             >
-                <Alert severity="success">Thanks, we'll get back to you.</Alert>
+                <Alert severity="success">Thanks, we've forwarded your message by email.</Alert>
                 </Snackbar>
         </>
     );

@@ -1,4 +1,5 @@
 import { User } from "@auth0/auth0-react"
+import { Member } from "./membership.mts"
 
 export type Boat = {
   home_location?: any
@@ -41,8 +42,12 @@ export async function geolocate(place: string) {
   return undefined;
 }
 
-
-export async function postGeneralEnquiry(scope: string, subject: string, data: { GDPR?: boolean; id?: number; salutation?: string; firstname?: string; lastname?: string; status?: string; postcode?: string; area?: string; mobile?: string; telephone?: string; interests?: string[]; __typename?: string | undefined; user?: User | undefined; text?: any }) {
+// N.B. member is actually GOLD ID, this is a bit confusing
+export async function postGeneralEnquiry(
+  scope: string,
+  subject: string,
+  data: { type: string, name: string, email: string, member: number, text: string },
+  ) {
   return fetch(
     `${api1}/default/${scope}/${subject}`,
     {

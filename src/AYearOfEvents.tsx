@@ -25,7 +25,9 @@ function section(title: string, voyages: Voyage[]) {
     return `section ${title}\n${tasks.join('\n')}`;
 }
 
-function convert(voyages: Voyage[]) {
+function convert(allVoyages: Voyage[]) {
+    console.log('convert', allVoyages);
+    const voyages = allVoyages.filter((v) => v.start !== '' && v.end !== '');
     const types = voyages.reduce((p, v) => {
         p.add(v.type);
         return p;
