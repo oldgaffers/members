@@ -1,22 +1,18 @@
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
-import ImageList from '@mui/material/ImageList';
-import ImageListItem from '@mui/material/ImageListItem';
-import ImageListItemBar from '@mui/material/ImageListItemBar';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import { Member } from './lib/membership.mts';
-import { Box, Checkbox, FormControlLabel, Stack } from '@mui/material';
+import { Box, Checkbox, FormControlLabel, LinearProgress, Stack } from '@mui/material';
 import { ReactReallyTinyEditor as ReactTinyEditor } from '@ogauk/react-tiny-editor';
 import { MouseEventHandler, useState } from 'react';
-import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
 import CancelIcon from '@mui/icons-material/Cancel';
 import Contact from './Contact';
+import Photodrop from './PhotoDrop';
+import { postPhotos } from './lib/postphotos';
 
 export type CrewCardProps = {
     member: Member
@@ -27,19 +23,14 @@ export type CrewCardProps = {
     profile?: string
     onSaveProfile?: Function
     onSaveInvited?: Function
+    onAddImage?: Function
 }
 
 type CardImageProps = {
-    editEnabled: boolean
-    onDelete: Function
-    pictures: Picture[]
-}
-
-type Picture = {
-    title: string
-    img: string
-    use: boolean
-    primary: boolean
+    editEnabled?: boolean
+    onDelete?: Function
+    picture?: string
+    alt: string
 }
 
 function HeroImage({ src, alt, width, height }: { src: string, alt: string, width: number, height: number }) {
@@ -55,88 +46,9 @@ function HeroImage({ src, alt, width, height }: { src: string, alt: string, widt
     />;
 }
 
-type CustomImageListItemProps = {
-    item: any
-    onDelete: MouseEventHandler
-}
-
-function CustomImageListItem({ item, onDelete }: CustomImageListItemProps) {
-    const [favourite, setFavourite] = useState(false);
-
-    return <ImageListItem key={item.img} cols={2} rows={1}>
-        <HeroImage src={item.img} alt={item.title} width={320} height={300} />
-        <ImageListItemBar
-            sx={{
-                background:
-                    'linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, ' +
-                    'rgba(0,0,0,0.3) 70%, rgba(0,0,0,0) 100%)',
-            }}
-            title={item.title}
-            position="top"
-            actionIcon={
-                <IconButton
-                    onClick={() => setFavourite(!favourite)}
-                    sx={{ color: 'white' }}
-                    aria-label={`favourite ${item.title}`}
-                >
-                    {favourite ? <FavoriteIcon /> : <FavoriteBorderIcon />}
-                </IconButton>
-            }
-            actionPosition="left"
-        />
-        <ImageListItemBar
-            sx={{
-                background:
-                    'linear-gradient(to top, rgba(0,0,0,0.7) 0%, ' +
-                    'rgba(0,0,0,0.3) 40%, rgba(0,0,0,0) 100%)',
-            }}
-            position="bottom"
-            actionIcon={
-                <IconButton
-                    onClick={onDelete}
-                    sx={{ color: 'white' }}
-                    aria-label={`delete ${item.title}`}
-                >
-                    <DeleteOutlineIcon />
-                </IconButton>
-            }
-            actionPosition="left"
-        />
-    </ImageListItem>;
-}
-
-function CustomImageList({ pictures, onDelete, editEnabled }: CardImageProps) {
-    function handleDelete(index: number) {
-        onDelete(index)
-    }
-    if (!editEnabled) {
-        if (pictures.length === 0) {
-            return '';
-        }
-        return <HeroImage src={pictures[0].img} alt={pictures[0].title} width={300} height={300} />;
-    }
-    return (
-        <ImageList
-            sx={{
-                width: 350,
-                height: 310,
-                // Promote the list into its own layer in Chrome. This costs memory, but helps keeping high FPS.
-                transform: 'translateZ(0)',
-                gridAutoFlow: "column",
-                gridTemplateColumns: "repeat(auto-fill,minmax(180px,1fr)) !important",
-                gridAutoColumns: "minmax(180px, 1fr)"
-            }}
-            rowHeight={300}
-            gap={1}
-        >
-            {pictures.map((item, index) => <CustomImageListItem key={index} item={item} onDelete={() => handleDelete(index)} />)}
-        </ImageList>
-    );
-}
-
-function CardImage({ pictures, onDelete, editEnabled }: CardImageProps) {
-    if (pictures.length > 0) {
-        return <CustomImageList editEnabled={editEnabled} pictures={pictures} onDelete={onDelete} />
+function CardImage({ picture, alt }: CardImageProps) {
+    if (picture) {
+        return <HeroImage src={picture} alt={alt} width={300} height={300} />;
     }
     return '';
     // return <Skeleton variant="rounded" animation='wave' width='100%' height={240} />
@@ -189,24 +101,15 @@ export default function CrewCard({
     invited = false,
     onSaveProfile,
     onSaveInvited,
+    onAddImage,
 }: CrewCardProps) {
     const name = `${member.firstname} ${member.lastname}`;
     const [text, setText] = useState<string>(((profile === 'skipper') ? member.profile : member.crewingprofile) ?? '');
     const [editProfile, setEditProfile] = useState(false);
-    const [pictures, setPictures] = useState<Picture[]>((member.pictures || []).map((p) => ({
-        title: name,
-        img: p,
-        use: false,
-        primary: false,
-    })));
+    const [progress, setProgress] = useState<number>(0);
+    const [uploading, setUploading] = useState<boolean>(false);
 
     const handleTextChange = editProfile ? (value: string) => setText(value) : undefined;
-
-    function handleDelete(index: number) {
-        const p = [...pictures];
-        p.splice(index, 1)
-        setPictures(p);
-    }
 
     function handleSaveProfile() {
         setEditProfile(false);
@@ -215,38 +118,62 @@ export default function CrewCard({
         }
     }
 
+    function onDrop(files: File[]) {
+        console.log('ondrop', files);
+        setUploading(true);
+        postPhotos(files, '', member.email ?? '', undefined, setProgress).then(
+            () => {
+                console.log('uploaded');
+                setUploading(false);
+            }
+        );
+        if (onAddImage && files.length > 0) {
+            onAddImage(URL.createObjectURL(files[0]));
+        }
+    }
+
     return (
         <Card sx={{ maxWidth: 345, minWidth: 250 }}>
             <Stack direction='column' justifyContent='space-between' height='100%'>
-            <Stack direction='column'>
-            <CardImage pictures={pictures} editEnabled={editEnabled} onDelete={handleDelete} />
-            <CardContent>
-                <Stack direction='row' justifyContent='space-between'>
-                    <Typography variant="h6">
-                        {name}
-                    </Typography>
-                    <EditProfileButton
-                        editEnabled={editEnabled}
-                        editing={editProfile}
-                        onEdit={() => setEditProfile(true)}
-                        onSave={() => handleSaveProfile()}
-                        onCancel={() => setEditProfile(false)}
-                    />
+                <Stack direction='column'>
+                    {
+                        ((member.pictures?.length || 0) > 0)
+                            ?
+                            <CardImage picture={member.pictures?.[0]} alt={name} editEnabled={editEnabled} />
+
+                            :
+                            <>
+                                <Photodrop onDrop={onDrop} preview={false} />
+                                {uploading ? <LinearProgress value={progress} /> : ''}
+                            </>
+                    }
+                    <CardContent>
+                        <Stack direction='row' justifyContent='space-between'>
+                            <Typography variant="h6">
+                                {name}
+                            </Typography>
+                            <EditProfileButton
+                                editEnabled={editEnabled}
+                                editing={editProfile}
+                                onEdit={() => setEditProfile(true)}
+                                onSave={() => handleSaveProfile()}
+                                onCancel={() => setEditProfile(false)}
+                            />
+                        </Stack>
+                        <Profile text={text} onChange={handleTextChange} />
+                    </CardContent>
                 </Stack>
-                <Profile text={text} onChange={handleTextChange} />
-            </CardContent>
-            </Stack>
-            <CardActions>
-                <FormControlLabel
-                    control={<Checkbox
-                        disabled={!inviteEnabled}
-                        checked={invited}
-                        onChange={(e) => onSaveInvited && onSaveInvited(e.target.checked)}
-                    />}
-                    label="Invite"
-                />
-                {contactEnabled ? <Contact memberGoldId={member.id} /> : ''}
-            </CardActions>
+                <CardActions>
+                    <FormControlLabel
+                        control={<Checkbox
+                            disabled={!inviteEnabled}
+                            checked={invited}
+                            onChange={(e) => onSaveInvited && onSaveInvited(e.target.checked)}
+                        />}
+                        label="Invite"
+                    />
+                    {contactEnabled ? <Contact memberGoldId={member.id} /> : ''}
+                </CardActions>
             </Stack>
         </Card>
     );
