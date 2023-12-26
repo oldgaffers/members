@@ -70,7 +70,7 @@ export function CrewCards({
   const m = [...members, ...testdata];
 
   return (
-    <Box overflow='auto' minWidth='50vw'>
+    <Box overflow='auto' minWidth='50vw' maxWidth='85vw' >
       <Stack direction='row'>{m.map((m) => <CrewCard
         key={m.id}
         contactEnabled={contactEnabled}
