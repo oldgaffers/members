@@ -4,6 +4,7 @@ import { Stack, Typography } from '@mui/material';
 import EventForm from './EventForm';
 import { postScopedData } from './lib/api.mts';
 import AYearOfEvents from "./AYearOfEvents";
+import RoleRestricted from "./RoleRestricted";
 
 export default function FindCrew() {
   const { getAccessTokenSilently } = useAuth0();
@@ -32,20 +33,16 @@ export default function FindCrew() {
   };
 
   return (
-    <Stack spacing={1}>
-      <Typography>Looking for crew for your your cruising or racing adventures?</Typography>
-      <Typography>
-        Here is our list of voyages. When you create your voyage it will be added.
-      </Typography>
-      { /*<MyCalendar /> */}
-      <AYearOfEvents />
-      <EventForm onCreate={handleCreate} />
-      <Typography>
-        We'd also like to support Area Events. Such an event can have multiple boats attending and multiple
-        people attending, either as crew or on foot. Knowing who is on which boat would be useful.
-      </Typography>
-      <Typography>If you allow it people will be able sign-up for your event.</Typography>
-      <Typography>An event might be a rally, a race, or a cruise in company.</Typography>
-    </Stack>
+    <RoleRestricted role='member'>
+      <Stack spacing={1}>
+        <Typography>Looking for crew for your your cruising or racing adventures?</Typography>
+        <Typography>
+          Here is our list of voyages. When you create your voyage it will be added.
+        </Typography>
+        { /*<MyCalendar /> */}
+        <AYearOfEvents />
+        <EventForm onCreate={handleCreate} />
+      </Stack>
+    </RoleRestricted>
   );
 }

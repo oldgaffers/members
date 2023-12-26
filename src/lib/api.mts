@@ -1,4 +1,3 @@
-import { User } from "@auth0/auth0-react"
 import { Member } from "./membership.mts"
 
 export type Boat = {
@@ -42,18 +41,21 @@ export async function geolocate(place: string) {
   return undefined;
 }
 
-// N.B. member is actually GOLD ID, this is a bit confusing
-export async function postGeneralEnquiry(
-  scope: string,
-  subject: string,
-  data: { type: string, name: string, email: string, member: number, text: string },
-  ) {
+interface MemberUpdate extends Member {
+  text: string
+}
+
+export async function postGeneralEnquiry(scope: string, subject: string, data: MemberUpdate, token: string | undefined) {
+  const headers: any = { 'content-type': 'application/json' };
+  if (token) {
+    headers.Authorization = `Bearer ${token}`;
+  }
   return fetch(
     `${api1}/default/${scope}/${subject}`,
     {
       method: 'post',
       body: JSON.stringify(data),
-      headers: { 'content-type': 'application/json' },
+      headers,
     },
   );
 }

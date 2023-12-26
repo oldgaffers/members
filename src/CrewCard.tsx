@@ -5,7 +5,6 @@ import ImageList from '@mui/material/ImageList';
 import ImageListItem from '@mui/material/ImageListItem';
 import ImageListItemBar from '@mui/material/ImageListItemBar';
 import IconButton from '@mui/material/IconButton';
-import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import { Member } from './lib/membership.mts';
 import { Box, Checkbox, FormControlLabel, Stack } from '@mui/material';
@@ -23,9 +22,11 @@ export type CrewCardProps = {
     member: Member
     contactEnabled?: boolean
     inviteEnabled?: boolean
-    profile?: string
     editEnabled?: boolean
-    onSave?: Function
+    invited?: boolean
+    profile?: string
+    onSaveProfile?: Function
+    onSaveInvited?: Function
 }
 
 type CardImageProps = {
@@ -185,18 +186,20 @@ export default function CrewCard({
     inviteEnabled = false,
     editEnabled = false,
     profile = 'crewing',
-    onSave,
+    invited = false,
+    onSaveProfile,
+    onSaveInvited,
 }: CrewCardProps) {
+    const name = `${member.firstname} ${member.lastname}`;
     const [text, setText] = useState<string>(((profile === 'skipper') ? member.profile : member.crewingprofile) ?? '');
     const [editProfile, setEditProfile] = useState(false);
-    const name = `${member.firstname} ${member.lastname}`;
-    const [invited, setInvited] = useState<boolean>(false);
     const [pictures, setPictures] = useState<Picture[]>((member.pictures || []).map((p) => ({
         title: name,
         img: p,
         use: false,
         primary: false,
     })));
+
     const handleTextChange = editProfile ? (value: string) => setText(value) : undefined;
 
     function handleDelete(index: number) {
@@ -205,10 +208,10 @@ export default function CrewCard({
         setPictures(p);
     }
 
-    function handleSave() {
+    function handleSaveProfile() {
         setEditProfile(false);
-        if (onSave) {
-            onSave(profile, text, pictures);
+        if (onSaveProfile) {
+            onSaveProfile(profile, text);
         }
     }
 
@@ -226,7 +229,7 @@ export default function CrewCard({
                         editEnabled={editEnabled}
                         editing={editProfile}
                         onEdit={() => setEditProfile(true)}
-                        onSave={() => handleSave()}
+                        onSave={() => handleSaveProfile()}
                         onCancel={() => setEditProfile(false)}
                     />
                 </Stack>
@@ -236,12 +239,13 @@ export default function CrewCard({
             <CardActions>
                 <FormControlLabel
                     control={<Checkbox
-                        disabled={!inviteEnabled} onChange={(e) => setInvited(e.target.checked)} checked={invited}
+                        disabled={!inviteEnabled}
+                        checked={invited}
+                        onChange={(e) => onSaveInvited && onSaveInvited(e.target.checked)}
                     />}
                     label="Invite"
                 />
                 {contactEnabled ? <Contact memberGoldId={member.id} /> : ''}
-                {/*<Button onClick={() => alert('not done')} size='small' disabled={!inviteEnabled}>More</Button>*/}
             </CardActions>
             </Stack>
         </Card>

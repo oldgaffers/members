@@ -18,7 +18,6 @@ import membersBoats from './lib/members_boats.mts';
 import { Boat, getFilterable } from './lib/api.mts';
 import LocationPicker from './LocationPicker';
 import { CrewCards } from './CrewCards'
-import { Member } from './lib/membership.mts';
 
 type EventFormProps = {
   onCreate: Function
@@ -43,6 +42,7 @@ const useGetMyBoats = (members: any[] | undefined): { data?: Boat[], loading?: b
 
 export default function EventForm({ onCreate }: EventFormProps) {
   const ref = createRef<HTMLFormElement>();
+  const [invites, setInvites] = useState<Set<number>>(new Set<number>());
   const [specifics, setSpecifics] = useState('');
   const [start, setStart] = useState<string | undefined>();
   const [end, setEnd] = useState<string | undefined>();
@@ -111,6 +111,17 @@ export default function EventForm({ onCreate }: EventFormProps) {
         return `You've added ${places?.length} places to your voyage`;
     }
   };
+
+  function handleSaveInvited(id: number, invited: boolean) {
+    console.log('handleSaveInvited', id, invited);
+    const s = new Set(invites);
+    if (invited) {
+      s.add(id);
+    } else {
+      s.delete(id);
+    }
+    setInvites(s);
+  }
 
   const ready = start && end;
 
@@ -265,7 +276,7 @@ export default function EventForm({ onCreate }: EventFormProps) {
               If you check the invite box they will be emailed the details of your event and encouraged
               to get back to you.
             </Typography>
-            <CrewCards inviteEnabled contactEnabled />
+            <CrewCards inviteEnabled contactEnabled invites={[...invites]} onUpdateInvite={handleSaveInvited} />
           </Grid>
           <Grid>
             * If you make an opportunity visible, then people will be able to contact you

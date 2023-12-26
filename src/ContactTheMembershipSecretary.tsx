@@ -17,7 +17,7 @@ type ContactTheMembershipSecretaryProps = {
 export default function ContactTheMembershipSecretary({
   user, data, onCancel, onSubmit, open,
 }: ContactTheMembershipSecretaryProps) {
-  const [text, setText] = useState(data);
+  const [text, setText] = useState<string>(data);
 
   const handleSubmit = () => {
     onSubmit(user, text);

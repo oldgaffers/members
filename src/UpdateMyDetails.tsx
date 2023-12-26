@@ -92,6 +92,7 @@ function MyDetails() {
   const memberNo = user?.['https://oga.org.uk/member'];
   const memberResult = useQuery(MEMBER_QUERY, { variables: { members: [memberNo] } });
   const [tab, setTab] = useState(0);
+  const [token, setToken] = useState<string|undefined>();
 
   const handleTabChange = (_event: any, newValue: SetStateAction<number>) => {
     setTab(newValue);
@@ -110,9 +111,10 @@ function MyDetails() {
       try {
         const r = await getFilterable();
         const myBoats = membersBoats(r, members);
-        const token = await getAccessTokenSilently();
+        const tok = await getAccessTokenSilently();
+        setToken(tok);
         const f: Boat[] = [];
-        const f1 = await Promise.all(myBoats.map((b) => (getBoat(b.oga_no, token))));
+        const f1 = await Promise.all(myBoats.map((b) => (getBoat(b.oga_no, tok))));
         f1.forEach((b) => {
           if (b) {
             f.push(b);
@@ -150,9 +152,12 @@ function MyDetails() {
     }
   }
 
-  const handleSubmitContact = (text: any) => {
+  const handleSubmitContact = (user: any, text: string) => {
+    console.log('handleSubmitContact', user);
+    console.log('handleSubmitContact', myRecord);
+    const { firstname, lastname } = myRecord as Member; 
     setOpenContact(false);
-    postGeneralEnquiry('member', 'profile', { user, text })
+    postGeneralEnquiry('member', 'profile', { firstname, lastname, id, text }, token)
       .then((response) => {
         console.log(response);
         setSnackBarOpen(true);

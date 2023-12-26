@@ -99,7 +99,7 @@ function ContactDialog({
 export default function Contact({ memberGoldId, text = 'Contact' }: ContactProps) {
     const [open, setOpen] = useState(false);
     const [snackBarOpen, setSnackBarOpen] = useState(false);
-    const { user } = useAuth0();
+    const { user, getAccessTokenSilently } = useAuth0();
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -119,7 +119,8 @@ export default function Contact({ memberGoldId, text = 'Contact' }: ContactProps
         if (user?.name) {
             data.name = user.name;
         }
-        postGeneralEnquiry('public', 'contact', data)
+        getAccessTokenSilently().then((token) => {
+            postGeneralEnquiry('public', 'contact', data, token)
             .then((response) => {
                 console.log(response)
                 setSnackBarOpen(true);
@@ -128,6 +129,8 @@ export default function Contact({ memberGoldId, text = 'Contact' }: ContactProps
                 console.log("post", error);
                 // TODO snackbar from response.data
             });
+        });
+
     };
 
     return (

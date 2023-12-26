@@ -11,8 +11,8 @@ export default function Profile({ member, profile, user }: { member: Member, pro
     const [progress, setProgress] = useState<number>(0);
     const [uploading, setUploading] = useState<boolean>(false);
   
-    function handleSave(profile: string, text: string, pictures: File[]) {
-      console.log('handleSave', profile, text, pictures);
+    function handleSave(profile: string, text: string) {
+      console.log('handleSave', profile, text);
       alert('not done');
     }
   
@@ -35,7 +35,7 @@ export default function Profile({ member, profile, user }: { member: Member, pro
     return <>
       <Typography>This is your {profile} profile card</Typography>
       <Stack direction='row' spacing={2} >
-        <CrewCard member={m} profile={profile} editEnabled={true} onSave={handleSave} />
+        <CrewCard member={m} profile={profile} editEnabled={true} onSaveProfile={handleSave} />
         <Stack>
           <Typography>You can customise your card by adding and removing pictures and editing the text.
             Your profile can be saved but won't be visible until it is published.

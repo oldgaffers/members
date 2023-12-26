@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useAuth0 } from '@auth0/auth0-react';
 import { Alert, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Snackbar } from '@mui/material';
 import { postGeneralEnquiry } from './lib/api.mts';
 import { type Member } from './lib/membership.mts';
@@ -8,6 +9,7 @@ type UpdateConsentProps = {
 }
 
 export default function UpdateConsent({ member }: UpdateConsentProps) {
+    const { getAccessTokenSilently } = useAuth0();
     const [open, setOpen] = useState(false);
     const [snackBarOpen, setSnackBarOpen] = useState(false);
     const { GDPR } = member;
@@ -22,18 +24,25 @@ export default function UpdateConsent({ member }: UpdateConsentProps) {
     };
 
     const handleClose = () => {
-        const newData = { ...member, GDPR: !member.GDPR };
-        delete newData.__typename
-        // console.log('newData', newData);
-        postGeneralEnquiry('member', 'profile', newData)
-            .then((response) => {
-                console.log("post", response);
-                setSnackBarOpen(true);
-            })
-            .catch((error) => {
-                console.log("post", error);
-                // TODO snackbar from response.data
-            });
+        const gdpr = !member.GDPR
+        const { firstname, lastname, id } = member;
+        const text = `Dear OGA Membership Secretary,
+  <br />my Membership number is ${member.member} and my GOLD Id is ${member.id}.
+  <br />I would like my membership data to match the following:
+  <br />Yearbook permission: ${gdpr}
+  <br />kind regards ${member.firstname}
+  `;
+        getAccessTokenSilently().then((token) => {
+            postGeneralEnquiry('member', 'profile', { firstname, lastname, id, text }, token)
+                .then((response) => {
+                    console.log("post", response);
+                    setSnackBarOpen(true);
+                })
+                .catch((error) => {
+                    console.log("post", error);
+                    // TODO snackbar from response.data
+                });
+        });
         setOpen(false);
     };
 
@@ -62,7 +71,7 @@ export default function UpdateConsent({ member }: UpdateConsentProps) {
                 anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
                 open={snackBarOpen}
                 autoHideDuration={2000}
-                onClose={() => setSnackBarOpen(false)}                
+                onClose={() => setSnackBarOpen(false)}
             >
                 <Alert severity="success">Thanks, we'll get back to you.</Alert>
             </Snackbar>
