@@ -2,7 +2,7 @@
 import { PropsWithChildren, SetStateAction, useEffect, useState } from 'react';
 import EditIcon from '@mui/icons-material/Edit';
 import { useAuth0 } from '@auth0/auth0-react';
-import { useMutation, useQuery, gql } from '@apollo/client';
+import { useQuery, gql } from '@apollo/client';
 import {
   Alert, Box, Button, CircularProgress, Snackbar, Stack, Tab, Tabs, Typography,
 } from '@mui/material';
@@ -26,7 +26,7 @@ const MEMBER_QUERY = gql(`query members($members: [Int]!) {
     }
   }`);
 
-
+/*
 const ADD_SKIPPER_PROFILE_MUTATION = gql`
 mutation skipperProfileMutation($id: Int!, $text: String!) {
   addSkipperProfile(id: $id, text: $text) { ok }
@@ -36,7 +36,7 @@ const ADD_CREW_PROFILE_MUTATION = gql`
 mutation crewProfileMutation($id: Int!, $text: String!) {
   addCrewProfile(id: $id, text: $text) { ok }
 }`;
-
+*/
 // TODO ReJoin
 
 function recordToHtml(d: Member | undefined) {
@@ -105,8 +105,8 @@ function MyDetails() {
   const [tab, setTab] = useState(0);
   const [token, setToken] = useState<string|undefined>();
   
-  const [addSkipperProfile, sp] = useMutation(ADD_SKIPPER_PROFILE_MUTATION);
-  const [addCrewingProfile, cp] = useMutation(ADD_CREW_PROFILE_MUTATION);
+  // const [addSkipperProfile, sp] = useMutation(ADD_SKIPPER_PROFILE_MUTATION);
+  // const [addCrewingProfile, cp] = useMutation(ADD_CREW_PROFILE_MUTATION);
   
   const handleTabChange = (_event: any, newValue: SetStateAction<number>) => {
     setTab(newValue);
@@ -217,6 +217,7 @@ function MyDetails() {
     return <CircularProgress />;
   }
 
+  /*
   if (sp.loading) {
     return 'Submitting...';
   }
@@ -224,6 +225,7 @@ function MyDetails() {
   if (cp.loading) {
     return 'Submitting...';
   }
+  */
 
   return (
     <Stack spacing={1}>
