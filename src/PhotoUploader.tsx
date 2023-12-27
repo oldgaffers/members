@@ -19,7 +19,7 @@ export default function PhotoUploader() {
   };
 
   const onUpload = async () => {
-    await postPhotos(pictures, copyright, user?.email || '', undefined, setProgress);
+    await postPhotos(pictures, copyright, user?.email || '', -1, undefined, setProgress);
   };
 
   const ready = () => {

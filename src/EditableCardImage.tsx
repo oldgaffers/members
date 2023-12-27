@@ -1,4 +1,4 @@
-import { useState, SetStateAction, useEffect, useRef } from "react"
+import { useState, SetStateAction, useEffect } from "react"
 import { FormControl, FormLabel, RadioGroup, FormControlLabel, Radio, LinearProgress, TextField, Button, Stack, IconButton, Box } from "@mui/material"
 import DeleteIcon from '@mui/icons-material/Delete';
 import Photodrop from "./PhotoDrop"
