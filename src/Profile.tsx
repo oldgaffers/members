@@ -32,14 +32,18 @@ export default function Profile({ member, profile, user }: { member: Member, pro
           editEnabled={true}
           onSaveProfile={handleSave}
           onAddImage={(url: string) => setPictures([url])}
+          onDeleteImage={() => setPictures([])}
+          onUseAvatar={(value: boolean) => setUseAvatar(value)}
         />
         <Stack>
-          <Typography>You can customise your card by adding and removing pictures and editing the text.
+          <Typography>You can customise your card with an optional picture and your choice of text.</Typography>
+          <Typography>
             Your profile can be saved but won't be visible until it is published.
-            If you have a profile picture associated with your login, you can use that, or you can add additional pictures.
-            You can favourite a single picture to represent you on the card or have a selection as a gallery.
           </Typography>
-          <FormControlLabel control={<Switch checked={useAvatar} onChange={(e) => setUseAvatar(e.target.checked)} />} label="Use my login picture" />
+          <Typography>
+            If we've picted a picture you don't like, or you don't want a picture, just click on the
+            rubbish bin.
+          </Typography>
           <Typography>Edit the text by clicking on the edit button above the text. Save the changes or cancel using the tick and cross
             buttons that appear during editing.</Typography>
             <FormControlLabel control={<Switch checked={publish} onChange={(e) => setPublish(e.target.checked)} />} label="Published" />

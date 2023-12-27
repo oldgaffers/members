@@ -4,15 +4,14 @@ import CardContent from '@mui/material/CardContent';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import { Member } from './lib/membership.mts';
-import { Box, Checkbox, FormControlLabel, LinearProgress, Stack } from '@mui/material';
+import { Box, Checkbox, FormControlLabel, Stack } from '@mui/material';
 import { ReactReallyTinyEditor as ReactTinyEditor } from '@ogauk/react-tiny-editor';
 import { MouseEventHandler, useState } from 'react';
 import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
 import CancelIcon from '@mui/icons-material/Cancel';
 import Contact from './Contact';
-import Photodrop from './PhotoDrop';
-import { postPhotos } from './lib/postphotos';
+import EditableCardImage from './EditableCardImage';
 
 export type CrewCardProps = {
     member: Member
@@ -24,34 +23,8 @@ export type CrewCardProps = {
     onSaveProfile?: Function
     onSaveInvited?: Function
     onAddImage?: Function
-}
-
-type CardImageProps = {
-    editEnabled?: boolean
-    onDelete?: Function
-    picture?: string
-    alt: string
-}
-
-function HeroImage({ src, alt, width, height }: { src: string, alt: string, width: number, height: number }) {
-    const rows = 1;
-    const cols = 1;
-    const s = `${src}?w=${width * cols}&h=${height * rows}&fit=crop&auto=format`;
-    return <img
-        style={{ width: '100%' }}
-        src={s}
-        srcSet={`${s}&dpr=2 2x`}
-        alt={alt}
-        loading="lazy"
-    />;
-}
-
-function CardImage({ picture, alt }: CardImageProps) {
-    if (picture) {
-        return <HeroImage src={picture} alt={alt} width={300} height={300} />;
-    }
-    return '';
-    // return <Skeleton variant="rounded" animation='wave' width='100%' height={240} />
+    onDeleteImage?: Function
+    onUseAvatar?: Function
 }
 
 function Profile({ text, onChange }: { text: string, onChange: Function | undefined }) {
@@ -102,12 +75,12 @@ export default function CrewCard({
     onSaveProfile,
     onSaveInvited,
     onAddImage,
+    onDeleteImage = () => console.log('delete image'),
+    onUseAvatar,
 }: CrewCardProps) {
     const name = `${member.firstname} ${member.lastname}`;
     const [text, setText] = useState<string>(((profile === 'skipper') ? member.profile : member.crewingprofile) ?? '');
     const [editProfile, setEditProfile] = useState(false);
-    const [progress, setProgress] = useState<number>(0);
-    const [uploading, setUploading] = useState<boolean>(false);
 
     const handleTextChange = editProfile ? (value: string) => setText(value) : undefined;
 
@@ -118,35 +91,19 @@ export default function CrewCard({
         }
     }
 
-    function onDrop(files: File[]) {
-        console.log('ondrop', files);
-        setUploading(true);
-        postPhotos(files, '', member.email ?? '', undefined, setProgress).then(
-            () => {
-                console.log('uploaded');
-                setUploading(false);
-            }
-        );
-        if (onAddImage && files.length > 0) {
-            onAddImage(URL.createObjectURL(files[0]));
-        }
-    }
-
     return (
         <Card sx={{ maxWidth: 345, minWidth: 250 }}>
             <Stack direction='column' justifyContent='space-between' height='100%'>
                 <Stack direction='column'>
-                    {
-                        ((member.pictures?.length || 0) > 0)
-                            ?
-                            <CardImage picture={member.pictures?.[0]} alt={name} editEnabled={editEnabled} />
-
-                            :
-                            <>
-                                <Photodrop onDrop={onDrop} preview={false} />
-                                {uploading ? <LinearProgress value={progress} /> : ''}
-                            </>
-                    }
+                    <EditableCardImage
+                        editEnabled={editEnabled}
+                        name={name}
+                        pictures={member.pictures || []}
+                        onAddImage={onAddImage}
+                        onDeleteImage={onDeleteImage}
+                        onUseAvatar={onUseAvatar}
+                        email={member.email ?? ''}
+                    />
                     <CardContent>
                         <Stack direction='row' justifyContent='space-between'>
                             <Typography variant="h6">
