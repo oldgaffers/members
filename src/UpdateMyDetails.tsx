@@ -271,14 +271,14 @@ function MyDetails() {
           member={myRecord}
           profile='skipper'
           user={user}
-          onUpdate={(profile: any) => addSkipperProfile({ variables: { id, profile } })}
+          onUpdate={(profile: any) => console.log(profile) /*addSkipperProfile({ variables: { id, profile } })*/}
         />
       </CustomTabPanel>
       <CustomTabPanel value={tab} index={4}>
         <Profile
           member={myRecord}
           profile='crewing' user={user}
-          onUpdate={(profile: any) => addCrewingProfile({ variables: { id, profile } })}
+          onUpdate={(profile: any) => console.log(profile)/*addCrewingProfile({ variables: { id, profile } })*/}
         />
       </CustomTabPanel>
       <ContactTheMembershipSecretary
