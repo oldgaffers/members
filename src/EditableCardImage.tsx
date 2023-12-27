@@ -1,4 +1,4 @@
-import { useState, SetStateAction } from "react"
+import { useState, SetStateAction, useEffect, useRef } from "react"
 import { FormControl, FormLabel, RadioGroup, FormControlLabel, Radio, LinearProgress, TextField, Button, Stack, IconButton, Box } from "@mui/material"
 import DeleteIcon from '@mui/icons-material/Delete';
 import Photodrop from "./PhotoDrop"
@@ -8,6 +8,7 @@ interface EditableCardImageProps {
     editEnabled: boolean
     name: string
     email: string
+    id: number
     pictures: string[]
     onAddImage?: Function
     onDeleteImage?: Function
@@ -22,6 +23,15 @@ type CardImageProps = {
 }
 
 function HeroImage({ src, alt, width, height }: { src: string, alt: string, width: number, height: number }) {
+    if (src?.includes('?')) {
+        return <img
+            crossOrigin="anonymous"
+            style={{ width: '100%' }}
+            src={src}
+            alt={alt}
+            loading="lazy"
+        />;
+    }
     const rows = 1;
     const cols = 1;
     const s = `${src}?w=${width * cols}&h=${height * rows}&fit=crop&auto=format`;
@@ -49,38 +59,67 @@ function CardImage({ picture, alt, onDelete }: CardImageProps) {
     </>;
 }
 
-export default function EditableCardImage({ editEnabled, name, email, pictures, onAddImage, onDeleteImage, onUseAvatar }: EditableCardImageProps) {
+export default function EditableCardImage({ editEnabled, id, name, email, pictures, onAddImage, onDeleteImage, onUseAvatar }: EditableCardImageProps) {
     const [progress, setProgress] = useState<number>(0);
     const [uploading, setUploading] = useState<boolean>(false);
     const [imageChoice, setImageChoice] = useState<string>('nothing');
+    const [url, setUrl] = useState<string>('');
+    const [web, setWeb] = useState<string>('');
+
+    useEffect(() => {
+        let timeoutId: number | undefined;
+        if (url !== '') {
+            timeoutId = setTimeout(() => {
+                if (url !== '') {
+                    setUploading(false);
+                    handleAddImage(url);
+                }
+            }, 2000);
+        }
+
+        // Cleanup function to clear the timeout if the component unmounts
+        if (timeoutId) {
+            return () => clearTimeout(timeoutId);
+        }
+    }, [url]);
+
+    function handleAddImage(value: string) {
+        if (onAddImage) {
+            onAddImage(value);
+        }
+    }
 
     function handleChange(e: { target: { value: SetStateAction<string> } }) {
         setImageChoice(e.target.value);
         if (onUseAvatar) {
-            console.log('use avatar');
             onUseAvatar(e.target.value === 'avatar');
-        } else {
-            console.log('use avatar but no function to call')
         }
     }
 
     function onDrop(files: File[]) {
-        console.log('ondrop', files);
+        if (files.length === 0) {
+            return;
+        }
         setUploading(true);
-        postPhotos(files, '', email, undefined, setProgress).then(
-            () => {
-                console.log('uploaded');
-                setUploading(false);
+        postPhotos(files, '', email, id, undefined, setProgress).then(
+            (r: any) => {
+                setUrl(r[0]);
             }
         );
-        if (onAddImage && files.length > 0) {
-            onAddImage(URL.createObjectURL(files[0]));
-        }
+    }
+
+    function handleWebImage() {
+        if (web !== '')
+            handleAddImage(web);
     }
 
     function handleDeleteImage() {
+        setImageChoice('nothing');
         if (onDeleteImage) {
             onDeleteImage();
+        }
+        if (onUseAvatar) {
+            onUseAvatar(false);
         }
     }
 
@@ -107,7 +146,12 @@ export default function EditableCardImage({ editEnabled, name, email, pictures, 
             (imageChoice === 'web')
                 ?
                 <Stack direction='row'>
-                    <TextField placeholder='type or paste a url'/><Button>set</Button>
+                    <TextField
+                        value={web}
+                        onChange={(event: React.ChangeEvent<HTMLInputElement>) => setWeb(event.target.value)}
+                        placeholder='type or paste a url'
+                    />
+                    <Button onClick={handleWebImage}>set</Button>
                 </Stack>
                 :
                 (imageChoice === 'upload')

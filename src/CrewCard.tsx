@@ -98,6 +98,7 @@ export default function CrewCard({
                     <EditableCardImage
                         editEnabled={editEnabled}
                         name={name}
+                        id={member.id}
                         pictures={member.pictures || []}
                         onAddImage={onAddImage}
                         onDeleteImage={onDeleteImage}

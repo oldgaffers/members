@@ -245,10 +245,10 @@ function MyDetails() {
         />
       </CustomTabPanel>
       <CustomTabPanel value={tab} index={3}>
-        <Profile member={myRecord} profile='skipper' user={user} />
+        <Profile member={myRecord} profile='skipper' user={user} onUpdate={(v: any) => console.log('skipper', v)} />
       </CustomTabPanel>
       <CustomTabPanel value={tab} index={4}>
-        <Profile member={myRecord} profile='crewing' user={user} />
+        <Profile member={myRecord} profile='crewing' user={user} onUpdate={(v: any) => console.log('crewing', v)}/>
       </CustomTabPanel>
       <ContactTheMembershipSecretary
         user={user}

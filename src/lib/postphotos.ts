@@ -1,27 +1,21 @@
 import { SetStateAction } from 'react';
 import { fromCognitoIdentity } from "@aws-sdk/credential-providers";
-import { S3Client } from "@aws-sdk/client-s3";
+import { GetObjectCommand, ListObjectsCommand, S3Client } from "@aws-sdk/client-s3";
 import { Upload } from "@aws-sdk/lib-storage";
 import { getUploadCredentials } from './api.mjs';
+import { v4 as uuidv4 } from 'uuid';
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
-function allProgress(proms: any[], progress_cb: { (p: any): void; (arg0: number): void; }) {
-    let d = 0;
-    progress_cb(0);
-    return Promise.allSettled(proms.map((p: Promise<any>) => {
-        return p.then(() => {
-            d++;
-            progress_cb((d * 100) / proms.length);
-        }).catch((err: any) => console.log(err));
-    }));
-}
 
-export async function postPhotos(fileList: File[], copyright: string, email: string, albumKey: string | undefined, setProgress: { (value: SetStateAction<number>): void; (arg0: any): void; }) {
+
+export async function postPhotos(fileList: File[], copyright: string, email: string, id: number, albumKey: string | undefined, setProgress: { (value: SetStateAction<number>): void; (arg0: any): void; }) {
     if (fileList?.length > 0) {
         try {
             const { bucketName, region, identityId } = await getUploadCredentials();
             const credentials = fromCognitoIdentity({ identityId, clientConfig: { region } });
             const client = new S3Client({ region, credentials });
-            const uploads = fileList.map((file) => {
+            const x = fileList.map((file) => ({ uuid: uuidv4(), file }));
+            const uploads = x.map(({file, uuid}) => {
                 const params: any = {
                     Bucket: bucketName,
                     Key: `${email}/${file.name}`,
@@ -30,19 +24,28 @@ export async function postPhotos(fileList: File[], copyright: string, email: str
                 };
                 if (albumKey) {
                     params.Metadata = { albumKey, copyright };
+                } else {
+                    params.Metadata = { uuid, id: `${id}` }
                 }
+                console.log('P', params);
                 const upload = new Upload({ client, params });
                 upload.on("httpUploadProgress", (progress: any) => {
-                    console.log('progress', progress);
+                    const p = Math.ceil(100 * (progress.loaded / progress.total));
+                    console.log('progress', p, progress);
+                    setProgress(p);
                 });
-                const p = upload.done();
-                return p;
+                return upload.done();
             });
-            const a = await allProgress(uploads, (p: any) => {
-                setProgress(p);
-            });
-            console.log(a);
-            return a;
+            await Promise.allSettled(uploads);
+            const settled = await Promise.allSettled(x.map(async ({file, uuid}) => {
+                const key = `${id}/${uuid}.${file.name.replace(/^.*\./, '')}`;
+                const command = new GetObjectCommand({
+                    Bucket: 'boatregister-public',
+                    Key: key,
+                });
+                return getSignedUrl(client, command, { expiresIn: 3600 });
+            }));
+            return settled.map((r: any) => (r.value));
         } catch (e) {
             // console.log(e);
         }

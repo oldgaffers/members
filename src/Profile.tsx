@@ -2,12 +2,29 @@ import { useEffect, useState } from "react";
 import { FormControlLabel, Stack, Switch, Typography } from "@mui/material";
 import CrewCard from "./CrewCard";
 import { Member } from "./lib/membership.mts";
+import { User } from "@auth0/auth0-react";
 
-export default function Profile({ member, profile, user }: { member: Member, profile: string, user: any }) {
+interface ProfileProps {
+  member: Member,
+  profile: string,
+  user: User
+  onUpdate: Function
+}
+
+export default function Profile({ member, profile, user, onUpdate }: ProfileProps) {
     const [useAvatar, setUseAvatar] = useState<boolean>(!!user.picture);
     const [publish, setPublish] = useState<boolean>(false);
     const [pictures, setPictures] = useState<string[]>(member.pictures ?? []);
 
+    useEffect(() => {
+      console.log('picture update')
+      onUpdate({
+        profile,
+        pictures,
+        publish
+      })
+    }, [pictures, profile, publish]);
+  
     useEffect(() => {
       if (useAvatar && user.picture) {
         setPictures([user.picture, ...pictures])
@@ -18,7 +35,15 @@ export default function Profile({ member, profile, user }: { member: Member, pro
   
     function handleSave(profile: string, text: string) {
       console.log('handleSave', profile, text);
-      alert('not done');
+      onUpdate({
+        profile: text,
+        pictures,
+        publish
+      })
+    }
+  
+    function handleAddImage(url: string) {
+      setPictures([url]);
     }
 
     const m = { ...member, pictures };
@@ -31,7 +56,7 @@ export default function Profile({ member, profile, user }: { member: Member, pro
           profile={profile}
           editEnabled={true}
           onSaveProfile={handleSave}
-          onAddImage={(url: string) => setPictures([url])}
+          onAddImage={handleAddImage}
           onDeleteImage={() => setPictures([])}
           onUseAvatar={(value: boolean) => setUseAvatar(value)}
         />
