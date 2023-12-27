@@ -36,7 +36,7 @@ export default function Profile({ member, profile, user, onUpdate }: ProfileProp
     function handleSave(profile: string, text: string) {
       console.log('handleSave', profile, text);
       onUpdate({
-        profile: text,
+        text,
         pictures,
         publish
       })

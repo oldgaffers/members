@@ -2,7 +2,7 @@
 import { PropsWithChildren, SetStateAction, useEffect, useState } from 'react';
 import EditIcon from '@mui/icons-material/Edit';
 import { useAuth0 } from '@auth0/auth0-react';
-import { useQuery, gql } from '@apollo/client';
+import { useMutation, useQuery, gql } from '@apollo/client';
 import {
   Alert, Box, Button, CircularProgress, Snackbar, Stack, Tab, Tabs, Typography,
 } from '@mui/material';
@@ -25,6 +25,17 @@ const MEMBER_QUERY = gql(`query members($members: [Int]!) {
         postcode type payment address country yob start
     }
   }`);
+
+
+const ADD_SKIPPER_PROFILE_MUTATION = gql`
+mutation skipperProfileMutation($id: Int!, $text: String!) {
+  addSkipperProfile(id: $id, text: $text) { ok }
+}`;
+
+const ADD_CREW_PROFILE_MUTATION = gql`
+mutation crewProfileMutation($id: Int!, $text: String!) {
+  addCrewProfile(id: $id, text: $text) { ok }
+}`;
 
 // TODO ReJoin
 
@@ -93,7 +104,10 @@ function MyDetails() {
   const memberResult = useQuery(MEMBER_QUERY, { variables: { members: [memberNo] } });
   const [tab, setTab] = useState(0);
   const [token, setToken] = useState<string|undefined>();
-
+  
+  const [addSkipperProfile, sp] = useMutation(ADD_SKIPPER_PROFILE_MUTATION);
+  const [addCrewingProfile, cp] = useMutation(ADD_CREW_PROFILE_MUTATION);
+  
   const handleTabChange = (_event: any, newValue: SetStateAction<number>) => {
     setTab(newValue);
   };
@@ -203,6 +217,14 @@ function MyDetails() {
     return <CircularProgress />;
   }
 
+  if (sp.loading) {
+    return 'Submitting...';
+  }
+  
+  if (cp.loading) {
+    return 'Submitting...';
+  }
+
   return (
     <Stack spacing={1}>
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
@@ -242,13 +264,22 @@ function MyDetails() {
         <BoatsByMembership
           boats={boats}
           onChange={onChange}
-        />
+        /> 
       </CustomTabPanel>
       <CustomTabPanel value={tab} index={3}>
-        <Profile member={myRecord} profile='skipper' user={user} onUpdate={(v: any) => console.log('skipper', v)} />
+        <Profile
+          member={myRecord}
+          profile='skipper'
+          user={user}
+          onUpdate={(profile: any) => addSkipperProfile({ variables: { id, profile } })}
+        />
       </CustomTabPanel>
       <CustomTabPanel value={tab} index={4}>
-        <Profile member={myRecord} profile='crewing' user={user} onUpdate={(v: any) => console.log('crewing', v)}/>
+        <Profile
+          member={myRecord}
+          profile='crewing' user={user}
+          onUpdate={(profile: any) => addCrewingProfile({ variables: { id, profile } })}
+        />
       </CustomTabPanel>
       <ContactTheMembershipSecretary
         user={user}
