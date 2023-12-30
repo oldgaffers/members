@@ -23,8 +23,6 @@ export type Member = {
   mobile?: string
   telephone?: string
   interests?: string[]
-  profile?: string
-  crewingprofile?: string
   skipper?: SailingProfile
   crewing?: SailingProfile
   __typename?: string

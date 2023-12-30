@@ -42,7 +42,6 @@ export function useMembers(
   const membersResult = useQuery(gql`query members { members { 
     salutation firstname lastname member id GDPR postcode
     status telephone mobile town area interests smallboats
-    crewingprofile
    } }`);
 
   useEffect(() => {
@@ -83,7 +82,7 @@ export function useMembers(
 
   const filteredMembers = members
     .filter((m: Member) => memberPredicate(m.id, m, excludeNotPaid, excludeNoConsent)
-      && (m.crewingprofile || !crew));
+      && (!crew || m.crewing?.published));
 
   const boats = membersBoats(filterable, filteredMembers);
 

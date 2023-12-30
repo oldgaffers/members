@@ -28,6 +28,7 @@ export default function Profile({ member, profileName, user, onUpdate }: Profile
   }
 
   useEffect(() => {
+    // this if prevents onUpdate being called on first render
     if (JSON.stringify(profile) !== JSON.stringify(initialProfile)) {
       onUpdate(profile);
     }
@@ -54,7 +55,7 @@ export default function Profile({ member, profileName, user, onUpdate }: Profile
     <Typography>This is your {profileName} profile card</Typography>
     <Stack direction='row' spacing={2} >
       <CrewCard
-        name={''}
+        name={`${member.firstname} ${member.lastname}`}
         goldId={member.id}
         email={member.email ?? ''}
         profile={profile}

@@ -14,14 +14,14 @@ import Interests from './MemberDetails';
 import ContactTheMembershipSecretary from './ContactTheMembershipSecretary';
 import { Boat, getBoat, getFilterable, postGeneralEnquiry, postScopedData } from './lib/api.mts';
 import membersBoats from './lib/members_boats.mts';
-import { Member } from './lib/membership.mts';
+import { Member, SailingProfile } from './lib/membership.mts';
 import Profile from './Profile';
 
 const MEMBER_QUERY = gql(`query members($members: [Int]!) {
     members(members: $members) {
         salutation firstname lastname member id GDPR 
         smallboats status telephone mobile area town
-        interests email primary profile crewingprofile
+        interests email primary
         postcode type payment address country yob start
     }
   }`);
@@ -281,7 +281,7 @@ function MyDetails() {
           member={myRecord}
           profileName='skipper'
           user={user}
-          onUpdate={(profile: any) => addSkipperProfile({ variables: { id, profile } })}
+          onUpdate={(profile: SailingProfile) => addSkipperProfile({ variables: { id, profile } })}
         />
       </CustomTabPanel>
       <CustomTabPanel value={tab} index={4}>
@@ -289,7 +289,7 @@ function MyDetails() {
           member={myRecord}
           profileName='crewing'
           user={user}
-          onUpdate={(profile: any) => addCrewingProfile({ variables: { id, profile } })}
+          onUpdate={(profile: SailingProfile) => addCrewingProfile({ variables: { id, profile } })}
         />
       </CustomTabPanel>
       <ContactTheMembershipSecretary
