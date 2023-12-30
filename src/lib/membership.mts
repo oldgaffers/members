@@ -1,3 +1,9 @@
+export type SailingProfile = {
+  text: string
+  pictures: string[]
+  published: boolean
+}
+
 export type Member = {
   id: number
   member?: number
@@ -19,7 +25,8 @@ export type Member = {
   interests?: string[]
   profile?: string
   crewingprofile?: string
-  pictures?: string[]
+  skipper?: SailingProfile
+  crewing?: SailingProfile
   __typename?: string
 }
 

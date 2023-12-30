@@ -107,7 +107,15 @@ function MyDetails() {
   
   // const [addSkipperProfile, sp] = useMutation(ADD_SKIPPER_PROFILE_MUTATION);
   // const [addCrewingProfile, cp] = useMutation(ADD_CREW_PROFILE_MUTATION);
-  
+
+  function addSkipperProfile(arg: { variables: { id: any; profile: any; }; }) {
+    console.log('addSkipperProfile', arg);
+  }
+
+  function addCrewingProfile(arg: { variables: { id: any; profile: any; }; }) {
+    console.log('addCrewingProfile', arg);
+  }
+
   const handleTabChange = (_event: any, newValue: SetStateAction<number>) => {
     setTab(newValue);
   };
@@ -271,16 +279,17 @@ function MyDetails() {
       <CustomTabPanel value={tab} index={3}>
         <Profile
           member={myRecord}
-          profile='skipper'
+          profileName='skipper'
           user={user}
-          onUpdate={(profile: any) => console.log(profile) /*addSkipperProfile({ variables: { id, profile } })*/}
+          onUpdate={(profile: any) => addSkipperProfile({ variables: { id, profile } })}
         />
       </CustomTabPanel>
       <CustomTabPanel value={tab} index={4}>
         <Profile
           member={myRecord}
-          profile='crewing' user={user}
-          onUpdate={(profile: any) => console.log(profile)/*addCrewingProfile({ variables: { id, profile } })*/}
+          profileName='crewing'
+          user={user}
+          onUpdate={(profile: any) => addCrewingProfile({ variables: { id, profile } })}
         />
       </CustomTabPanel>
       <ContactTheMembershipSecretary

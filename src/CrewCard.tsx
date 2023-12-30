@@ -3,7 +3,7 @@ import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
-import { Member } from './lib/membership.mts';
+import { SailingProfile } from './lib/membership.mts';
 import { Box, Checkbox, FormControlLabel, Stack } from '@mui/material';
 import { ReactReallyTinyEditor as ReactTinyEditor } from '@ogauk/react-tiny-editor';
 import { MouseEventHandler, useState } from 'react';
@@ -14,12 +14,14 @@ import Contact from './Contact';
 import EditableCardImage from './EditableCardImage';
 
 export type CrewCardProps = {
-    member: Member
+    name: string
+    goldId: number
+    email: string
+    profile: SailingProfile | undefined
     contactEnabled?: boolean
     inviteEnabled?: boolean
     editEnabled?: boolean
     invited?: boolean
-    profile?: string
     onSaveProfile?: Function
     onSaveInvited?: Function
     onAddImage?: Function
@@ -27,7 +29,7 @@ export type CrewCardProps = {
     onUseAvatar?: Function
 }
 
-function Profile({ text, onChange }: { text: string, onChange: Function | undefined }) {
+function TextEdit({ text, onChange }: { text: string, onChange: Function | undefined }) {
     if (onChange) {
         return <Box sx={{ display: 'flex' }}>
             <Box sx={{
@@ -46,7 +48,7 @@ function Profile({ text, onChange }: { text: string, onChange: Function | undefi
     />
 }
 
-function EditProfileButton({ editEnabled, editing, onEdit, onSave, onCancel }: {
+function EditTextButton({ editEnabled, editing, onEdit, onSave, onCancel }: {
     editEnabled: boolean,
     editing: boolean,
     onEdit: MouseEventHandler,
@@ -66,11 +68,13 @@ function EditProfileButton({ editEnabled, editing, onEdit, onSave, onCancel }: {
 }
 
 export default function CrewCard({
-    member,
+    name,
+    goldId,
+    email,
+    profile,
     contactEnabled = false,
     inviteEnabled = false,
     editEnabled = false,
-    profile = 'crewing',
     invited = false,
     onSaveProfile,
     onSaveInvited,
@@ -78,8 +82,7 @@ export default function CrewCard({
     onDeleteImage = () => console.log('delete image'),
     onUseAvatar,
 }: CrewCardProps) {
-    const name = `${member.firstname} ${member.lastname}`;
-    const [text, setText] = useState<string>(((profile === 'skipper') ? member.profile : member.crewingprofile) ?? '');
+    const [text, setText] = useState<string>(profile?.text ?? '');
     const [editProfile, setEditProfile] = useState(false);
 
     const handleTextChange = editProfile ? (value: string) => setText(value) : undefined;
@@ -87,7 +90,7 @@ export default function CrewCard({
     function handleSaveProfile() {
         setEditProfile(false);
         if (onSaveProfile) {
-            onSaveProfile(profile, text);
+            onSaveProfile(text);
         }
     }
 
@@ -98,19 +101,19 @@ export default function CrewCard({
                     <EditableCardImage
                         editEnabled={editEnabled}
                         name={name}
-                        id={member.id}
-                        pictures={member.pictures || []}
+                        id={goldId}
+                        pictures={profile?.pictures || []}
                         onAddImage={onAddImage}
                         onDeleteImage={onDeleteImage}
                         onUseAvatar={onUseAvatar}
-                        email={member.email ?? ''}
+                        email={email ?? ''}
                     />
                     <CardContent>
                         <Stack direction='row' justifyContent='space-between'>
                             <Typography variant="h6">
                                 {name}
                             </Typography>
-                            <EditProfileButton
+                            <EditTextButton
                                 editEnabled={editEnabled}
                                 editing={editProfile}
                                 onEdit={() => setEditProfile(true)}
@@ -118,7 +121,7 @@ export default function CrewCard({
                                 onCancel={() => setEditProfile(false)}
                             />
                         </Stack>
-                        <Profile text={text} onChange={handleTextChange} />
+                        <TextEdit text={text} onChange={handleTextChange} />
                     </CardContent>
                 </Stack>
                 <CardActions>
@@ -130,7 +133,7 @@ export default function CrewCard({
                         />}
                         label="Invite"
                     />
-                    {contactEnabled ? <Contact memberGoldId={member.id} /> : ''}
+                    {contactEnabled ? <Contact memberGoldId={goldId} /> : ''}
                 </CardActions>
             </Stack>
         </Card>
