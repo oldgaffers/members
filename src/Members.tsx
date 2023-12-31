@@ -42,6 +42,7 @@ export function useMembers(
   const membersResult = useQuery(gql`query members { members { 
     salutation firstname lastname member id GDPR postcode
     status telephone mobile town area interests smallboats
+    crewing { text pictures published }
    } }`);
 
   useEffect(() => {
