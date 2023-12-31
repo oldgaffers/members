@@ -1,5 +1,5 @@
 import { useState, SetStateAction, useEffect } from "react"
-import { FormControl, FormLabel, RadioGroup, FormControlLabel, Radio, LinearProgress, TextField, Button, Stack, IconButton, Box } from "@mui/material"
+import { FormControl, FormLabel, RadioGroup, FormControlLabel, Radio, TextField, Button, Stack, IconButton, Box } from "@mui/material"
 import DeleteIcon from '@mui/icons-material/Delete';
 import Photodrop from "./PhotoDrop"
 import { postPhotos } from "./lib/postphotos"
@@ -60,8 +60,6 @@ function CardImage({ picture, alt, onDelete }: CardImageProps) {
 }
 
 export default function EditableCardImage({ editEnabled, id, name, email, pictures, onAddImage, onDeleteImage, onUseAvatar }: EditableCardImageProps) {
-    const [progress, setProgress] = useState<number>(0);
-    const [uploading, setUploading] = useState<boolean>(false);
     const [imageChoice, setImageChoice] = useState<string>('nothing');
     const [url, setUrl] = useState<string>('');
     const [web, setWeb] = useState<string>('');
@@ -71,7 +69,6 @@ export default function EditableCardImage({ editEnabled, id, name, email, pictur
         if (url !== '') {
             timeoutId = setTimeout(() => {
                 if (url !== '') {
-                    setUploading(false);
                     handleAddImage(url);
                 }
             }, 2000);
@@ -100,8 +97,7 @@ export default function EditableCardImage({ editEnabled, id, name, email, pictur
         if (files.length === 0) {
             return;
         }
-        setUploading(true);
-        postPhotos(files, '', email, id, undefined, setProgress).then(
+        postPhotos(files, '', email, id, undefined, () => {}).then(
             (r: any) => {
                 setUrl(r[0]);
             }
@@ -122,7 +118,7 @@ export default function EditableCardImage({ editEnabled, id, name, email, pictur
             onUseAvatar(false);
         }
     }
-
+console.log('Q', pictures)
     if (pictures.length > 0) {
         return <CardImage picture={pictures[0]} alt={name} editEnabled={editEnabled} onDelete={handleDeleteImage} />;
     }
@@ -158,7 +154,6 @@ export default function EditableCardImage({ editEnabled, id, name, email, pictur
                     ?
                     <>
                         <Photodrop onDrop={onDrop} preview={false} />
-                        {uploading ? <LinearProgress value={progress} /> : ''}
                     </>
                     :
                     ''
