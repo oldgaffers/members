@@ -1,12 +1,11 @@
-import { useState } from 'react';
-import { Button } from '@mui/material';
+import { useRef, useState } from 'react';
 import 'dayjs/locale/en-gb';
 import { MapContainer, Marker, Popup, TileLayer, useMapEvents } from 'react-leaflet'
-import L, { LatLng } from 'leaflet';
+import L, { LatLng, Map } from 'leaflet';
 
 const defaultLocation = { lat: 54.5, lng: -3 };
 
-const defaultIcon = L.icon({
+export const defaultIcon = L.icon({
     iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
     shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
     iconSize: [25, 41], // size of the icon
@@ -19,6 +18,8 @@ const defaultIcon = L.icon({
 function MapComponent({ data }: { data: LatLng[] }) {
     const [markers, setMarkers] = useState<LatLng[]>(data);
     const [hack, setHack] = useState<{ x: number, y: number }>();
+    const bounds = L.latLngBounds(data[0], data[0]);
+    data.slice(1).forEach((d) => bounds.extend(d));
 
     const map = useMapEvents({
         click: (a) => {
@@ -40,6 +41,8 @@ function MapComponent({ data }: { data: LatLng[] }) {
         },
     })
 
+    map.fitBounds(bounds);
+
     return (<>{markers?.map((m) => <Marker key={JSON.stringify(m)} position={m} icon={defaultIcon}>
         <Popup>
             we might want to say something here
@@ -51,8 +54,6 @@ export default function VoyageMap({ places }: { places: LatLng[] }) {
     return (
         <MapContainer
             style={{ height: 300 }}
-            center={[defaultLocation.lat, defaultLocation.lng]}
-            zoom={6}
             scrollWheelZoom={false}
         >
             <TileLayer
