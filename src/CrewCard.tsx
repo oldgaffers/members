@@ -29,8 +29,14 @@ export type CrewCardProps = {
     onUseAvatar?: Function
 }
 
-function TextEdit({ text, onChange }: { text: string, onChange: Function | undefined }) {
-    if (onChange) {
+type TextEditProps = {
+    text: string, 
+    editEnabled: boolean
+    onChange: Function 
+}
+
+function TextEdit({ text, onChange, editEnabled }: TextEditProps) {
+    if (editEnabled) {
         return <Box sx={{ display: 'flex' }}>
             <Box sx={{
                 m: 1, border: 1, paddingBottom: 1, height: '15rem', width: '100%',
@@ -91,6 +97,8 @@ export default function CrewCard({
         }
     }
 
+    console.log('CC', editEnabled);
+
     return (
         <Card sx={{ maxWidth: 345, minWidth: 250 }}>
             <Stack direction='column' justifyContent='space-between' height='100%'>
@@ -118,7 +126,7 @@ export default function CrewCard({
                                 onCancel={() => setEditText(false)}
                             />
                         </Stack>
-                        <TextEdit text={text} onChange={(text: string) => setText(text)} />
+                        <TextEdit editEnabled={editEnabled} text={text} onChange={(text: string) => setText(text)} />
                     </CardContent>
                 </Stack>
                 <CardActions>

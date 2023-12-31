@@ -44,19 +44,24 @@ function HeroImage({ src, alt, width, height }: { src: string, alt: string, widt
     />;
 }
 
-function CardImage({ picture, alt, onDelete }: CardImageProps) {
-    return <>
-        <HeroImage src={picture} alt={alt} width={300} height={300} />
-        <Box sx={{ position: "relative", color: "white", top: -45, left: "1%", width: 50, }}>
-            <IconButton
-                sx={{ color: 'white', background: 'rgba(100, 100, 100, 0.2)', }}
-                aria-label='delete'
-                onClick={() => onDelete()}
-            >
-                <DeleteIcon />
-            </IconButton>
-        </Box>
-    </>;
+function CardImage({ picture, alt, editEnabled, onDelete }: CardImageProps) {
+    const w = 300;
+    const h = 300;
+    if (editEnabled) {
+        return <>
+            <HeroImage src={picture} alt={alt} width={w} height={h} />
+            <Box sx={{ position: "relative", color: "white", top: -45, left: "1%", width: 50, }}>
+                <IconButton
+                    sx={{ color: 'white', background: 'rgba(100, 100, 100, 0.2)', }}
+                    aria-label='delete'
+                    onClick={() => onDelete()}
+                >
+                    <DeleteIcon />
+                </IconButton>
+            </Box>
+        </>;
+    }
+    return <HeroImage src={picture} alt={alt} width={w} height={h} />;
 }
 
 export default function EditableCardImage({ editEnabled, id, name, email, pictures, onAddImage, onDeleteImage, onUseAvatar }: EditableCardImageProps) {
@@ -97,7 +102,7 @@ export default function EditableCardImage({ editEnabled, id, name, email, pictur
         if (files.length === 0) {
             return;
         }
-        postPhotos(files, '', email, id, undefined, () => {}).then(
+        postPhotos(files, '', email, id, undefined, () => { }).then(
             (r: any) => {
                 setUrl(r[0]);
             }
@@ -118,8 +123,13 @@ export default function EditableCardImage({ editEnabled, id, name, email, pictur
             onUseAvatar(false);
         }
     }
+
     if (pictures.length > 0) {
         return <CardImage picture={pictures[0]} alt={name} editEnabled={editEnabled} onDelete={handleDeleteImage} />;
+    }
+
+    if (!editEnabled) {
+        return '';
     }
 
     return <>
