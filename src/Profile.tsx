@@ -1,47 +1,69 @@
 import { useEffect, useState } from "react";
-import { FormControlLabel, Stack, Switch, Typography } from "@mui/material";
+import { CircularProgress, FormControlLabel, LinearProgress, Stack, Switch, Typography } from "@mui/material";
 import CrewCard from "./CrewCard";
 import { Member, SailingProfile } from "./lib/membership.mts";
-import { User } from "@auth0/auth0-react";
+import { useAuth0 } from "@auth0/auth0-react";
+import { DocumentNode, gql, useMutation, useQuery } from "@apollo/client";
 
-interface ProfileProps {
-  member: Member,
-  profileName: string,
-  user: User
-  onUpdate: Function
-}
+const mutations: Record<string, DocumentNode> = {
+  'skipper': gql`
+mutation sp($id: Int!, $profile: ProfileInput!) {
+  addSkipperProfile(id: $id, profile: $profile) { ok member { id skipper { text published pictures } } }
+}`,
+  'crewing': gql`
+mutation crewProfileMutation($id: Int!, $profile: ProfileInput!) {
+  addCrewingProfile(id: $id, profile: $profile) { ok member { id crewing { text published pictures } } }
+}`
+};
 
-export default function Profile({ member, profileName, user, onUpdate }: ProfileProps) {
-  const initialProfile: SailingProfile = ((profileName === 'skipper') ? member.skipper : member.crewing) ?? {
-    published: false,
-    text: '',
-    pictures: [],
-  };
+const MEMBER_QUERY = gql(`query members($ids: [Int]!) {
+  members(members: $members) {
+      firstname lastname email
+      skipper { text published pictures }
+      crewing { text published pictures }
+  }
+}`);
+
+export default function Profile({ profileName }: { profileName: string }) {
+  const { user } = useAuth0();
+  const id = user?.['https://oga.org.uk/id'];
   const [useAvatar, setUseAvatar] = useState<boolean>(false);
-  const [profile, setProfile] = useState<SailingProfile>(initialProfile);
+  const [profile, setProfile] = useState<SailingProfile>({ pictures: [], published: false, text: '' });
+  const [saving, setSaving] = useState<boolean>(false);
+  const [member, setMember] = useState<Member | undefined>();
+  const { loading, data } = useQuery(MEMBER_QUERY, { variables: { id } });
+  const [addProfile] = useMutation(mutations[profileName]);
 
   function addPicture(picture: string) {
-    console.log('addPicture', picture);
-    const p = profile.pictures ?? [];
+    const p = profile?.pictures ?? [];
     p.unshift(picture);
-    setProfile({ ...profile, pictures: p});
+    setProfile({ ...profile, pictures: p });
   }
 
   useEffect(() => {
-    // this if prevents onUpdate being called on first render
-    if (JSON.stringify(profile) !== JSON.stringify(initialProfile)) {
-      onUpdate(profile);
-    }
+    const { __typename, ...p } = profile; // TODO use removeTypenameFromVariables
+    setSaving(true);
+    const r = addProfile({ variables: { id, profile: p } });
+    r.then((re) => {
+      if (profileName === 'skipper') {
+        setProfile(re.data.addSkipperProfile.member.skipper);
+      } else {
+        setProfile(re.data.addCrewingProfile.member.crewing);
+      }
+      setSaving(false);
+    });
   }, [profile]);
 
   useEffect(() => {
-    if (useAvatar && user.picture) {
-      addPicture(user.picture);
-    } else {
-      const p = (profile.pictures ?? []).filter((p) => p !== user.picture);
-      setProfile({ ...profile, pictures: p });
+    if (user?.picture && profile) {
+      if (useAvatar && user.picture) {
+        addPicture(user.picture);
+      } else {
+        const p = (profile.pictures ?? []).filter((p) => p !== user.picture);
+        setProfile({ ...profile, pictures: p });
+      }
     }
-  }, [useAvatar]);
+  }, [useAvatar, user, profile]);
 
   function handleSave(newText: string) {
     setProfile({ ...profile, text: newText });
@@ -51,18 +73,32 @@ export default function Profile({ member, profileName, user, onUpdate }: Profile
     addPicture(url);
   }
 
+  if (loading) {
+    return <CircularProgress />;
+  }
+
+  if (data) {
+    const m = data.members[0];
+    setMember(m);
+    if (profileName == 'skipper') {
+      setProfile(m.skipper);
+    } else {
+      setProfile(m.crewing);
+    }
+  }
+
   return <>
     <Typography>This is your {profileName} profile card</Typography>
     <Stack direction='row' spacing={2} >
       <CrewCard
-        name={`${member.firstname} ${member.lastname}`}
-        goldId={member.id}
-        email={member.email ?? ''}
+        name={`${member?.firstname} ${member?.lastname}`}
+        goldId={id}
+        email={member?.email ?? ''}
         profile={profile}
         editEnabled={true}
         onSaveProfile={handleSave}
         onAddImage={handleAddImage}
-        onDeleteImage={() => setProfile({ ...profile, pictures: []})}
+        onDeleteImage={() => setProfile({ ...profile, pictures: [] })}
         onUseAvatar={(value: boolean) => setUseAvatar(value)}
       />
       <Stack>
@@ -79,5 +115,6 @@ export default function Profile({ member, profileName, user, onUpdate }: Profile
         <FormControlLabel control={<Switch checked={profile.published} onChange={(e) => setProfile({ ...profile, published: e.target.checked })} />} label="Published" />
       </Stack>
     </Stack>
+    {saving ? <LinearProgress /> : ''}
   </>;
 }

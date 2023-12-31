@@ -14,29 +14,19 @@ import Interests from './MemberDetails';
 import ContactTheMembershipSecretary from './ContactTheMembershipSecretary';
 import { Boat, getBoat, getFilterable, postGeneralEnquiry, postScopedData } from './lib/api.mts';
 import membersBoats from './lib/members_boats.mts';
-import { Member, SailingProfile } from './lib/membership.mts';
+import { Member } from './lib/membership.mts';
 import Profile from './Profile';
 
 const MEMBER_QUERY = gql(`query members($members: [Int]!) {
     members(members: $members) {
         salutation firstname lastname member id GDPR 
         smallboats status telephone mobile area town
-        interests email primary
+        interests email primary skipper { text published pictures } crewing { text published pictures  }
         postcode type payment address country yob start
     }
   }`);
 
-/*
-const ADD_SKIPPER_PROFILE_MUTATION = gql`
-mutation skipperProfileMutation($id: Int!, $text: String!) {
-  addSkipperProfile(id: $id, text: $text) { ok }
-}`;
 
-const ADD_CREW_PROFILE_MUTATION = gql`
-mutation crewProfileMutation($id: Int!, $text: String!) {
-  addCrewProfile(id: $id, text: $text) { ok }
-}`;
-*/
 // TODO ReJoin
 
 function recordToHtml(d: Member | undefined) {
@@ -104,17 +94,6 @@ function MyDetails() {
   const memberResult = useQuery(MEMBER_QUERY, { variables: { members: [memberNo] } });
   const [tab, setTab] = useState(0);
   const [token, setToken] = useState<string|undefined>();
-  
-  // const [addSkipperProfile, sp] = useMutation(ADD_SKIPPER_PROFILE_MUTATION);
-  // const [addCrewingProfile, cp] = useMutation(ADD_CREW_PROFILE_MUTATION);
-
-  function addSkipperProfile(arg: { variables: { id: any; profile: any; }; }) {
-    console.log('addSkipperProfile', arg);
-  }
-
-  function addCrewingProfile(arg: { variables: { id: any; profile: any; }; }) {
-    console.log('addCrewingProfile', arg);
-  }
 
   const handleTabChange = (_event: any, newValue: SetStateAction<number>) => {
     setTab(newValue);
@@ -126,7 +105,7 @@ function MyDetails() {
   };
 
   useEffect(() => {
-    async function fetchData() {
+    async function fetchBoatData() {
       if (boats.length > 0) {
         return;
       }
@@ -155,7 +134,7 @@ function MyDetails() {
         console.log(e);
       }
     }
-    fetchData();
+    fetchBoatData();
   }, [boats, members]);
 
   if (memberResult.loading) {
@@ -225,16 +204,6 @@ function MyDetails() {
     return <CircularProgress />;
   }
 
-  /*
-  if (sp.loading) {
-    return 'Submitting...';
-  }
-  
-  if (cp.loading) {
-    return 'Submitting...';
-  }
-  */
-
   return (
     <Stack spacing={1}>
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
@@ -277,20 +246,10 @@ function MyDetails() {
         /> 
       </CustomTabPanel>
       <CustomTabPanel value={tab} index={3}>
-        <Profile
-          member={myRecord}
-          profileName='skipper'
-          user={user}
-          onUpdate={(profile: SailingProfile) => addSkipperProfile({ variables: { id, profile } })}
-        />
+      <Profile profileName='skipper' />
       </CustomTabPanel>
       <CustomTabPanel value={tab} index={4}>
-        <Profile
-          member={myRecord}
-          profileName='crewing'
-          user={user}
-          onUpdate={(profile: SailingProfile) => addCrewingProfile({ variables: { id, profile } })}
-        />
+        <Profile profileName='crewing' />
       </CustomTabPanel>
       <ContactTheMembershipSecretary
         user={user}
