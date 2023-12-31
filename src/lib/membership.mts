@@ -2,6 +2,7 @@ export type SailingProfile = {
   text: string
   pictures: string[]
   published: boolean
+  __typename?: string
 }
 
 export type Member = {
