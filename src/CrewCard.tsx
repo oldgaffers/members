@@ -17,7 +17,7 @@ export type CrewCardProps = {
     name: string
     goldId: number
     email: string
-    profile: SailingProfile | undefined
+    profile?: SailingProfile
     contactEnabled?: boolean
     inviteEnabled?: boolean
     editEnabled?: boolean

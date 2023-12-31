@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { CircularProgress, FormControlLabel, LinearProgress, Stack, Switch, Typography } from "@mui/material";
 import CrewCard from "./CrewCard";
 import { Member, SailingProfile } from "./lib/membership.mts";
@@ -16,54 +16,51 @@ mutation crewProfileMutation($id: Int!, $profile: ProfileInput!) {
 }`
 };
 
-const MEMBER_QUERY = gql(`query members($ids: [Int]!) {
-  members(members: $members) {
-      firstname lastname email
-      skipper { text published pictures }
-      crewing { text published pictures }
+const MEMBER_QUERY = gql(`query members($id: Int!) {
+  members(id: $id) {
+    firstname lastname email
+    skipper { text published pictures }
+    crewing { text published pictures }
   }
 }`);
 
 export default function Profile({ profileName }: { profileName: string }) {
   const { user } = useAuth0();
   const id = user?.['https://oga.org.uk/id'];
-  const [useAvatar, setUseAvatar] = useState<boolean>(false);
   const [profile, setProfile] = useState<SailingProfile>({ pictures: [], published: false, text: '' });
   const [saving, setSaving] = useState<boolean>(false);
   const [member, setMember] = useState<Member | undefined>();
   const { loading, data } = useQuery(MEMBER_QUERY, { variables: { id } });
   const [addProfile] = useMutation(mutations[profileName]);
+  const initialised = useRef<boolean>(false);
 
   function addPicture(picture: string) {
-    const p = profile?.pictures ?? [];
+    const p = profile.pictures ?? [];
     p.unshift(picture);
     setProfile({ ...profile, pictures: p });
   }
 
   useEffect(() => {
-    const { __typename, ...p } = profile; // TODO use removeTypenameFromVariables
-    setSaving(true);
-    const r = addProfile({ variables: { id, profile: p } });
-    r.then((re) => {
-      if (profileName === 'skipper') {
-        setProfile(re.data.addSkipperProfile.member.skipper);
-      } else {
-        setProfile(re.data.addCrewingProfile.member.crewing);
-      }
-      setSaving(false);
-    });
-  }, [profile]);
-
-  useEffect(() => {
-    if (user?.picture && profile) {
-      if (useAvatar && user.picture) {
-        addPicture(user.picture);
-      } else {
-        const p = (profile.pictures ?? []).filter((p) => p !== user.picture);
-        setProfile({ ...profile, pictures: p });
-      }
+    if (initialised.current) {
+      const { __typename, ...p } = profile; // TODO use removeTypenameFromVariables
+      setSaving(true);
+      const r = addProfile({ variables: { id, profile: p } });
+      r.then((re) => {
+        console.log('saved', re);
+        /*
+        if (profileName === 'skipper') {
+          setProfile(re.data.addSkipperProfile.member.skipper);
+        } else {
+          setProfile(re.data.addCrewingProfile.member.crewing);
+        }
+        */
+        setSaving(false);
+      });
+    } else {
+      initialised.current = true;
     }
-  }, [useAvatar, user, profile]);
+    return () => { initialised.current = false; };
+  }, [profile]);
 
   function handleSave(newText: string) {
     setProfile({ ...profile, text: newText });
@@ -73,17 +70,27 @@ export default function Profile({ profileName }: { profileName: string }) {
     addPicture(url);
   }
 
+  function handleUseAvatar(useAvatar: boolean) {
+    if (user?.picture) {
+      if (useAvatar && user.picture) {
+        addPicture(user.picture);
+      } else {
+        const p = (profile.pictures ?? []).filter((p) => p !== user.picture);
+        setProfile({ ...profile, pictures: p });
+      }
+    }
+  }
+
   if (loading) {
     return <CircularProgress />;
   }
 
-  if (data) {
+  if (data && !member) {
     const m = data.members[0];
     setMember(m);
-    if (profileName == 'skipper') {
-      setProfile(m.skipper);
-    } else {
-      setProfile(m.crewing);
+    const p = (profileName == 'skipper') ? m.skipper : m.crewing;
+    if (JSON.stringify(p) !== JSON.stringify(profile)) {
+      setProfile(p);
     }
   }
 
@@ -99,7 +106,7 @@ export default function Profile({ profileName }: { profileName: string }) {
         onSaveProfile={handleSave}
         onAddImage={handleAddImage}
         onDeleteImage={() => setProfile({ ...profile, pictures: [] })}
-        onUseAvatar={(value: boolean) => setUseAvatar(value)}
+        onUseAvatar={(value: boolean) => handleUseAvatar(value)}
       />
       <Stack>
         <Typography>You can customise your card with an optional picture and your choice of text.</Typography>

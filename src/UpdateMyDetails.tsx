@@ -21,7 +21,7 @@ const MEMBER_QUERY = gql(`query members($members: [Int]!) {
     members(members: $members) {
         salutation firstname lastname member id GDPR 
         smallboats status telephone mobile area town
-        interests email primary skipper { text published pictures } crewing { text published pictures  }
+        interests email primary
         postcode type payment address country yob start
     }
   }`);
