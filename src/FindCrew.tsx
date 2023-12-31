@@ -5,11 +5,14 @@ import EventForm from './EventForm';
 import { postScopedData } from './lib/api.mts';
 import AYearOfEvents from "./AYearOfEvents";
 import RoleRestricted from "./RoleRestricted";
+import { Voyage } from "./VoyageCard";
 
 export default function FindCrew() {
   const { getAccessTokenSilently } = useAuth0();
-  const handleCreate = (event: any) => {
+  const handleCreate = (voyage: Voyage) => {
     // console.log('handleCreate', event);
+    const { organiserGoldId, ...rest } = voyage;
+    const event = { member: organiserGoldId, ...rest };
     if (event.visibility === 'public') {
       postScopedData('public', 'voyage', event).then(
         (answer: any) => console.log(answer),

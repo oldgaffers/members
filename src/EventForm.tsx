@@ -18,6 +18,7 @@ import membersBoats from './lib/members_boats.mts';
 import { Boat, getFilterable } from './lib/api.mts';
 import LocationPicker from './LocationPicker';
 import { CrewCards } from './CrewCards'
+import { Voyage } from './VoyageCard';
 
 type EventFormProps = {
   onCreate: Function
@@ -44,9 +45,9 @@ export default function EventForm({ onCreate }: EventFormProps) {
   const ref = createRef<HTMLFormElement>();
   const [invites, setInvites] = useState<Set<number>>(new Set<number>());
   const [specifics, setSpecifics] = useState('');
-  const [start, setStart] = useState<string | undefined>();
-  const [end, setEnd] = useState<string | undefined>();
-  const [places, setPlaces] = useState<LatLng[]>();
+  const [start, setStart] = useState<string>('');
+  const [end, setEnd] = useState<string>('');
+  const [places, setPlaces] = useState<LatLng[]>([]);
   const [open, setOpen] = useState(false);
   const { user } = useAuth0();
   const q = Object.entries(user ?? {}).map(([k, v]) => [k.replace('https://oga.org.uk/', ''), v]);
@@ -78,8 +79,8 @@ export default function EventForm({ onCreate }: EventFormProps) {
           boat.oga_no = oga_no;
         }
       });
-      const event = {
-        member: user?.['https://oga.org.uk/id'],
+      const voyage: Voyage = {
+        organiserGoldId: user?.['https://oga.org.uk/id'],
         title: form.eventTitle.value,
         skipper: form.skipper.value,
         boat,
@@ -91,7 +92,7 @@ export default function EventForm({ onCreate }: EventFormProps) {
         places,
         specifics,
       };
-      onCreate(event);
+      onCreate(voyage);
     }
   };
 
@@ -101,8 +102,7 @@ export default function EventForm({ onCreate }: EventFormProps) {
   };
 
   const placesToVisit = () => {
-    switch (places?.length) {
-      case undefined:
+    switch (places.length) {
       case 0:
         return 'Tell us where you will be going'
       case 1:

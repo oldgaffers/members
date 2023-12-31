@@ -1,8 +1,9 @@
 import { useAuth0 } from "@auth0/auth0-react";
 import { getScopedData } from "./lib/api.mts";
 import { useEffect, useRef, useState } from "react";
-import { Stack } from "@mui/material";
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Stack } from "@mui/material";
 import mermaid from 'mermaid';
+import VoyageCard, { Voyage } from "./VoyageCard";
 
 mermaid.initialize({
     startOnLoad: false,
@@ -14,27 +15,20 @@ declare global {
     interface Window { onClickVoyage: any; }
 }
 
-window.onClickVoyage = (boat: number, title: string) => console.log('onClickVoyage', boat, title);
+// window.onClickVoyage = (boat: number, title: string) => console.log('onClickVoyage', boat, title);
 
-interface Voyage {
-    start: string
-    end: string
-    title: string
-    type: string
-    boat: {
-        name: string
-        oga_no: number
-    }
+function tag(v: Voyage) {
+    return `v${v.boat.oga_no}${v.title.replace(/ /g, '')}`;
 }
 
 function section(title: string, voyages: Voyage[]) {
     const tasks = voyages.map((voyage) => {
         const { start, end, title, boat } = voyage;
-        return `${title} on ${boat.name}: b${boat.oga_no}, ${start}, ${end}`;
+        return `${title} on ${boat.name}: ${tag(voyage)}, ${start}, ${end}`;
     });
     const clicks = voyages.map((voyage) => {
         const { title, boat } = voyage;
-        return `click b${boat.oga_no} call onClickVoyage(${boat.oga_no}, "${title}")`
+        return `click ${tag(voyage)} call onClickVoyage(${boat.oga_no}, "${title}")`
     });
     return `section ${title}
     ${tasks.join('\n')}
@@ -65,7 +59,7 @@ function convert(allVoyages: Voyage[]) {
 function Timeline({ voyages, onClickVoyage }: { voyages: any[], onClickVoyage: Function }) {
     const chartRef = useRef<HTMLPreElement>(null);
 
-    window.onClickVoyage = onClickVoyage;
+    window.onClickVoyage = (oga_no: string, title: string) => onClickVoyage(Number(oga_no), title);
 
     useEffect(() => {
         async function render() {
@@ -84,6 +78,7 @@ function Timeline({ voyages, onClickVoyage }: { voyages: any[], onClickVoyage: F
 export default function AYearOfEvents() {
     const { user, getAccessTokenSilently } = useAuth0();
     const [voyages, setVoyages] = useState<any[]>([]);
+    const [voyage, setVoyage] = useState<Voyage>();
     const [token, setToken] = useState<string | undefined>();
 
     useEffect(() => {
@@ -96,21 +91,38 @@ export default function AYearOfEvents() {
         getToken();
     }, [token]);
 
-    function handleClickVoyage(boat: number, title: string) {
-        console.log('onClickVoyage', boat, title, user);
-    };
-
     useEffect(() => {
 
         async function get() {
             const pub = await getScopedData('public', 'voyage');
             const priv = await getScopedData('member', 'voyage', undefined, token);
-            setVoyages([...pub, ...priv]);
+            setVoyages([...pub, ...priv].map((v: any) => {
+                const { member, ...rest } = v;
+                return { organiserGoldId: member, ...rest };
+            }));
         }
         get();
     }, [token]);
 
+    function handleClickVoyage(oga_no: number, title: string) {
+        const selected = voyages.find((v) => v.title === title && v.boat.oga_no === oga_no);
+        setVoyage(selected);
+    };
+
+    function handleClose() {
+        setVoyage(undefined);
+    }
+
     return <Stack>
         <Timeline voyages={voyages} onClickVoyage={handleClickVoyage} />
+        <Dialog open={!!voyage}>
+            <DialogTitle>Fancy this {user?.given_name ?? ''}?</DialogTitle>
+                <DialogContent>
+                <VoyageCard voyage={voyage} />
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleClose}>Done</Button>
+                </DialogActions>
+        </Dialog>
     </Stack>;
 }
