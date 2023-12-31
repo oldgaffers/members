@@ -34,12 +34,13 @@ export default function Profile({ profileName }: { profileName: string }) {
   const [addProfile] = useMutation(mutations[profileName]);
   const [dirty, setDirty] = useState<boolean>(false);
 
-  function addPicture(picture: string) {
+  function addPicture(url: string) {
+    console.log('addPicture', url);
     let p: string[] = [];
     if (profile.pictures) {
       p = [...profile.pictures];
     }
-    p.unshift(picture);
+    p.unshift(url);
     setProfile({ ...profile, pictures: p });
   }
 
@@ -58,24 +59,44 @@ export default function Profile({ profileName }: { profileName: string }) {
   }, [profile, dirty]);
 
   function handleChangeText(newText: string) {
+    console.log('handleChangeText', newText);
     setProfile({ ...profile, text: newText });
     setDirty(true);
   }
 
   function handleAddImage(url: string) {
+    console.log('handleAddImage', url);
     addPicture(url);
     setDirty(true);
   }
 
+  function handleDeleteImage() {
+    setProfile({...profile, pictures: []}); // TODO handle multiple images
+    setDirty(true);
+  }
+
   function handleUseAvatar(useAvatar: boolean) {
-    if (user?.picture) {
-      if (useAvatar && user.picture) {
-        addPicture(user.picture);
-      } else {
-        const p = (profile.pictures ?? []).filter((p) => p !== user.picture);
-        setProfile({ ...profile, pictures: p });
+    console.log('handleUseAvatar', useAvatar);
+    if (user?.picture) { // we have an avatar
+      if (useAvatar) { // we want to use it
+        if (profile.pictures) {
+          if (profile.pictures.includes(user.picture)) { // we are using it
+            console.log('already using avatar');
+          } else { // add it
+            setProfile({...profile, pictures: [user.picture, ...profile.pictures]});
+            setDirty(true);
+          }
+        } else { // no pictures, add it
+          setProfile({...profile, pictures: [user.picture]});
+          setDirty(true);
+        }
+      } else { // we don't want to use it
+        if (profile.pictures?.includes(user.picture)) { // we are using it, remove it
+          const p = (profile.pictures ?? []).filter((p) => p !== user.picture);
+          setProfile({...profile, pictures: p});
+          setDirty(true);
+        }
       }
-      setDirty(true);
     }
   }
 
@@ -108,7 +129,7 @@ export default function Profile({ profileName }: { profileName: string }) {
         editEnabled={true}
         onChangeText={handleChangeText}
         onAddImage={handleAddImage}
-        onDeleteImage={() => setProfile({ ...profile, pictures: [] })}
+        onDeleteImage={handleDeleteImage}
         onUseAvatar={(value: boolean) => handleUseAvatar(value)}
       />
       <Stack>
