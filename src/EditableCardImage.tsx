@@ -118,7 +118,6 @@ export default function EditableCardImage({ editEnabled, id, name, email, pictur
             onUseAvatar(false);
         }
     }
-console.log('Q', pictures)
     if (pictures.length > 0) {
         return <CardImage picture={pictures[0]} alt={name} editEnabled={editEnabled} onDelete={handleDeleteImage} />;
     }
