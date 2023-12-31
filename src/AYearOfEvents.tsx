@@ -4,7 +4,17 @@ import { useEffect, useRef, useState } from "react";
 import { Stack } from "@mui/material";
 import mermaid from 'mermaid';
 
-mermaid.initialize({ startOnLoad: false, gantt: { displayMode: 'compact', axisFormat: '%b' } });
+mermaid.initialize({
+    startOnLoad: false,
+    securityLevel: 'loose',
+    gantt: { displayMode: 'compact', axisFormat: '%b' },
+});
+
+declare global {
+    interface Window { onClickVoyage: any; }
+}
+
+window.onClickVoyage = (boat: number, title: string) => console.log('onClickVoyage', boat, title);
 
 interface Voyage {
     start: string
@@ -13,20 +23,27 @@ interface Voyage {
     type: string
     boat: {
         name: string
+        oga_no: number
     }
 }
 
 function section(title: string, voyages: Voyage[]) {
-    const tasks = voyages.map((voyage, index) => {
+    const tasks = voyages.map((voyage) => {
         const { start, end, title, boat } = voyage;
-        const tag = `a${index}`;
-        return `${title} on ${boat.name}: ${tag}, ${start}, ${end}`;
+        return `${title} on ${boat.name}: b${boat.oga_no}, ${start}, ${end}`;
     });
-    return `section ${title}\n${tasks.join('\n')}`;
+    const clicks = voyages.map((voyage) => {
+        const { title, boat } = voyage;
+        return `click b${boat.oga_no} call onClickVoyage(${boat.oga_no}, "${title}")`
+    });
+    return `section ${title}
+    ${tasks.join('\n')}
+    ${clicks.join('\n')}
+    `;
 }
 
 function convert(allVoyages: Voyage[]) {
-    console.log('convert', allVoyages);
+    // console.log('convert', allVoyages);
     const voyages = allVoyages.filter((v) => v.start !== '' && v.end !== '');
     const types = voyages.reduce((p, v) => {
         p.add(v.type);
@@ -45,14 +62,17 @@ function convert(allVoyages: Voyage[]) {
     `;
 }
 
-function Timeline({ voyages }: { voyages: any[] }) {
+function Timeline({ voyages, onClickVoyage }: { voyages: any[], onClickVoyage: Function }) {
     const chartRef = useRef<HTMLPreElement>(null);
+
+    window.onClickVoyage = onClickVoyage;
 
     useEffect(() => {
         async function render() {
             if (chartRef.current) {
-                const { svg } = await mermaid.render('voyages', convert(voyages));
-                chartRef.current.innerHTML = svg;    
+                const { svg, bindFunctions } = await mermaid.render('voyages', convert(voyages));
+                chartRef.current.innerHTML = svg; 
+                bindFunctions?.(chartRef.current);
             }
         }
         render();
@@ -62,7 +82,7 @@ function Timeline({ voyages }: { voyages: any[] }) {
 }
 
 export default function AYearOfEvents() {
-    const { getAccessTokenSilently } = useAuth0();
+    const { user, getAccessTokenSilently } = useAuth0();
     const [voyages, setVoyages] = useState<any[]>([]);
     const [token, setToken] = useState<string | undefined>();
 
@@ -76,6 +96,10 @@ export default function AYearOfEvents() {
         getToken();
     }, [token]);
 
+    function handleClickVoyage(boat: number, title: string) {
+        console.log('onClickVoyage', boat, title, user);
+    };
+
     useEffect(() => {
 
         async function get() {
@@ -87,6 +111,6 @@ export default function AYearOfEvents() {
     }, [token]);
 
     return <Stack>
-        <Timeline voyages={voyages} />
+        <Timeline voyages={voyages} onClickVoyage={handleClickVoyage} />
     </Stack>;
 }
