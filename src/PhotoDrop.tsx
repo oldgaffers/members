@@ -45,11 +45,11 @@ function addPreview(file: File): FileWithPreview {
   return { file, preview: URL.createObjectURL(file) }
 }
 
-export default function Photodrop({ onDrop, preview = true }: { onDrop: Function, preview?: boolean }) {
+export default function Photodrop({ onDrop, preview = true, maxFiles=1 }: { onDrop: Function, preview?: boolean, maxFiles?: number }) {
   const [files, setFiles] = useState<FileWithPreview[]>([]);
 
   const { getRootProps, getInputProps } = useDropzone({
-    maxFiles: 5,
+    maxFiles,
     accept: { 'image/*': [] },
     maxSize: 5242880,
     onDrop: (acceptedFiles) => setFiles([...files, ...acceptedFiles.map((file) => addPreview(file))]),
@@ -61,11 +61,13 @@ export default function Photodrop({ onDrop, preview = true }: { onDrop: Function
     return () => files.forEach((file) => URL.revokeObjectURL(file.preview));
   }, [files]);
 
+  const helperText = (maxFiles==1) ? 'Drag a picture in, or click to add a file' : 'Drag some pictures in, or click to add files';
+
   return (
     <>
       <Box sx={{ padding: 1, borderRadius: 2, border: '1px dashed' }} {...getRootProps()}>
         <input {...getInputProps()} />
-        <p>Drag some pictures in, or click to add files</p>
+        <p>{helperText}</p>
       </Box>
       <Box sx={{
         display: 'flex',
