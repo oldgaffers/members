@@ -23,30 +23,22 @@ type CardImageProps = {
 }
 
 function HeroImage({ src, alt, width, height }: { src: string, alt: string, width: number, height: number }) {
-    if (src?.includes('?')) {
-        return <img
-            crossOrigin="anonymous"
-            style={{ width: '100%' }}
-            src={src}
-            alt={alt}
-            loading="lazy"
-        />;
+    function errorHandler(e: any) {
+        e.target.src = `https://placehold.co/${width}x${height}?text=image+not+loading`;
     }
-    const rows = 1;
-    const cols = 1;
-    const s = `${src}?w=${width * cols}&h=${height * rows}&fit=crop&auto=format`;
     return <img
+        crossOrigin="anonymous"
         style={{ width: '100%' }}
-        src={s}
-        srcSet={`${s}&dpr=2 2x`}
+        src={src}
         alt={alt}
         loading="lazy"
+        onError={errorHandler}
     />;
 }
 
 function CardImage({ picture, alt, editEnabled, onDelete }: CardImageProps) {
     const w = 300;
-    const h = 300;
+    const h = 200;
     if (editEnabled) {
         return <>
             <HeroImage src={picture} alt={alt} width={w} height={h} />
