@@ -97,8 +97,6 @@ export default function CrewCard({
         }
     }
 
-    console.log('CC', editEnabled);
-
     return (
         <Card sx={{ maxWidth: 345, minWidth: 250 }}>
             <Stack direction='column' justifyContent='space-between' height='100%'>
