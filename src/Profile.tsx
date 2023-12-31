@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { CircularProgress, FormControlLabel, LinearProgress, Stack, Switch, Typography } from "@mui/material";
 import CrewCard from "./CrewCard";
 import { Member, SailingProfile } from "./lib/membership.mts";
@@ -30,44 +30,41 @@ export default function Profile({ profileName }: { profileName: string }) {
   const [profile, setProfile] = useState<SailingProfile>({ pictures: [], published: false, text: '' });
   const [saving, setSaving] = useState<boolean>(false);
   const [member, setMember] = useState<Member | undefined>();
-  const { loading, data } = useQuery(MEMBER_QUERY, { variables: { id } });
+  const { loading, data, refetch } = useQuery(MEMBER_QUERY, { variables: { id } });
   const [addProfile] = useMutation(mutations[profileName]);
-  const initialised = useRef<boolean>(false);
+  const [dirty, setDirty] = useState<boolean>(false);
 
   function addPicture(picture: string) {
-    const p = profile.pictures ?? [];
+    let p: string[] = [];
+    if (profile.pictures) {
+      p = [...profile.pictures];
+    }
     p.unshift(picture);
     setProfile({ ...profile, pictures: p });
   }
 
   useEffect(() => {
-    if (initialised.current) {
+    if (dirty) {
       const { __typename, ...p } = profile; // TODO use removeTypenameFromVariables
       setSaving(true);
       const r = addProfile({ variables: { id, profile: p } });
       r.then((re) => {
         console.log('saved', re);
-        /*
-        if (profileName === 'skipper') {
-          setProfile(re.data.addSkipperProfile.member.skipper);
-        } else {
-          setProfile(re.data.addCrewingProfile.member.crewing);
-        }
-        */
         setSaving(false);
+        setDirty(false);
+        refetch(); // this is needed or Apollo will reload us with the old cached values when we switch tabs and bac
       });
-    } else {
-      initialised.current = true;
     }
-    return () => { initialised.current = false; };
-  }, [profile]);
+  }, [profile, dirty]);
 
-  function handleSave(newText: string) {
+  function handleChangeText(newText: string) {
     setProfile({ ...profile, text: newText });
+    setDirty(true);
   }
 
   function handleAddImage(url: string) {
     addPicture(url);
+    setDirty(true);
   }
 
   function handleUseAvatar(useAvatar: boolean) {
@@ -78,7 +75,13 @@ export default function Profile({ profileName }: { profileName: string }) {
         const p = (profile.pictures ?? []).filter((p) => p !== user.picture);
         setProfile({ ...profile, pictures: p });
       }
+      setDirty(true);
     }
+  }
+
+  function handleChangePublishState(published: boolean) {
+    setProfile({ ...profile, published });
+    setDirty(true);
   }
 
   if (loading) {
@@ -103,7 +106,7 @@ export default function Profile({ profileName }: { profileName: string }) {
         email={member?.email ?? ''}
         profile={profile}
         editEnabled={true}
-        onSaveProfile={handleSave}
+        onChangeText={handleChangeText}
         onAddImage={handleAddImage}
         onDeleteImage={() => setProfile({ ...profile, pictures: [] })}
         onUseAvatar={(value: boolean) => handleUseAvatar(value)}
@@ -119,7 +122,7 @@ export default function Profile({ profileName }: { profileName: string }) {
         </Typography>
         <Typography>Edit the text by clicking on the edit button above the text. Save the changes or cancel using the tick and cross
           buttons that appear during editing.</Typography>
-        <FormControlLabel control={<Switch checked={profile.published} onChange={(e) => setProfile({ ...profile, published: e.target.checked })} />} label="Published" />
+        <FormControlLabel control={<Switch checked={profile.published} onChange={(e) => handleChangePublishState(e.target.checked)} />} label="Published" />
       </Stack>
     </Stack>
     {saving ? <LinearProgress /> : ''}

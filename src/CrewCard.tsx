@@ -17,12 +17,12 @@ export type CrewCardProps = {
     name: string
     goldId: number
     email: string
-    profile?: SailingProfile
+    profile: SailingProfile
     contactEnabled?: boolean
     inviteEnabled?: boolean
     editEnabled?: boolean
     invited?: boolean
-    onSaveProfile?: Function
+    onChangeText?: Function
     onSaveInvited?: Function
     onAddImage?: Function
     onDeleteImage?: Function
@@ -76,21 +76,18 @@ export default function CrewCard({
     inviteEnabled = false,
     editEnabled = false,
     invited = false,
-    onSaveProfile,
+    onChangeText,
     onSaveInvited,
     onAddImage,
     onDeleteImage = () => console.log('delete image'),
     onUseAvatar,
 }: CrewCardProps) {
-    const [text, setText] = useState<string>(profile?.text ?? '');
-    const [editProfile, setEditProfile] = useState(false);
+    const [text, setText] = useState<string>(profile.text);
+    const [editText, setEditText] = useState<boolean>(false);
 
-    const handleTextChange = editProfile ? (value: string) => setText(value) : undefined;
-
-    function handleSaveProfile() {
-        setEditProfile(false);
-        if (onSaveProfile) {
-            onSaveProfile(text);
+    function handleSaveText() {
+        if (onChangeText) {
+            onChangeText(text);
         }
     }
 
@@ -115,13 +112,13 @@ export default function CrewCard({
                             </Typography>
                             <EditTextButton
                                 editEnabled={editEnabled}
-                                editing={editProfile}
-                                onEdit={() => setEditProfile(true)}
-                                onSave={() => handleSaveProfile()}
-                                onCancel={() => setEditProfile(false)}
+                                editing={editText}
+                                onEdit={() => setEditText(true)}
+                                onSave={() => handleSaveText()}
+                                onCancel={() => setEditText(false)}
                             />
                         </Stack>
-                        <TextEdit text={text} onChange={handleTextChange} />
+                        <TextEdit text={text} onChange={(text: string) => setText(text)} />
                     </CardContent>
                 </Stack>
                 <CardActions>
