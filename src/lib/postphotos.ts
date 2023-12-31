@@ -6,7 +6,17 @@ import { getUploadCredentials } from './api.mjs';
 import { v4 as uuidv4 } from 'uuid';
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
-
+export async function getPrivateImage(url: string) {
+    const { region, identityId } = await getUploadCredentials();
+    const credentials = fromCognitoIdentity({ identityId, clientConfig: { region } });
+    const client = new S3Client({ region, credentials });
+    const { hostname, pathname } = new URL(url);
+    const command = new GetObjectCommand({
+        Bucket: hostname.replace(/\..*/, ''),
+        Key: pathname.slice(1),
+    });
+    return getSignedUrl(client, command, { expiresIn: 3600 });
+}
 
 export async function postPhotos(fileList: File[], copyright: string, email: string, id: number, albumKey: string | undefined, setProgress: { (value: SetStateAction<number>): void; (arg0: any): void; }) {
     if (fileList?.length > 0) {

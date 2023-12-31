@@ -2,7 +2,7 @@ import { useState, SetStateAction, useEffect } from "react"
 import { FormControl, FormLabel, RadioGroup, FormControlLabel, Radio, TextField, Button, Stack, IconButton, Box } from "@mui/material"
 import DeleteIcon from '@mui/icons-material/Delete';
 import Photodrop from "./PhotoDrop"
-import { postPhotos } from "./lib/postphotos"
+import { getPrivateImage, postPhotos } from "./lib/postphotos"
 
 interface EditableCardImageProps {
     editEnabled: boolean
@@ -22,17 +22,48 @@ type CardImageProps = {
     alt: string
 }
 
-function HeroImage({ src, alt, width, height }: { src: string, alt: string, width: number, height: number }) {
+
+function PrivateImage({ src, alt, width, height }: { src: string, alt: string, width: number, height: number }) {
+    const [s, setS] = useState<any>(`https://placehold.co/${width}x${height}?text=please+wait`);
+
     function errorHandler(e: any) {
         e.target.src = `https://placehold.co/${width}x${height}?text=image+not+loading`;
     }
+
+    useEffect(() => {
+        if (s.includes('placehold')) {
+            getPrivateImage(src).then((r) => {
+                setS(r);
+            });
+        }
+    });
+
     return <img
         crossOrigin="anonymous"
+        style={{ width: '100%' }}
+        src={s}
+        alt={alt}
+        loading="lazy"
+        onError={errorHandler}
+    />;
+}
+
+function HeroImage({ src, alt, width, height }: { src: string, alt: string, width: number, height: number }) {
+
+    function errorHandler(e: any) {
+        console.log(e);
+        e.target.src = `https://placehold.co/${width}x${height}?text=image+not+loading`;
+    }
+
+    if (src.includes('boatregister-public')) {
+        return <PrivateImage src={src} alt={alt} width={width} height={height} />;
+    }
+
+    return <img
         style={{ width: '100%' }}
         src={src}
         alt={alt}
         loading="lazy"
-        onError={errorHandler}
     />;
 }
 
