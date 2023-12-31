@@ -64,6 +64,7 @@ function HeroImage({ src, alt, width, height }: { src: string, alt: string, widt
         src={src}
         alt={alt}
         loading="lazy"
+        onError={errorHandler}
     />;
 }
 
