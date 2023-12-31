@@ -92,7 +92,7 @@ export default function EditableCardImage({ editEnabled, id, name, email, pictur
     const [imageChoice, setImageChoice] = useState<string>('nothing');
     const [url, setUrl] = useState<string>('');
     const [web, setWeb] = useState<string>('');
-/*
+
     useEffect(() => {
         let timeoutId: number | undefined;
         if (url !== '') {
@@ -108,7 +108,7 @@ export default function EditableCardImage({ editEnabled, id, name, email, pictur
             return () => clearTimeout(timeoutId);
         }
     }, [url]);
-*/
+
     function handleAddImage(value: string) {
         if (onAddImage) {
             onAddImage(value);
