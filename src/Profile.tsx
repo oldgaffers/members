@@ -117,7 +117,7 @@ export default function Profile({ profileName }: { profileName: string }) {
           Your profile can be saved but won't be visible until it is published.
         </Typography>
         <Typography>
-          If we've picted a picture you don't like, or you don't want a picture, just click on the
+          Once you've got a picture, if you want to delete or change it, just click on the
           rubbish bin.
         </Typography>
         <Typography>Edit the text by clicking on the edit button above the text. Save the changes or cancel using the tick and cross
