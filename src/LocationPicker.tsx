@@ -2,8 +2,7 @@ import { useEffect, useState } from 'react';
 import { Button, Dialog, DialogActions, Typography } from '@mui/material';
 import 'dayjs/locale/en-gb';
 import { MapContainer, Marker, Popup, TileLayer, useMapEvents } from 'react-leaflet'
-// import '@ogauk/react-tiny-editor/lib/index.css';
-import L, { LatLng } from 'leaflet';
+import { LatLng } from 'leaflet';
 import { defaultIcon } from './VoyageMap';
 
 type LocationPickerProps = {

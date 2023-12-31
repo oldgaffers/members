@@ -1,9 +1,7 @@
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import 'dayjs/locale/en-gb';
 import { MapContainer, Marker, Popup, TileLayer, useMapEvents } from 'react-leaflet'
-import L, { LatLng, Map } from 'leaflet';
-
-const defaultLocation = { lat: 54.5, lng: -3 };
+import L, { LatLng } from 'leaflet';
 
 export const defaultIcon = L.icon({
     iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',

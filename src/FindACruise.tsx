@@ -1,20 +1,37 @@
-import { Stack, Typography } from '@mui/material';
+import { Accordion, AccordionDetails, AccordionSummary, Box, Divider, Stack, Typography } from '@mui/material';
+import ExpandCircleDownIcon from '@mui/icons-material/ExpandCircleDown';
 import RoleRestricted from './RoleRestricted.tsx';
 import { CrewCards } from './CrewCards.tsx';
 import AYearOfEvents from './AYearOfEvents.tsx';
+import { VoyageCards } from './VoyageCards.tsx';
 
 export default function FindACruise() {
   return (
     <Stack spacing={1}>
       <Typography>Looking for cruising or racing adventures?</Typography>
       <Typography>Go to your member page to create your crewing profile.</Typography>
-      <Typography>
-        Here is our current list of voyages. This is a work in-progress. You'll soon be able to click on a voyage
+      <Typography variant='h6'>
+        Here is our current list of voyages.
+      </Typography><Typography>
+        Click on a voyage
         to find out more.
       </Typography>
       <AYearOfEvents />
-      <Typography>
+      <Box border={1}>
+        <Accordion defaultExpanded={false}>
+          <AccordionSummary expandIcon={<ExpandCircleDownIcon />}>
+            <Typography>click the arrow to see all the voyages as cards</Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <VoyageCards />
+          </AccordionDetails>
+        </Accordion>
+      </Box>
+      <Divider />
+      <Typography variant='h6'>
         Here are the other members who have created a crew profile.
+      </Typography>
+      <Typography>
         You will notice that some of these are not current members of the association.
         They are here to test the functionality for us.
       </Typography>
