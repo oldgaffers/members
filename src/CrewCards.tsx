@@ -84,7 +84,7 @@ export function CrewCards({
         contactEnabled={contactEnabled}
         inviteEnabled={inviteEnabled}
         invited={invites.includes(m.id)}
-        onSaveInvited={(invited: boolean) => onUpdateInvite && onUpdateInvite(m.id, invited)}
+        onSaveInvited={(invited: boolean) => onUpdateInvite && onUpdateInvite(m, invited)}
       />)}</Stack>
     </Box>
   );

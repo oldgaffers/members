@@ -41,11 +41,7 @@ export async function geolocate(place: string) {
   return undefined;
 }
 
-interface MemberUpdate extends Member {
-  text: string
-}
-
-export async function postGeneralEnquiry(scope: string, subject: string, data: MemberUpdate, token: string | undefined) {
+export async function postGeneralEnquiry(scope: string, subject: string, data: any, token?: string) {
   const headers: any = { 'content-type': 'application/json' };
   if (token) {
     headers.Authorization = `Bearer ${token}`;

@@ -92,7 +92,7 @@ export default function EventForm({ onCreate }: EventFormProps) {
         places,
         specifics,
       };
-      onCreate(voyage);
+      onCreate(voyage, [...invites]);
     }
   };
 
@@ -113,7 +113,6 @@ export default function EventForm({ onCreate }: EventFormProps) {
   };
 
   function handleSaveInvited(id: number, invited: boolean) {
-    console.log('handleSaveInvited', id, invited);
     const s = new Set(invites);
     if (invited) {
       s.add(id);

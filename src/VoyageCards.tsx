@@ -20,14 +20,10 @@ export function VoyageCards() {
     }, [token]);
 
     useEffect(() => {
-
         async function get() {
             const pub = await getScopedData('public', 'voyage');
             const priv = await getScopedData('member', 'voyage', undefined, token);
-            setVoyages([...pub, ...priv].map((v: any) => {
-                const { member, ...rest } = v;
-                return { organiserGoldId: member, ...rest };
-            }));
+            setVoyages([...pub, ...priv]);
         }
         get();
     }, [token]);
