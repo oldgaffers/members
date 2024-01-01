@@ -28,10 +28,13 @@ export function VoyageCards() {
         get();
     }, [token]);
 
+    const sortedVoyages = [...voyages];
+    sortedVoyages.sort((a, b) => a.start.localeCompare(b.start) );
+    
     return (
         <Box overflow='auto' minWidth='50vw' maxWidth='85vw'>
             <Grid container spacing={2}>
-                {voyages.map((voyage, index) =>
+                {sortedVoyages.map((voyage, index) =>
                     <Grid key={index} xs={4} minWidth={300}>
                         <VoyageCard key={index} voyage={voyage} />
                     </Grid>

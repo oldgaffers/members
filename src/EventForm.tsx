@@ -82,6 +82,7 @@ export default function EventForm({ onCreate }: EventFormProps) {
       });
       const voyage: Voyage = {
         organiserGoldId: user?.['https://oga.org.uk/id'],
+        organiserEmail: user?.email ?? '',
         title: form.eventTitle.value,
         skipper: form.skipper.value,
         boat,

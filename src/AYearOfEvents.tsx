@@ -118,7 +118,7 @@ export default function AYearOfEvents() {
         <Dialog open={!!voyage}>
             <DialogTitle>Fancy this {user?.given_name ?? ''}?</DialogTitle>
                 <DialogContent>
-                <VoyageCard voyage={voyage} />
+                {voyage ? <VoyageCard voyage={voyage} /> : '' }
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose}>Done</Button>
