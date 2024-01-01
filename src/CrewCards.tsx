@@ -1,12 +1,13 @@
 import { Box, CircularProgress, Stack } from "@mui/material";
 import CrewCard from "./CrewCard";
 import { useMembers } from "./Members";
+import { Member } from "./lib/membership.mts";
 
 export type CrewCardsProps = {
   contactEnabled?: boolean
   inviteEnabled?: boolean
   onUpdateInvite?: Function
-  invites?: number[]
+  invites?: Member[]
 }
 
 const testdata = [
@@ -71,11 +72,11 @@ export function CrewCards({
   }
 
   const { members } = data;
-  const m = [...members, ...testdata];
+  const membersPlusGuests = [...members, ...testdata];
 
   return (
     <Box overflow='auto' minWidth='50vw' maxWidth='85vw' >
-      <Stack direction='row'>{m.map((m) => <CrewCard
+      <Stack direction='row'>{membersPlusGuests.map((m) => <CrewCard
         key={m.id}
         goldId={m.id}
         email={m.email}
@@ -83,7 +84,7 @@ export function CrewCards({
         profile={m.crewing}
         contactEnabled={contactEnabled}
         inviteEnabled={inviteEnabled}
-        invited={invites.includes(m.id)}
+        invited={!!invites.find((invite) => invite.id === m.id)}
         onSaveInvited={(invited: boolean) => onUpdateInvite && onUpdateInvite(m, invited)}
       />)}</Stack>
     </Box>

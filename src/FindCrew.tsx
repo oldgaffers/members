@@ -22,9 +22,16 @@ async function processCrewInvitations(voyage: Voyage, invited: Member[], organis
     subject: 'Crewing invitation from an OGA Member',
     message,
   };
-  await postGeneralEnquiry('public', 'contact', data);
+  await postGeneralEnquiry('public', 'crew', data);
   const id = new Date().toISOString();
-  return invited.map((m) => ({ ...m, invited: id }));
+  return invited.map((m) => ({  // we can add or remove fields here.
+    invited: id,
+    firstname: m.firstname,
+    lastname: m.lastname,
+    id: m.id,
+    member: m.member,
+    email: m.email,
+  }));
 }
 
 async function createOrUpdateVoyage(voyage: Voyage, getAccessTokenSilently: Function) {

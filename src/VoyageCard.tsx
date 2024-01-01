@@ -55,6 +55,7 @@ export function voyageInvitationBody(voyage: Voyage, organiser: string, from: st
 I am planning a trip on ${voyage.boat.name} (${voyage.boat.oga_no}) between the dates ${voyage.start} and ${voyage.end}.
 
 The details are:
+
 ${skipperIfDifferent(voyage.skipper, organiser)}
 Title: ${voyage.title}
 Type: ${voyage.type}
@@ -62,9 +63,10 @@ Covering around ${voyage.distance} nm
 
 ${voyage.specifics}
 
-If you are interested in joining, please reply to this email.
+If you are interested in joining me, please email me at the address below.
 
-You can find these details, plus a map of the journey at https://oga.org.uk/members_area/find_a_spot_on_a_boat/find_a_spot_on_a_boat.html.
+You can find these details, together with other OGA member's voyages at:
+https://oga.org.uk/members_area/find_a_spot_on_a_boat/find_a_spot_on_a_boat.html.
 
 Looking forward to hearing from you.
 
