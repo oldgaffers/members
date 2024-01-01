@@ -39,6 +39,32 @@ export async function geolocate(place: string) {
   return undefined;
 }
 
+export async function boatsWithHomeLocation(): Promise<Boat[]> {
+  const r = await getFilterable();
+  const extra = await getScopedData('public', 'crewing');
+
+  const b = r.filter((b1: Boat) => b1).map((b2: Boat) => {
+      const be = extra.find((b3: any) => b3.oga_no === b2.oga_no);
+      return { ...b2, ...be };
+  });
+  const hp: string[] = [...new Set(b.filter((i: Boat) => i.home_port).map((i: Boat) => i.home_port))] as string[];
+  const settled = await Promise.allSettled(hp.map(async (place) => ({ place, geoname: await geolocate(place) })));
+  const ra = settled.map((s) => (s as PromiseFulfilledResult<any>).value);
+  const maybeFound = ra.filter((o: any) => o.geoname);
+  
+  const notFound = maybeFound.filter((o: any) => o.geoname?.message === 'not found').map((o) => o.place);
+  console.log('NF', notFound);
+  const found = maybeFound.filter((o: any) => o.geoname?.message !== 'not found');
+  
+  const m = Object.fromEntries(found.map((f: any) => [f.place, f.geoname]));
+  b.forEach((boat: Boat) => {
+      if (m[boat.home_port]) {
+          boat.home_location = m[boat.home_port];
+      }
+  });
+  return b;
+}
+
 export async function postGeneralEnquiry(scope: string, subject: string, data: any, token?: string) {
   const headers: any = { 'content-type': 'application/json' };
   if (token) {
