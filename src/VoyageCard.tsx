@@ -1,7 +1,6 @@
 import { Card, CardActions, CardContent, CardHeader, CardMedia, Typography } from "@mui/material";
 import { LatLng } from "leaflet";
 import VoyageMap from "./VoyageMap";
-import { Member } from "./lib/membership.mts";
 
 export interface Voyage {
     organiserGoldId: number

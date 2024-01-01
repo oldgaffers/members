@@ -1,5 +1,3 @@
-import { Member } from "./membership.mts"
-
 export type Boat = {
   home_location?: any
   area: any
