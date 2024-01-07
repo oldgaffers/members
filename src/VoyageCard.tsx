@@ -62,7 +62,7 @@ export default function VoyageCard({ voyage }: VoyageCardProps) {
         const data: any = {
             to: [voyage.organiserEmail],
             cc: [myemail],
-            subject: 'Crewing interest from an OGA Member for your ${vo}',
+            subject: `Crewing interest from an OGA Member for your ${voyage.title}`,
             message: `Hello from the OGA,
 OGA Member ${user?.name} has expressed interest in your voyage.
 They can be contacted with a 'reply all' to this email.
