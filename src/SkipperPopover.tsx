@@ -22,12 +22,12 @@ interface ProfileTextProps {
 }
 
 function ProfileText({skipper, organiser}: ProfileTextProps) {
-    const oname = `${organiser.firstname} ${organiser.lastname}`
-    console.log(organiser.skipper.text);
-    if (oname === skipper && organiser.skipper.published) {
-        return <Paper dangerouslySetInnerHTML={{ __html: organiser.skipper.text.trim() }} />;
+    const oname = `${organiser?.firstname ?? ''} ${organiser?.lastname ?? ''}`
+    console.log(organiser?.skipper?.text ?? '');
+    if (oname === skipper && organiser?.skipper?.published) {
+        return <Paper dangerouslySetInnerHTML={{ __html: organiser?.skipper?.text?.trim() ?? '' }} />;
     }
-    return `We don't have any details about ${skipper}`;
+    return `We don't have any details about ${skipper? '?'}`;
 }
 
 export default function SkipperPopover({ voyage, open, onClose, anchorEl }: SkipperPopoverProps) {
