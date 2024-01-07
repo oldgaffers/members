@@ -7,6 +7,7 @@ import AYearOfEvents from "./AYearOfEvents";
 import RoleRestricted from "./RoleRestricted";
 import { Voyage, voyageInvitationBody } from "./VoyageCard";
 import { Member } from "./lib/membership.mts";
+import LoginButton from "./LoginButton";
 
 // compose the email
 // send the email with the members as bcc and the organiser as from
@@ -69,6 +70,8 @@ export default function FindCrew() {
   };
 
   return (
+    <>
+    <LoginButton />
     <RoleRestricted role='member'>
       <Stack spacing={1}>
         <Typography>Looking for crew for your your cruising or racing adventures?</Typography>
@@ -80,5 +83,6 @@ export default function FindCrew() {
         <EventForm onCreate={handleCreate} />
       </Stack>
     </RoleRestricted>
+    </>
   );
 }

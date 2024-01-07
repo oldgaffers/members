@@ -27,6 +27,13 @@ type InterestsProps = {
   onChange: Function
 }
 
+function MembershipStart({ user }: { user: any }) {
+  if (user?.start) {
+    return `You have been a member since ${user.start}.`;
+  }
+  return "We don't have a record of when you joined.";
+}
+
 export default function Interests({ user, members, onChange }: InterestsProps) {
 
   const handleCheckChange = (a: unknown, checked: boolean) => {
@@ -57,11 +64,8 @@ export default function Interests({ user, members, onChange }: InterestsProps) {
         Your membership !number is
         {' '}
         {user.member}
-        .
-        You have been a member since
-        {' '}
-        {user.start}
-        .
+        .{' '}
+        <MembershipStart user={user}/>
       </Typography>
       <Typography>
         {emailIndication(user)}

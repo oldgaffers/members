@@ -11,6 +11,7 @@ import MembersAndBoats from './MembersAndBoats';
 import memberPredicate, { Member } from './lib/membership.mts';
 import membersBoats from './lib/members_boats.mts';
 import { getFilterable } from './lib/api.mts';
+import LoginButton from './LoginButton';
 
 async function getPostcodeData(members: Member[]) {
   const pcs: string[] = [...(new Set(members.map((m) => m.postcode ?? '').filter((p) => p)))];
@@ -128,8 +129,11 @@ export function MembersList({ crew=false }) {
 
 export default function Members() {
   return (
+    <>
+    <LoginButton />
     <RoleRestricted role="member">
       <MembersList />
     </RoleRestricted>
+    </>
   );
 }

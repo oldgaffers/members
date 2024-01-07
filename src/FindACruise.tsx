@@ -4,10 +4,12 @@ import RoleRestricted from './RoleRestricted.tsx';
 import { CrewCards } from './CrewCards.tsx';
 import AYearOfEvents from './AYearOfEvents.tsx';
 import { VoyageCards } from './VoyageCards.tsx';
+import LoginButton from './LoginButton.tsx';
 
 export default function FindACruise() {
   return (
     <Stack spacing={1}>
+      <LoginButton />
       <Typography>Looking for cruising or racing adventures?</Typography>
       <Typography>Go to your member page to create your crewing profile.</Typography>
       <Typography variant='h6'>
