@@ -1,4 +1,4 @@
-import { Alert, Button, Card, CardActions, CardContent, CardHeader, CardMedia, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, Snackbar, Typography } from "@mui/material";
+import { Alert, Button, Card, CardActions, CardContent, CardHeader, CardMedia, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, Snackbar, Stack, TextField, Typography } from "@mui/material";
 import InfoIcon from '@mui/icons-material/Info';
 import { LatLng } from "leaflet";
 import VoyageMap from "./VoyageMap";
@@ -30,20 +30,90 @@ interface VoyageCardProps {
     voyage: Voyage
 }
 
-function InterestDialog({ open, onSubmit, onCancel, voyage }: { open: boolean, onCancel: any, onSubmit: any, voyage: Voyage }) {
+function interestEmail(from: string, fromEmail: string, user: any, voyage: Voyage) {
+
+    const contact = `${from} <${fromEmail}>`;
+
+    if (user) {
+        return {
+            to: [voyage.organiserEmail],
+            cc: [contact],
+            subject: `Crewing interest from an OGA Member for your ${voyage.title}`,
+            message: `Hello from the OGA,
+OGA Member ${from} has expressed interest in your voyage.
+They can be contacted with a 'reply all' to this email.
+If they have a crewing profile you will find it in the membership area.
+Their OGA Membership number is ${user['https://oga.org.uk/member']}`,
+        };
+    }
+    return {
+        to: [voyage.organiserEmail],
+        subject: `Crewing interest for your ${voyage.title}`,
+        message: `Hello from the OGA,
+Someone viewing the Boat Register has expressed interest in your voyage.
+They can be contacted by email at ${contact}.`,
+    };
+}
+
+interface EntryFieldsProps {
+    from: string
+    fromEmail: string
+    onChangeName: (s: string) => void
+    onChangeEmail: (s: string) => void
+}
+
+function EntryFields({ from, fromEmail, onChangeName, onChangeEmail }: EntryFieldsProps) {
+    if (from.trim() !== '' && fromEmail.includes('@')) {
+        return '';
+    }
+    return <Stack direction='column'>
+        <TextField
+            onChange={(e) => onChangeEmail(e.target.value)}
+            margin="dense"
+            label="Your Email"
+            type="text"
+            value={fromEmail}
+        />
+        <TextField
+            onChange={(e) => onChangeName(e.target.value)}
+            margin="dense"
+            label="Your Name"
+            type="text"
+            value={from}
+        />
+    </Stack>;
+}
+
+interface InterestDialogProps {
+    from: string
+    fromEmail: string
+    open: boolean
+    onSubmit: (name: string, email: string) => void
+    onCancel: () => void
+    voyage: Voyage
+}
+
+function InterestDialog({ from, fromEmail, open, onSubmit, onCancel, voyage }: InterestDialogProps) {
+    const [name, setName] = useState(from);
+    const [email, setEmail] = useState(fromEmail);
+
+    const bad = name === undefined || name.trim() === '' || email === undefined || !email.includes('@')
+
     return <Dialog open={open}>
         <DialogTitle>{voyage.title} on {voyage.boat.name} ({voyage.boat.oga_no})</DialogTitle>
         <DialogContent>
+            <EntryFields from={name} fromEmail={email} onChangeEmail={setEmail} onChangeName={setName} />
             <DialogContentText>
                 Would you like us to email the organiser and ask them to contact you?
             </DialogContentText>
         </DialogContent>
         <DialogActions>
-            <Button onClick={onSubmit}>Yes</Button>
+            <Button disabled={bad} onClick={() => onSubmit(name, email)}>Yes</Button>
             <Button onClick={onCancel}>No</Button>
         </DialogActions>
     </Dialog>;
 }
+
 
 export default function VoyageCard({ voyage }: VoyageCardProps) {
     const [open, setOpen] = useState<boolean>(false);
@@ -63,22 +133,9 @@ export default function VoyageCard({ voyage }: VoyageCardProps) {
 
     const { user } = useAuth0();
 
-    const me = user ?? {};
-
-    const myemail = `${me.name} <${me.email}>`;
-
-    function handleSubmit() {
+    function handleSubmit(from: string, fromEmail: string) {
         setOpen(false);
-        const data: any = {
-            to: [voyage.organiserEmail],
-            cc: [myemail],
-            subject: `Crewing interest from an OGA Member for your ${voyage.title}`,
-            message: `Hello from the OGA,
-OGA Member ${user?.name} has expressed interest in your voyage.
-They can be contacted with a 'reply all' to this email.
-If they have a crewing profile you will find it in the membership area.
-Their OGA Membership number is ${me['https://oga.org.uk/member']}`,
-        };
+        const data = interestEmail(from, fromEmail, user, voyage);
         postGeneralEnquiry('public', 'contact', data)
             .then((response) => {
                 console.log(response)
@@ -108,7 +165,14 @@ Their OGA Membership number is ${me['https://oga.org.uk/member']}`,
             <CardActions>
                 <Button onClick={() => setOpen(true)}>I'm Interested</Button>
             </CardActions>
-            <InterestDialog open={open} onSubmit={handleSubmit} onCancel={() => setOpen(false)} voyage={voyage} />
+            <InterestDialog
+              open={open}
+              from={user?.name ?? ''}
+              fromEmail={user?.email ?? ''}
+              onSubmit={handleSubmit}
+              onCancel={() => setOpen(false)}
+              voyage={voyage}
+            />
             <SkipperPopover voyage={voyage} open={skipperPopoverOpen} onClose={handleSkipperPopoverClose} anchorEl={anchorEl}/>
             <Snackbar
                 anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
