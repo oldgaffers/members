@@ -37,7 +37,7 @@ export default function Profile({ profileName }: { profileName: string }) {
   function addPicture(url: string) {
     console.log('addPicture', url);
     let p: string[] = [];
-    if (profile.pictures) {
+    if (profile?.pictures) {
       p = [...profile.pictures];
     }
     p.unshift(url);
@@ -79,7 +79,7 @@ export default function Profile({ profileName }: { profileName: string }) {
     // console.log('handleUseAvatar', useAvatar);
     if (user?.picture) { // we have an avatar
       if (useAvatar) { // we want to use it
-        if (profile.pictures) {
+        if (profile?.pictures) {
           if (profile.pictures.includes(user.picture)) { // we are using it
             // console.log('already using avatar');
           } else { // add it
@@ -91,7 +91,7 @@ export default function Profile({ profileName }: { profileName: string }) {
           setDirty(true);
         }
       } else { // we don't want to use it
-        if (profile.pictures?.includes(user.picture)) { // we are using it, remove it
+        if (profile?.pictures?.includes(user.picture)) { // we are using it, remove it
           const p = (profile.pictures ?? []).filter((p) => p !== user.picture);
           setProfile({...profile, pictures: p});
           setDirty(true);

@@ -45,7 +45,7 @@ export default function LoginButton({ label = 'Login/Sign-up', avatar = true }) 
     return (
       <Button
         size="small"
-        startIcon={avatar ? <Avatar alt={user.name} src={user.picture} /> : undefined}
+        startIcon={avatar ? <Avatar alt={user?.name} src={user?.picture} /> : undefined}
         variant="contained"
         color="primary"
         onClick={() => logout({ logoutParams: { returnTo: window.location.origin + window.location.pathname } })}
