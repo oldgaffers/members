@@ -37,11 +37,11 @@ export async function postPhotos(fileList: File[], copyright: string, email: str
                 } else {
                     params.Metadata = { uuid, id: `${id}` }
                 }
-                console.log('P', params);
+                // console.log('P', params);
                 const upload = new Upload({ client, params });
                 upload.on("httpUploadProgress", (progress: any) => {
                     const p = Math.ceil(100 * (progress.loaded / progress.total));
-                    console.log('progress', p, progress);
+                    // console.log('progress', p, progress);
                     setProgress(p);
                 });
                 return upload.done();

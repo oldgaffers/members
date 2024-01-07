@@ -35,7 +35,7 @@ function MapComponent({ data }: { data: LatLng[] }) {
             }
         },
         locationfound: (location) => {
-            console.log('location found:', location);
+            // console.log('location found:', location);
         },
     })
 

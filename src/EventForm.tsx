@@ -57,13 +57,13 @@ export default function EventForm({ onCreate }: EventFormProps) {
 
   function commitEnd(value: Date) {
     const d = value.toISOString().slice(0, 10);
-    console.log('end', d);
+    // console.log('end', d);
     setEnd(d);
   }
 
   function commitStart(value: Date) {
     const d = value.toISOString().slice(0, 10);
-    console.log('start', d);
+    // console.log('start', d);
     setStart(d);
   }
 

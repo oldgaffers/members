@@ -100,7 +100,7 @@ function MyDetails() {
   };
 
   const handleInterestChange = (data: Member) => {
-    console.log('handleInterestChange', data);
+    // console.log('handleInterestChange', data);
     setMyRecord(data);
   };
 
@@ -154,8 +154,8 @@ function MyDetails() {
   }
 
   const handleSubmitContact = (user: any, text: string) => {
-    console.log('handleSubmitContact', user);
-    console.log('handleSubmitContact', myRecord);
+    // console.log('handleSubmitContact', user);
+    // console.log('handleSubmitContact', myRecord);
     const { firstname, lastname } = myRecord as Member; 
     setOpenContact(false);
     postGeneralEnquiry('member', 'profile', { firstname, lastname, id, text }, token)
@@ -179,7 +179,7 @@ function MyDetails() {
   };
 
   const onChange = (row: { oga_no: number; }, field: any, checked: any) => {
-    console.log('onswitch', field, checked, row.oga_no);
+    // console.log('onswitch', field, checked, row.oga_no);
     postCrewingData({ oga_no: row.oga_no, [field]: checked })
       .then(() => {
         const p = boats.map((b) => {

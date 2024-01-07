@@ -50,7 +50,7 @@ export default function Profile({ profileName }: { profileName: string }) {
       setSaving(true);
       const r = addProfile({ variables: { id, profile: p } });
       r.then((re) => {
-        console.log('saved', re);
+        // console.log('saved', re);
         setSaving(false);
         setDirty(false);
         refetch(); // this is needed or Apollo will reload us with the old cached values when we switch tabs and bac
@@ -59,13 +59,13 @@ export default function Profile({ profileName }: { profileName: string }) {
   }, [profile, dirty]);
 
   function handleChangeText(newText: string) {
-    console.log('handleChangeText', newText);
+    // console.log('handleChangeText', newText);
     setProfile({ ...profile, text: newText });
     setDirty(true);
   }
 
   function handleAddImage(url: string) {
-    console.log('handleAddImage', url);
+    // console.log('handleAddImage', url);
     addPicture(url);
     setDirty(true);
   }
@@ -76,12 +76,12 @@ export default function Profile({ profileName }: { profileName: string }) {
   }
 
   function handleUseAvatar(useAvatar: boolean) {
-    console.log('handleUseAvatar', useAvatar);
+    // console.log('handleUseAvatar', useAvatar);
     if (user?.picture) { // we have an avatar
       if (useAvatar) { // we want to use it
         if (profile.pictures) {
           if (profile.pictures.includes(user.picture)) { // we are using it
-            console.log('already using avatar');
+            // console.log('already using avatar');
           } else { // add it
             setProfile({...profile, pictures: [user.picture, ...profile.pictures]});
             setDirty(true);

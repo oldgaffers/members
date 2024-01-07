@@ -139,7 +139,7 @@ export default function EditableCardImage({ editEnabled, id, name, email, pictur
     }
 
     function handleDeleteImage() {
-        console.log('handle delete');
+        // console.log('handle delete');
         setImageChoice('nothing');
         if (onDeleteImage) {
             onDeleteImage();
