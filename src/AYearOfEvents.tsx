@@ -95,8 +95,9 @@ export default function AYearOfEvents() {
 
         async function get() {
             const pub = await getScopedData('public', 'voyage');
-            const priv = await getScopedData('member', 'voyage', undefined, token);
-            setVoyages([...pub, ...priv].map((v: any) => {
+            const priv: any[] = await getScopedData('member', 'voyage', undefined, token);
+            const vis = priv.filter((v) => v.visibility !== 'hidden');
+            setVoyages([...pub, ...vis].map((v: any) => {
                 const { member, ...rest } = v;
                 return { organiserGoldId: member, ...rest };
             }));

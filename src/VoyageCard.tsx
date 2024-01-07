@@ -45,13 +45,10 @@ function InterestDialog({ open, onSubmit, onCancel, voyage }: { open: boolean, o
     </Dialog>;
 }
 
-// TODO make skipper profile accessible
-
 export default function VoyageCard({ voyage }: VoyageCardProps) {
     const [open, setOpen] = useState<boolean>(false);
     const [snackBarOpen, setSnackBarOpen] = useState<boolean>(false);
     const [anchorEl, setAnchorEl] = useState<HTMLSpanElement>();
-
     const handleSkipperClick = (event: { currentTarget: SetStateAction<HTMLSpanElement | undefined>; }) => {
       setAnchorEl(event.currentTarget);
     };
