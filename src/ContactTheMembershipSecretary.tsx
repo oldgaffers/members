@@ -4,10 +4,9 @@ import {
   Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Stack, Typography,
 } from '@mui/material';
 import { ReactReallyTinyEditor as ReactTinyEditor } from '@ogauk/react-tiny-editor';
-import {type  User } from '@auth0/auth0-react';
+// import {type  User } from '@auth0/auth0-react';
 
 type ContactTheMembershipSecretaryProps = {
-  user: User
   data: string
   onCancel: Function
   onSubmit: Function
@@ -15,12 +14,12 @@ type ContactTheMembershipSecretaryProps = {
 }
 
 export default function ContactTheMembershipSecretary({
-  user, data, onCancel, onSubmit, open,
+  data, onCancel, onSubmit, open,
 }: ContactTheMembershipSecretaryProps) {
   const [text, setText] = useState<string>(data);
 
   const handleSubmit = () => {
-    onSubmit(user, text);
+    onSubmit(text);
   };
 
   return (
