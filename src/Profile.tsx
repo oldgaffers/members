@@ -143,7 +143,7 @@ export default function Profile({ profileName }: { profileName: string }) {
         </Typography>
         <Typography>Edit the text by clicking on the edit button above the text. Save the changes or cancel using the tick and cross
           buttons that appear during editing.</Typography>
-        <FormControlLabel control={<Switch checked={profile.published} onChange={(e) => handleChangePublishState(e.target.checked)} />} label="Published" />
+        <FormControlLabel control={<Switch checked={profile?.published} onChange={(e) => handleChangePublishState(e.target.checked)} />} label="Published" />
       </Stack>
     </Stack>
     {saving ? <LinearProgress /> : ''}
