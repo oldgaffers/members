@@ -50,7 +50,7 @@ export default function Profile({ profileName }: { profileName: string }) {
       setSaving(true);
       const r = addProfile({ variables: { id, profile: p } });
       r.then((re) => {
-        // console.log('saved', re);
+        console.log('saved', re);
         setSaving(false);
         setDirty(false);
         refetch(); // this is needed or Apollo will reload us with the old cached values when we switch tabs and bac
