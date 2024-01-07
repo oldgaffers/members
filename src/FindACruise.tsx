@@ -5,12 +5,13 @@ import { CrewCards } from './CrewCards.tsx';
 import AYearOfEvents from './AYearOfEvents.tsx';
 import { VoyageCards } from './VoyageCards.tsx';
 import LoginButton from './LoginButton.tsx';
+import { useAuth0 } from '@auth0/auth0-react';
 
-export default function FindACruise() {
-  return (
-    <Stack spacing={1}>
-      <LoginButton />
-      <Typography>Looking for cruising or racing adventures?</Typography>
+function Intro() {
+  const { user } = useAuth0();
+  const roles = user?.['https://oga.org.uk/roles'] ?? [];
+  if (roles.include('member')) {
+    return <>
       <Typography>Go to your member page to create your crewing profile.</Typography>
       <Typography variant='h6'>
         Here is our current list of voyages.
@@ -18,6 +19,26 @@ export default function FindACruise() {
         Click on a voyage
         to find out more.
       </Typography>
+    </>;
+  }
+  return <>
+    <Typography variant='h6'>
+      Here is our current list of public voyages.
+    </Typography><Typography>
+      Click on a voyage
+      to find out more.
+    </Typography>
+    <Typography>Logged in members will get to see more voyages</Typography>
+  </>;
+
+}
+
+export default function FindACruise() {
+  return (
+    <Stack spacing={1}>
+      <LoginButton />
+      <Typography>Looking for cruising or racing adventures?</Typography>
+      <Intro />
       <AYearOfEvents />
       <Box border={1}>
         <Accordion defaultExpanded={false}>
