@@ -10,7 +10,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 function Intro() {
   const { user } = useAuth0();
   const roles = user?.['https://oga.org.uk/roles'] ?? [];
-  if (roles.include('member')) {
+  if (roles.includes('member')) {
     return <>
       <Typography>Go to your member page to create your crewing profile.</Typography>
       <Typography variant='h6'>
@@ -36,7 +36,9 @@ function Intro() {
 export default function FindACruise() {
   return (
     <Stack spacing={1}>
+      <Box width={100} minWidth={100}>
       <LoginButton />
+      </Box>
       <Typography>Looking for cruising or racing adventures?</Typography>
       <Intro />
       <AYearOfEvents />

@@ -276,7 +276,6 @@ function Welcome() {
     return (
       <>
         <Typography>This is the members area. Please log-in</Typography>
-        <LoginButton />
       </>
     );
   }
