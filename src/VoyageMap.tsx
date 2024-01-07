@@ -41,9 +41,9 @@ function MapComponent({ data }: { data: LatLng[] }) {
                 }
             }
         },
-        locationfound: (location) => {
+        //locationfound: (location) => {
             // console.log('location found:', location);
-        },
+        //},
     })
 
     map.fitBounds(bounds);
