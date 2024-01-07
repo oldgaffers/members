@@ -88,7 +88,7 @@ export default function CrewCard({
     onDeleteImage = () => console.log('delete image'),
     onUseAvatar,
 }: CrewCardProps) {
-    const [text, setText] = useState<string>(profile.text);
+    const [text, setText] = useState<string>(profile?.text);
     const [editText, setEditText] = useState<boolean>(false);
 
     function handleSaveText() {
