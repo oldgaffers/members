@@ -94,7 +94,7 @@ export default function EditableCardImage({ editEnabled, id, name, email, pictur
     const [web, setWeb] = useState<string>('');
 
     useEffect(() => {
-        let timeoutId: number | undefined;
+        let timeoutId: NodeJS.Timeout | undefined;
         if (url !== '') {
             timeoutId = setTimeout(() => {
                 if (url !== '') {

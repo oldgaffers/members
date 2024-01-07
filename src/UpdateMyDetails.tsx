@@ -153,7 +153,7 @@ function MyDetails() {
     }
   }
 
-  const handleSubmitContact = (user: any, text: string) => {
+  const handleSubmitContact = (text: string) => {
     // console.log('handleSubmitContact', user);
     // console.log('handleSubmitContact', myRecord);
     const { firstname, lastname } = myRecord as Member; 
@@ -252,7 +252,6 @@ function MyDetails() {
         <Profile profileName='crewing' />
       </CustomTabPanel>
       <ContactTheMembershipSecretary
-        user={user}
         data={recordToHtml(myRecord)}
         onSubmit={handleSubmitContact}
         onCancel={() => setOpenContact(false)}
