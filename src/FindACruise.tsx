@@ -36,7 +36,7 @@ function Intro() {
 export default function FindACruise() {
   return (
     <Stack spacing={1}>
-      <Box width={100} minWidth={100}>
+      <Box width={100} minWidth={200}>
       <LoginButton />
       </Box>
       <Typography>Looking for cruising or racing adventures?</Typography>
