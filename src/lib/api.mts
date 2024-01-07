@@ -52,10 +52,11 @@ export async function boatsWithHomeLocation(): Promise<Boat[]> {
   const ra = settled.map((s) => (s as PromiseFulfilledResult<any>).value);
   const maybeFound = ra.filter((o: any) => o.geoname);
   
-  const notFound = maybeFound.filter((o: any) => o.geoname?.message === 'not found').map((o) => o.place);
-  const tryAgain = [...new Set(notFound.map((p) => p.replace(/ .*/, '')))];
-  const settled2 = await Promise.allSettled(tryAgain.map(async (place) => ({ place, geoname: await geolocate(place) })));
-  const rb = settled2.map((s) => (s as PromiseFulfilledResult<any>).value).filter((o: any) => o.geoname?.lng);
+  // TODO
+  // const notFound = maybeFound.filter((o: any) => o.geoname?.message === 'not found').map((o) => o.place);
+  // const tryAgain = [...new Set(notFound.map((p) => p.replace(/ .*/, '')))];
+  // const settled2 = await Promise.allSettled(tryAgain.map(async (place) => ({ place, geoname: await geolocate(place) })));
+  // const rb = settled2.map((s) => (s as PromiseFulfilledResult<any>).value).filter((o: any) => o.geoname?.lng);
   const found = maybeFound.filter((o: any) => o.geoname?.message !== 'not found');
   const m = Object.fromEntries(found.map((f: any) => [f.place, f.geoname]));
   b.forEach((boat: Boat) => {
