@@ -1,9 +1,11 @@
-import { Alert, Button, Card, CardActions, CardContent, CardHeader, CardMedia, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Snackbar, Typography } from "@mui/material";
+import { Alert, Button, Card, CardActions, CardContent, CardHeader, CardMedia, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, Snackbar, Typography } from "@mui/material";
+import InfoIcon from '@mui/icons-material/Info';
 import { LatLng } from "leaflet";
 import VoyageMap from "./VoyageMap";
-import { useState } from "react";
+import { SetStateAction, useState } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 import { postGeneralEnquiry } from "./lib/api.mts";
+import SkipperPopover from "./SkipperPopover";
 
 export interface Voyage {
     organiserGoldId: number
@@ -28,13 +30,13 @@ interface VoyageCardProps {
     voyage: Voyage
 }
 
-function InterestDialog({open, onSubmit, onCancel, voyage}: { open: boolean, onCancel: any, onSubmit: any, voyage: Voyage }) {
+function InterestDialog({ open, onSubmit, onCancel, voyage }: { open: boolean, onCancel: any, onSubmit: any, voyage: Voyage }) {
     return <Dialog open={open}>
         <DialogTitle>{voyage.title} on {voyage.boat.name} ({voyage.boat.oga_no})</DialogTitle>
         <DialogContent>
-        <DialogContentText>
-            Would you like us to email the organiser and ask them to contact you?
-        </DialogContentText>
+            <DialogContentText>
+                Would you like us to email the organiser and ask them to contact you?
+            </DialogContentText>
         </DialogContent>
         <DialogActions>
             <Button onClick={onSubmit}>Yes</Button>
@@ -48,6 +50,17 @@ function InterestDialog({open, onSubmit, onCancel, voyage}: { open: boolean, onC
 export default function VoyageCard({ voyage }: VoyageCardProps) {
     const [open, setOpen] = useState<boolean>(false);
     const [snackBarOpen, setSnackBarOpen] = useState<boolean>(false);
+    const [anchorEl, setAnchorEl] = useState<HTMLSpanElement>();
+
+    const handleSkipperClick = (event: { currentTarget: SetStateAction<HTMLSpanElement | undefined>; }) => {
+      setAnchorEl(event.currentTarget);
+    };
+  
+    const handleSkipperPopoverClose = () => {
+      setAnchorEl(undefined);
+    };
+  
+    const skipperPopoverOpen = Boolean(anchorEl);
 
     const title = `${voyage.title} on ${voyage.boat.name} (${voyage.boat.oga_no})`;
 
@@ -68,7 +81,7 @@ OGA Member ${user?.name} has expressed interest in your voyage.
 They can be contacted with a 'reply all' to this email.
 If they have a crewing profile you will find it in the membership area.
 Their OGA Membership number is ${me['https://oga.org.uk/member']}`,
-         };
+        };
         postGeneralEnquiry('public', 'contact', data)
             .then((response) => {
                 console.log(response)
@@ -82,10 +95,11 @@ Their OGA Membership number is ${me['https://oga.org.uk/member']}`,
 
     if (voyage) {
         return <Card>
-            <CardHeader title={title}/>
-            <CardMedia>{(voyage.places?.length > 0) ? <VoyageMap places={voyage.places}/>: ''}</CardMedia>
+            <CardHeader title={title} />
+            <CardMedia>{(voyage.places?.length > 0) ? <VoyageMap places={voyage.places} /> : ''}</CardMedia>
             <CardContent>
-                <Typography>Skippered by {voyage.skipper}</Typography>
+                <Typography>Skippered by {voyage.skipper}<IconButton onClick={handleSkipperClick}><InfoIcon/></IconButton>
+                </Typography>
                 <Typography>Between {voyage.start} and {voyage.end}</Typography>
                 <Typography>Type: {voyage.type}</Typography>
                 <Typography>Covering around {voyage.distance} nm</Typography>
@@ -98,14 +112,15 @@ Their OGA Membership number is ${me['https://oga.org.uk/member']}`,
                 <Button onClick={() => setOpen(true)}>I'm Interested</Button>
             </CardActions>
             <InterestDialog open={open} onSubmit={handleSubmit} onCancel={() => setOpen(false)} voyage={voyage} />
+            <SkipperPopover voyage={voyage} open={skipperPopoverOpen} onClose={handleSkipperPopoverClose} anchorEl={anchorEl}/>
             <Snackbar
                 anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
                 open={snackBarOpen}
                 autoHideDuration={2000}
-                onClose={() => setSnackBarOpen(false)}                
+                onClose={() => setSnackBarOpen(false)}
             >
                 <Alert severity="success">Thanks, we've let them know.</Alert>
-                </Snackbar>
+            </Snackbar>
         </Card>;
     }
     return "nothing to see here";
