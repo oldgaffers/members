@@ -19,6 +19,13 @@ function MapComponent({ data }: { data: LatLng[] }) {
     const bounds = L.latLngBounds(data[0], data[0]);
     data.slice(1).forEach((d) => bounds.extend(d));
 
+    if (bounds.getNorthEast().distanceTo(bounds.getSouthWest()) < 10000) {
+        const MINXY = 0.5;
+        const c = bounds.getCenter();
+        bounds.extend({ lat: c.lat + MINXY, lng: c.lng + MINXY });
+        bounds.extend({ lat: c.lat - MINXY, lng: c.lng - MINXY });
+    }
+
     const map = useMapEvents({
         click: (a) => {
             map.locate();
