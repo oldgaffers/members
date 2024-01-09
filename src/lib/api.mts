@@ -32,7 +32,7 @@ export function boatUrl(ogaNo: number, location: { origin: string; pathname: str
 }
 
 export async function geolocate(place: string) {
-  const r = await fetch(`${api1}/default/public/place?name=${place}`)
+  const r = await fetch(`${api1}/default/public/place?name=${place}`);
   if (r.ok) {
     return r.json()
   }
