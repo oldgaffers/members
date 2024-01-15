@@ -25,9 +25,9 @@ export function ownerAreaValueGetter({ value }: { value: Member[] }) {
   if (!value) {
     return '';
   }
-  const visible = value.filter((m) => m.GDPR);
+  const visible = value.filter((m) => m.GDPR && m.status !== 'Not Paid');
   if (visible.length === 0) {
-    return '(private)';
+    return '*';
   }
   return value[0].area;
 }
@@ -36,9 +36,9 @@ export function ownerValueGetter({ value }: { value: Member[] }) {
   if (!value) {
     return '';
   }
-  const visible = value.filter((m) => m.GDPR);
+  const visible = value.filter((m) => m.GDPR && m.status !== 'Not Paid');
   if (visible.length === 0) {
-    return '(private)';
+    return '*';
   }
   const names = namelist(visible);
   if (visible.length === value.length) {
