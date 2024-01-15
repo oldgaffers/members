@@ -44,7 +44,7 @@ export function ownerValueGetter({ value }: { value: Member[] }) {
   if (visible.length === value.length) {
     return names;
   }
-  return `${names}, and other private owners`;
+  return `${names}, ...`;
 }
 
 export function ownerList(row: any[]) {

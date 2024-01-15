@@ -33,11 +33,13 @@
     "@turf/distance": "^6.5.0",
     "awesome-phonenumber": "^6.2.0",
     "dayjs": "^1.11.10",
+    "jsonrawtoxlsx": "^1.1.0",
     "leaflet": "^1.9.4",
     "mermaid": "^10.6.1",
     "node-postcodes.io": "^1.0.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-downloadfile-hook": "^1.0.3",
     "react-dropzone": "^14.2.3",
     "react-leaflet": "^4.2.1",
     "uuid": "^9.0.1"
