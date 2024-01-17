@@ -1,17 +1,26 @@
 import { useCallback, useState } from 'react';
 import Typography from '@mui/material/Typography';
-import { DataGrid, GridToolbarContainer, GridToolbarFilterButton, GridCellModes, GridColDef, GridRenderCellParams, GridTreeNodeWithRender } from '@mui/x-data-grid';
+import { DataGrid, GridToolbarContainer, GridToolbarFilterButton, GridCellModes, GridColDef, GridRenderCellParams, GridTreeNodeWithRender, GridToolbarExport, GridCsvExportOptions } from '@mui/x-data-grid';
 import { Button } from '@mui/material';
 import Contact from './Contact';
 import { Boat, boatUrl } from './lib/api.mts';
 import { ownerValueGetter } from './lib/ownership.mts';
 import { areaAbbreviation } from './lib/membership.mts';
 import { distanceFormatter, distanceInNM } from './lib/utils.mts';
+import RoleRestricted from './RoleRestricted';
 
 function CustomToolbar() {
+  const options: GridCsvExportOptions = {
+    fields: ['name', 'oga_no', 'owners', 'home_port', 'area'],
+    fileName: 'ogaboats',
+    utf8WithBom: true, // navigator.platform.toUpperCase().indexOf('WIN') >= 0,
+  };
   return (
     <GridToolbarContainer>
       <GridToolbarFilterButton />
+      <RoleRestricted role='editor'>
+        <GridToolbarExport csvOptions={options}/>
+      </RoleRestricted>
     </GridToolbarContainer>
   );
 }

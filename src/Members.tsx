@@ -1,8 +1,6 @@
 import { useEffect, useState } from 'react';
 import CircularProgress from '@mui/material/CircularProgress';
-import {
-  Box, FormControlLabel, FormGroup, Switch,
-} from '@mui/material';
+import { Box, FormControlLabel, FormGroup, Switch } from '@mui/material';
 import { gql, useQuery } from '@apollo/client';
 import { useAuth0 } from '@auth0/auth0-react';
 import * as postcodes from 'node-postcodes.io';
@@ -91,6 +89,7 @@ export function useMembers(
   const data = { boats, postcodes: pc, members: filteredMembers };
   return { data };
 }
+
 
 export function MembersList({ crew=false }) {
   const [excludeNotPaid, setExcludeNotPaid] = useState(false);

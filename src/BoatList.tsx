@@ -1,13 +1,10 @@
 import { useState, useEffect } from 'react';
 import { gql, useQuery } from '@apollo/client';
-import { useDownloadFile } from "react-downloadfile-hook";
-import { Autocomplete, Button, CircularProgress, Stack, TextField, Typography } from '@mui/material';
+import { Autocomplete, CircularProgress, Stack, TextField, Typography } from '@mui/material';
 import BoatsAndOwners from './BoatsAndOwners';
 import { Boat, boatsWithHomeLocation } from './lib/api.mts';
 import memberPredicate from './lib/membership.mts';
 import membersBoats from './lib/members_boats.mts';
-import RoleRestricted from './RoleRestricted';
-import { boats2xlsx } from './lib/xlsx.mjs';
 
 export function useGetMembersBoats(membersResult: any) {
 
@@ -40,15 +37,6 @@ export function useGetMembersBoats(membersResult: any) {
 
 }
 
-function Xlxs({ data }: { data: any }) {
-    const { linkProps } = useDownloadFile({
-        fileName: 'OGAYearbookBoats.xlsx',
-        format: 'application/xlsx',
-        data,
-    });
-    return <a {...linkProps}><Typography variant='button'>Export</Typography></a>
-}
-
 export default function BoatList({ places }: { places: any[] }) {
 
     const [distanceFrom, setDistanceFrom] = useState<string>();
@@ -75,9 +63,6 @@ export default function BoatList({ places }: { places: any[] }) {
     const placenames: string[] = places.map((place) => place.name);
 
     return <>
-        <RoleRestricted role='editor'>
-            <Xlxs data={boats2xlsx(wboats)} />
-        </RoleRestricted>
         <Stack direction="row">
             <Typography marginTop={2} marginRight={1}>Choose from a range of locations to sort boats by proximity.</Typography>
             <Autocomplete

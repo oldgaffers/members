@@ -1,10 +1,11 @@
 import { useAuth0 } from '@auth0/auth0-react';
 import Typography from '@mui/material/Typography';
-import { DataGrid, GridColDef, GridRenderCellParams, GridToolbarContainer, GridToolbarFilterButton, GridTreeNodeWithRender } from '@mui/x-data-grid';
+import { DataGrid, GridColDef, GridRenderCellParams, GridToolbarContainer, GridToolbarExport, GridToolbarFilterButton, GridTreeNodeWithRender, GridCsvExportOptions } from '@mui/x-data-grid';
 import Contact from './Contact';
 import { Member, areaAbbreviation } from './lib/membership.mts';
 import { Boat } from './lib/api.mts';
 import { distanceFormatter, distanceInNM, phoneGetter } from './lib/utils.mts';
+import RoleRestricted from './RoleRestricted';
 
 type MembersAndBoatsProps = {
   members: Member[],
@@ -14,9 +15,17 @@ type MembersAndBoatsProps = {
 }
 
 function CustomToolbar() {
+  const options: GridCsvExportOptions = {
+    fields: ['lastname', 'name', 'member', 'telephone', 'town', 'boat', 'area', 'smallboats'],
+    fileName: 'ogamembers',
+    utf8WithBom: true, // navigator.platform.toUpperCase().indexOf('WIN') >= 0,
+  };
   return (
     <GridToolbarContainer>
       <GridToolbarFilterButton />
+      <RoleRestricted role='editor'>
+        <GridToolbarExport csvOptions={options}/>
+      </RoleRestricted>
     </GridToolbarContainer>
   );
 }
@@ -130,6 +139,7 @@ export default function MembersAndBoats({
     {
       field: 'areas', headerName: 'Areas', width: 100, renderCell: areaFormatter,
     },
+    { field: 'area', headerName: 'Area', valueFormatter: (params) => areaAbbreviation(params.value) },
     { field: 'smallboats', headerName: 'SB', valueFormatter: smallboatsFormatter },
   ];
 
@@ -142,6 +152,9 @@ export default function MembersAndBoats({
           slots={{ toolbar: CustomToolbar }}
           autoHeight
           initialState={{
+            columns: {
+              columnVisibilityModel: { area: false },
+            },
             sorting: {
               // sortModel: [{ field: 'lastname', sort: 'asc' }, { field: 'member', sort: 'asc' }, { field: 'id', sort: 'asc' }],
               sortModel: [{ field: 'lastname', sort: 'asc' }],

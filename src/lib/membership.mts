@@ -5,7 +5,7 @@ export type SailingProfile = {
   __typename?: string
 }
 
-export type Member = {
+export interface Member {
   id: number
   member?: number
   salutation?: string
@@ -29,7 +29,10 @@ export type Member = {
   __typename?: string
 }
 
-export function areaAbbreviation(value: string) {
+export function areaAbbreviation(value: string | undefined) {
+  if (!value) {
+    return '';
+  }
   const abbrev = {
     'Bristol Channel': 'BC',
     'Dublin Bay': 'DB',

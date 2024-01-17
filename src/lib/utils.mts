@@ -52,7 +52,7 @@ function fettlePhone(n: string | undefined, area: string | undefined) {
   return parsePhoneNumber(n, { regionCode: 'GB' });
 }
 
-function formatPhone(pn: ParsedPhoneNumber | undefined) {
+export function formatPhone(pn: ParsedPhoneNumber | undefined) {
   if (pn) {
     if (pn.valid) {
       if (pn.countryCode === 44) {
