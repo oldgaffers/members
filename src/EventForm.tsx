@@ -1,8 +1,8 @@
 import { createRef, useEffect, useState } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 import {
-  Autocomplete, Box, Button, CircularProgress,
-  FormControl, FormHelperText,
+  Autocomplete, Box, Button, Checkbox, CircularProgress,
+  FormControl, FormControlLabel, FormHelperText,
   Input, InputLabel,
   TextField, Typography,
 } from '@mui/material';
@@ -20,6 +20,7 @@ import LocationPicker from './LocationPicker';
 import { CrewCards } from './CrewCards'
 import { Voyage } from './VoyageCard';
 import { Member } from './lib/membership.mts';
+import Disclaimer from './Disclaimer';
 
 type EventFormProps = {
   onCreate: Function
@@ -50,6 +51,7 @@ export default function EventForm({ onCreate }: EventFormProps) {
   const [end, setEnd] = useState<string>('');
   const [places, setPlaces] = useState<LatLng[]>([]);
   const [open, setOpen] = useState(false);
+  const [oldEnough, setOldEnough] = useState(false);
   const { user } = useAuth0();
   const q = Object.entries(user ?? {}).map(([k, v]) => [k.replace('https://oga.org.uk/', ''), v]);
   const member = Object.fromEntries(q);
@@ -122,7 +124,7 @@ export default function EventForm({ onCreate }: EventFormProps) {
     setInvites(others);
   }
 
-  const ready = start && end;
+  const ready = oldEnough && start && end;
 
   if (loading || !data || data.length < 1) {
     return <CircularProgress />;
@@ -282,7 +284,17 @@ export default function EventForm({ onCreate }: EventFormProps) {
             and express interest in crewing.
             If you hide it, only it will still be used in the email sent to members you want to invite.
           </Grid>
+          <Grid>
+            <Disclaimer border={1} />
+          </Grid>
           <Grid xs={12}>
+            <FormControlLabel
+              control={<Checkbox
+                checked={oldEnough}
+                onChange={(e) => setOldEnough(e.target.checked)}
+              />}
+              label="I confirm I am over 18 years old"
+            />
             <Button
               variant="contained"
               onClick={handleCreate}

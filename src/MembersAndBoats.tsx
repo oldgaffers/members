@@ -22,7 +22,7 @@ function CustomToolbar() {
   };
   return (
     <GridToolbarContainer>
-      <GridToolbarFilterButton />
+      <GridToolbarFilterButton/>
       <RoleRestricted role='editor'>
         <GridToolbarExport csvOptions={options}/>
       </RoleRestricted>

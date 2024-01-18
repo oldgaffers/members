@@ -1,4 +1,4 @@
-import { Alert, Button, Card, CardActions, CardContent, CardHeader, CardMedia, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, Snackbar, Stack, TextField, Typography } from "@mui/material";
+import { Alert, Button, Card, CardActions, CardContent, CardHeader, CardMedia, Checkbox, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControlLabel, IconButton, Snackbar, Stack, TextField, Typography } from "@mui/material";
 import InfoIcon from '@mui/icons-material/Info';
 import { LatLng } from "leaflet";
 import VoyageMap from "./VoyageMap";
@@ -6,6 +6,7 @@ import { SetStateAction, useState } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 import { postGeneralEnquiry } from "./lib/api.mts";
 import SkipperPopover from "./SkipperPopover";
+import Disclaimer from "./Disclaimer";
 
 export interface Voyage {
     organiserGoldId: number
@@ -96,18 +97,27 @@ interface InterestDialogProps {
 function InterestDialog({ from, fromEmail, open, onSubmit, onCancel, voyage }: InterestDialogProps) {
     const [name, setName] = useState(from);
     const [email, setEmail] = useState(fromEmail);
+    const [oldEnough, setOldEnough] = useState(false);
 
-    const bad = name === undefined || name.trim() === '' || email === undefined || !email.includes('@')
+    const bad =  (!oldEnough) || name ===  undefined || name.trim() === '' || email === undefined || !email.includes('@')
 
     return <Dialog open={open}>
         <DialogTitle>{voyage.title} on {voyage.boat.name} ({voyage.boat.oga_no})</DialogTitle>
         <DialogContent>
             <EntryFields from={name} fromEmail={email} onChangeEmail={setEmail} onChangeName={setName} />
             <DialogContentText>
+                <Disclaimer />
                 Would you like us to email the organiser and ask them to contact you?
             </DialogContentText>
         </DialogContent>
         <DialogActions>
+            <FormControlLabel
+                control={<Checkbox
+                    checked={oldEnough}
+                    onChange={(e) => setOldEnough(e.target.checked)}
+                />}
+                label="I confirm I am over 18 years old"
+            />
             <Button disabled={bad} onClick={() => onSubmit(name, email)}>Yes</Button>
             <Button onClick={onCancel}>No</Button>
         </DialogActions>
@@ -120,13 +130,13 @@ export default function VoyageCard({ voyage }: VoyageCardProps) {
     const [snackBarOpen, setSnackBarOpen] = useState<boolean>(false);
     const [anchorEl, setAnchorEl] = useState<HTMLSpanElement>();
     const handleSkipperClick = (event: { currentTarget: SetStateAction<HTMLSpanElement | undefined>; }) => {
-      setAnchorEl(event.currentTarget);
+        setAnchorEl(event.currentTarget);
     };
-  
+
     const handleSkipperPopoverClose = () => {
-      setAnchorEl(undefined);
+        setAnchorEl(undefined);
     };
-  
+
     const skipperPopoverOpen = Boolean(anchorEl);
 
     const title = `${voyage.title} on ${voyage.boat.name} (${voyage.boat.oga_no})`;
@@ -152,7 +162,7 @@ export default function VoyageCard({ voyage }: VoyageCardProps) {
             <CardHeader title={title} />
             <CardMedia>{(voyage.places?.length > 0) ? <VoyageMap places={voyage.places} /> : ''}</CardMedia>
             <CardContent>
-                <Typography>Skippered by {voyage.skipper}<IconButton onClick={handleSkipperClick}><InfoIcon/></IconButton>
+                <Typography>Skippered by {voyage.skipper}<IconButton onClick={handleSkipperClick}><InfoIcon /></IconButton>
                 </Typography>
                 <Typography>Between {voyage.start} and {voyage.end}</Typography>
                 <Typography>Type: {voyage.type}</Typography>
@@ -166,14 +176,14 @@ export default function VoyageCard({ voyage }: VoyageCardProps) {
                 <Button onClick={() => setOpen(true)}>I'm Interested</Button>
             </CardActions>
             <InterestDialog
-              open={open}
-              from={user?.name ?? ''}
-              fromEmail={user?.email ?? ''}
-              onSubmit={handleSubmit}
-              onCancel={() => setOpen(false)}
-              voyage={voyage}
+                open={open}
+                from={user?.name ?? ''}
+                fromEmail={user?.email ?? ''}
+                onSubmit={handleSubmit}
+                onCancel={() => setOpen(false)}
+                voyage={voyage}
             />
-            <SkipperPopover voyage={voyage} open={skipperPopoverOpen} onClose={handleSkipperPopoverClose} anchorEl={anchorEl}/>
+            <SkipperPopover voyage={voyage} open={skipperPopoverOpen} onClose={handleSkipperPopoverClose} anchorEl={anchorEl} />
             <Snackbar
                 anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
                 open={snackBarOpen}
