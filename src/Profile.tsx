@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
-import { CircularProgress, FormControlLabel, LinearProgress, Stack, Switch, Typography } from "@mui/material";
+import { Checkbox, CircularProgress, FormControlLabel, LinearProgress, Stack, Switch, Typography } from "@mui/material";
 import CrewCard from "./CrewCard";
 import { Member, SailingProfile } from "./lib/membership.mts";
 import { useAuth0 } from "@auth0/auth0-react";
 import { DocumentNode, gql, useMutation, useQuery } from "@apollo/client";
+import Disclaimer from "./Disclaimer";
 
 const mutations: Record<string, DocumentNode> = {
   'skipper': gql`
@@ -30,6 +31,7 @@ export default function Profile({ profileName }: { profileName: string }) {
   const [profile, setProfile] = useState<SailingProfile>({ pictures: [], published: false, text: '' });
   const [saving, setSaving] = useState<boolean>(false);
   const [member, setMember] = useState<Member | undefined>();
+  const [oldEnough, setOldEnough] = useState(false);
   const { loading, data, refetch } = useQuery(MEMBER_QUERY, { variables: { id } });
   const [addProfile] = useMutation(mutations[profileName]);
   const [dirty, setDirty] = useState<boolean>(false);
@@ -71,7 +73,7 @@ export default function Profile({ profileName }: { profileName: string }) {
   }
 
   function handleDeleteImage() {
-    setProfile({...profile, pictures: []}); // TODO handle multiple images
+    setProfile({ ...profile, pictures: [] }); // TODO handle multiple images
     setDirty(true);
   }
 
@@ -83,17 +85,17 @@ export default function Profile({ profileName }: { profileName: string }) {
           if (profile.pictures.includes(user.picture)) { // we are using it
             // console.log('already using avatar');
           } else { // add it
-            setProfile({...profile, pictures: [user.picture, ...profile.pictures]});
+            setProfile({ ...profile, pictures: [user.picture, ...profile.pictures] });
             setDirty(true);
           }
         } else { // no pictures, add it
-          setProfile({...profile, pictures: [user.picture]});
+          setProfile({ ...profile, pictures: [user.picture] });
           setDirty(true);
         }
       } else { // we don't want to use it
         if (profile?.pictures?.includes(user.picture)) { // we are using it, remove it
           const p = (profile.pictures ?? []).filter((p) => p !== user.picture);
-          setProfile({...profile, pictures: p});
+          setProfile({ ...profile, pictures: p });
           setDirty(true);
         }
       }
@@ -143,7 +145,20 @@ export default function Profile({ profileName }: { profileName: string }) {
         </Typography>
         <Typography>Edit the text by clicking on the edit button above the text. Save the changes or cancel using the tick and cross
           buttons that appear during editing.</Typography>
-        <FormControlLabel control={<Switch checked={profile?.published} onChange={(e) => handleChangePublishState(e.target.checked)} />} label="Published" />
+        <Disclaimer border={1} marginTop={1} />
+        <FormControlLabel
+          control={<Checkbox
+            checked={oldEnough}
+            onChange={(e) => setOldEnough(e.target.checked)}
+          />}
+          label="I confirm I am over 18 years old"
+        />
+        <FormControlLabel
+          disabled={!(profile?.published) && !oldEnough}
+          control={<Switch checked={profile?.published}
+          onChange={(e) => handleChangePublishState(e.target.checked)} />}
+          label="Published"
+        />
       </Stack>
     </Stack>
     {saving ? <LinearProgress /> : ''}
