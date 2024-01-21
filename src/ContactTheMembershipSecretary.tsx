@@ -6,6 +6,7 @@ import {
 import { ReactReallyTinyEditor as ReactTinyEditor } from '@ogauk/react-tiny-editor';
 // import {type  User } from '@auth0/auth0-react';
 
+
 type ContactTheMembershipSecretaryProps = {
   data: string
   onCancel: Function
@@ -17,6 +18,9 @@ export default function ContactTheMembershipSecretary({
   data, onCancel, onSubmit, open,
 }: ContactTheMembershipSecretaryProps) {
   const [text, setText] = useState<string>(data);
+
+  console.log('DATA', data);
+  console.log('TEXT', text);
 
   const handleSubmit = () => {
     onSubmit(text);
@@ -39,7 +43,7 @@ export default function ContactTheMembershipSecretary({
                 m: 1, border: 1, paddingBottom: 1, height: '30rem', width: '100%',
               }}
               >
-                <ReactTinyEditor html={text} onChange={setText} />
+                <ReactTinyEditor html={data} onChange={setText} />
               </Box>
             </Box>
           </Stack>
