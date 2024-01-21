@@ -8,6 +8,7 @@ import RoleRestricted from "./RoleRestricted";
 import { Voyage, voyageInvitationBody } from "./VoyageCard";
 import { Member } from "./lib/membership.mts";
 import LoginButton from "./LoginButton";
+import Welcome from "./Welcome";
 
 // compose the email
 // send the email with the members as bcc and the organiser as from
@@ -72,6 +73,7 @@ export default function FindCrew() {
   return (
     <>
     <LoginButton />
+    <Welcome />
     <RoleRestricted role='member'>
       <Stack spacing={1}>
         <Typography>Looking for crew for your your cruising or racing adventures?</Typography>

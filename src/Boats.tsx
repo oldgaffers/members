@@ -1,6 +1,7 @@
 import RoleRestricted from './RoleRestricted';
 import BoatList from './BoatList';
 import LoginButton from './LoginButton';
+import Welcome from './Welcome';
 
 const places = [
   { name: 'Southwold', area: 'EC', lat: 52.3202, lng: 1.6631 },
@@ -39,6 +40,7 @@ export default function Boats() {
   return (
     <>
     <LoginButton/>
+    <Welcome />
     <RoleRestricted role="member"><BoatList places={places}/></RoleRestricted>
     </>
   );

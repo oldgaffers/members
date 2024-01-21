@@ -6,6 +6,7 @@ import AYearOfEvents from './AYearOfEvents.tsx';
 import { VoyageCards } from './VoyageCards.tsx';
 import LoginButton from './LoginButton.tsx';
 import { useAuth0 } from '@auth0/auth0-react';
+import Welcome from './Welcome.tsx';
 
 function Intro() {
   const { user } = useAuth0();
@@ -38,6 +39,7 @@ export default function FindACruise() {
     <Stack spacing={1}>
       <Box width={100} minWidth={200}>
       <LoginButton />
+      <Welcome />
       </Box>
       <Typography>Looking for cruising or racing adventures?</Typography>
       <Intro />
