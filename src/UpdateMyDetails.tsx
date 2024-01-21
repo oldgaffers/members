@@ -17,6 +17,7 @@ import membersBoats from './lib/members_boats.mts';
 import { Member } from './lib/membership.mts';
 import Profile from './Profile';
 import LoginButton from './LoginButton';
+import Welcome from './Welcome';
 
 const MEMBER_QUERY = gql(`query members($members: [Int]!) {
     members(members: $members) {
@@ -267,32 +268,6 @@ function MyDetails() {
         <Alert severity='success'>Thanks, we'll get back to you.</Alert>
       </Snackbar>
     </Stack>
-  );
-}
-
-function Welcome() {
-  const { user } = useAuth0();
-  if (!user) {
-    return (
-      <>
-        <Typography>This is the members area. Please log-in</Typography>
-      </>
-    );
-  }
-  if (user['https://oga.org.uk/id']) {
-    return (
-      <Typography variant="h6">
-        Hi{' '}
-        {user.name}
-        . Here are your membership details.
-      </Typography>
-    );
-  }
-  return (
-    <Typography>
-      Sorry, we can't associate your login with a member.
-      If you are a member, please contact us to sort this out.
-    </Typography>
   );
 }
 
