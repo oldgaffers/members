@@ -1,4 +1,5 @@
 export const registerServiceWorker = async () => {
+    return;
     if ("serviceWorker" in navigator) {
       try {
         const registration = await navigator.serviceWorker.register("/sw.js", {
