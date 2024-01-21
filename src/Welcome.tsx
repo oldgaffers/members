@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 import SendIcon from "@mui/icons-material/Send";
 import MailIcon from "@mui/icons-material/Mail";
-import { Alert, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Snackbar, Stack, TextField, Typography } from "@mui/material";
+import { Alert, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Snackbar, Stack, Typography } from "@mui/material";
 import { postGeneralEnquiry } from "./lib/api.mts";
 
 type ContactDialogProps = {
@@ -54,7 +54,7 @@ function ContactDialog({
 function Contact() {
     const [open, setOpen] = useState(false);
     const [snackBarOpen, setSnackBarOpen] = useState(false);
-    const { user, getAccessTokenSilently } = useAuth0();
+    const { user } = useAuth0();
 
     const handleClickOpen = () => {
         setOpen(true);
