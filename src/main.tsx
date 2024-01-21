@@ -6,6 +6,7 @@ import Boats from './Boats.tsx';
 import FindCrew from './FindCrew.tsx';
 import FindACruise from './FindACruise.tsx';
 import CustomMap from './CustomMap.tsx';
+// import { registerServiceWorker } from './rsw.mjs';
 
 declare global {
   interface Window { markers: { latitude: number; longitude: number; icon: string; name: string; }[]; }
@@ -43,3 +44,5 @@ if (map) {
   const markers = window.markers ?? [];
   ReactDOM.createRoot(map).render(<App><CustomMap height={800} markers={markers} scope={attr['scope'] ?? 'public'} /></App>);
 }
+
+// registerServiceWorker();
