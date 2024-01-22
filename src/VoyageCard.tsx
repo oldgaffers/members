@@ -2,7 +2,7 @@ import { Alert, Button, Card, CardActions, CardContent, CardHeader, CardMedia, C
 import InfoIcon from '@mui/icons-material/Info';
 import { LatLng } from "leaflet";
 import VoyageMap from "./VoyageMap";
-import { SetStateAction, useState } from "react";
+import { useState } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 import { postGeneralEnquiry } from "./lib/api.mts";
 import SkipperPopover from "./SkipperPopover";
@@ -65,18 +65,18 @@ interface EntryFieldsProps {
 
 function EntryFields({ from, fromEmail, onChangeName, onChangeEmail }: EntryFieldsProps) {
     if (from.trim() !== '' && fromEmail.includes('@')) {
-        return '';
+        return <span/>;
     }
     return <Stack direction='column'>
         <TextField
-            onChange={(e) => onChangeEmail(e.target.value)}
+            onChange={(e: { target: { value: string } }) => onChangeEmail(e.target.value)}
             margin="dense"
             label="Your Email"
             type="text"
             value={fromEmail}
         />
         <TextField
-            onChange={(e) => onChangeName(e.target.value)}
+            onChange={(e: { target: { value: string } }) => onChangeName(e.target.value)}
             margin="dense"
             label="Your Name"
             type="text"
@@ -114,7 +114,7 @@ function InterestDialog({ from, fromEmail, open, onSubmit, onCancel, voyage }: I
             <FormControlLabel
                 control={<Checkbox
                     checked={oldEnough}
-                    onChange={(e) => setOldEnough(e.target.checked)}
+                    onChange={(e) => setOldEnough((e.target as HTMLInputElement).checked)}
                 />}
                 label="I confirm I am over 18 years old"
             />
@@ -129,13 +129,6 @@ export default function VoyageCard({ voyage }: VoyageCardProps) {
     const [open, setOpen] = useState<boolean>(false);
     const [snackBarOpen, setSnackBarOpen] = useState<boolean>(false);
     const [anchorEl, setAnchorEl] = useState<HTMLSpanElement>();
-    const handleSkipperClick = (event: { currentTarget: SetStateAction<HTMLSpanElement | undefined>; }) => {
-        setAnchorEl(event.currentTarget);
-    };
-
-    const handleSkipperPopoverClose = () => {
-        setAnchorEl(undefined);
-    };
 
     const skipperPopoverOpen = Boolean(anchorEl);
 
@@ -162,7 +155,7 @@ export default function VoyageCard({ voyage }: VoyageCardProps) {
             <CardHeader title={title} />
             <CardMedia>{(voyage.places?.length > 0) ? <VoyageMap places={voyage.places} /> : ''}</CardMedia>
             <CardContent>
-                <Typography>Skippered by {voyage.skipper}<IconButton onClick={handleSkipperClick}><InfoIcon /></IconButton>
+                <Typography>Skippered by {voyage.skipper}<IconButton onClick={(e: { currentTarget: HTMLSpanElement | ((prevState: HTMLSpanElement | undefined) => HTMLSpanElement | undefined) | undefined; }) => setAnchorEl(e.currentTarget)}><InfoIcon /></IconButton>
                 </Typography>
                 <Typography>Between {voyage.start} and {voyage.end}</Typography>
                 <Typography>Type: {voyage.type}</Typography>
@@ -183,7 +176,12 @@ export default function VoyageCard({ voyage }: VoyageCardProps) {
                 onCancel={() => setOpen(false)}
                 voyage={voyage}
             />
-            <SkipperPopover voyage={voyage} open={skipperPopoverOpen} onClose={handleSkipperPopoverClose} anchorEl={anchorEl} />
+            <SkipperPopover
+                voyage={voyage}
+                open={skipperPopoverOpen}
+                onClose={() => setAnchorEl(undefined)}
+                anchorEl={anchorEl}
+            />
             <Snackbar
                 anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
                 open={snackBarOpen}
@@ -194,7 +192,7 @@ export default function VoyageCard({ voyage }: VoyageCardProps) {
             </Snackbar>
         </Card>;
     }
-    return "nothing to see here";
+    return <Typography>nothing to see here</Typography>;
 }
 
 function skipperIfDifferent(skipper: string, organiser: string) {

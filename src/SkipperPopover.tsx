@@ -26,7 +26,7 @@ function ProfileText({skipper, organiser}: ProfileTextProps) {
     if (oname === skipper && organiser?.skipper?.published) {
         return <Paper dangerouslySetInnerHTML={{ __html: organiser?.skipper?.text?.trim() ?? '' }} />;
     }
-    return `We don't have any details about ${skipper ?? '?'}`;
+    return <Typography>We don't have any details about {skipper ?? '?'}</Typography>;
 }
 
 export default function SkipperPopover({ voyage, open, onClose, anchorEl }: SkipperPopoverProps) {

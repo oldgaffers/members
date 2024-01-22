@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import { PropsWithChildren, SetStateAction, useEffect, useState } from 'react';
+import { PropsWithChildren, useEffect, useState } from 'react';
 import EditIcon from '@mui/icons-material/Edit';
 import { useAuth0 } from '@auth0/auth0-react';
 import { useQuery, gql } from '@apollo/client';
@@ -97,7 +97,7 @@ function MyDetails() {
   const [tab, setTab] = useState(0);
   const [token, setToken] = useState<string|undefined>();
 
-  const handleTabChange = (_event: any, newValue: SetStateAction<number>) => {
+  const handleTabChange = (_event: any, newValue: number) => {
     setTab(newValue);
   };
 
@@ -199,7 +199,7 @@ function MyDetails() {
   };
 
   if (!user) {
-    return 'please log in';
+    return <Typography>please log in</Typography>;
   }
 
   if (!myRecord) {

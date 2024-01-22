@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback, TargetedEvent } from 'react';
 
 type Item = {
   id: string
@@ -32,8 +32,8 @@ export function ResourceGroups({ items, onChange }: ResourceGroupsProps) {
 
   const find = (id: string) => (items ? items.find((item) => item.id === id): undefined);
 
-  const change = (ev: { target: { value: any; }; }) => {
-    const { value } = ev.target;
+  const change = (ev: TargetedEvent<HTMLSelectElement, Event>) => {
+    const { value } = ev.target as HTMLSelectElement;
     setSelectedValue(value);
     const item = find(value);
     doOnChange(item);

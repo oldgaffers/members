@@ -1,4 +1,4 @@
-import { SetStateAction, useState } from "react";
+import { SetStateAction, TargetedEvent, useState } from "react";
 import Stack from '@mui/material/Stack';
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
@@ -41,7 +41,7 @@ export default function PhotoUploader() {
         required={true}
         type="text"
         label="Copyright Owner"
-        onChange={(e) => setCopyright(e.target.value)}
+        onChange={(e: TargetedEvent<HTMLInputElement>) => setCopyright((e.target as HTMLInputElement).value)}
       />
         <Button
           disabled={!ready()}

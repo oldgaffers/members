@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { TargetedEvent, useEffect, useState } from "react";
 import { Checkbox, CircularProgress, FormControlLabel, LinearProgress, Stack, Switch, Typography } from "@mui/material";
 import CrewCard from "./CrewCard";
 import { Member, SailingProfile } from "./lib/membership.mts";
@@ -148,14 +148,14 @@ export default function Profile({ profileName }: { profileName: string }) {
         <FormControlLabel
           control={<Checkbox
             checked={oldEnough}
-            onChange={(e) => setOldEnough(e.target.checked)}
+            onChange={(e) => setOldEnough((e.target as HTMLInputElement).checked)}
           />}
           label="I confirm I am over 18 years old"
         />
         <FormControlLabel
           disabled={!(profile?.published) && !oldEnough}
           control={<Switch checked={profile?.published}
-          onChange={(e) => handleChangePublishState(e.target.checked)} />}
+          onChange={(e: TargetedEvent<HTMLInputElement>) => handleChangePublishState((e.target as HTMLInputElement).checked)} />}
           label="Published"
         />
       </Stack>

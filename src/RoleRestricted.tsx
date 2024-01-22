@@ -12,14 +12,14 @@ export default function RoleRestricted({ role, children, hide=true }: PropsWithC
     if (role) {
         if (!isAuthenticated) {
             if (hide) {
-                return '';
+                return <span/>;
             }
             return (<Typography>This page is for {role} only. Please Login</Typography>);
         }
         const roles = (user?.['https://oga.org.uk/roles']) || [];
         if (!roles.includes(role)) {
             if (hide) {
-                return '';
+                return <span/>;
             }
             return (<Typography>This page is for {role} only.</Typography>);
         }
@@ -27,7 +27,7 @@ export default function RoleRestricted({ role, children, hide=true }: PropsWithC
         return (<>{children}</>);    
     }
     if (isAuthenticated) {
-        return '';
+        return <span/>;
     }
     return (<>{children}</>);    
 }
