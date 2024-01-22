@@ -19,9 +19,6 @@ export default function ContactTheMembershipSecretary({
 }: ContactTheMembershipSecretaryProps) {
   const [text, setText] = useState<string>(data);
 
-  console.log('DATA', data);
-  console.log('TEXT', text);
-
   const handleSubmit = () => {
     onSubmit(text);
   };
