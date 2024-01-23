@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { HTMLAttributes, useEffect, useState } from 'react';
 import Box from '@mui/material/Box';
 import { useDropzone } from 'react-dropzone';
 
@@ -67,9 +67,9 @@ export default function Photodrop({ onDrop, preview = true, maxFiles=1 }: { onDr
     <>
       <Box
         sx={{ padding: 1, borderRadius: 2, border: '1px dashed' }}
-        {...getRootProps()}
+        {...(getRootProps() as any)}
       >
-        <input {...getInputProps()} />
+        <input {...(getInputProps() as HTMLAttributes<HTMLInputElement>)} />
         <p>{helperText}</p>
       </Box>
       <Box sx={{
