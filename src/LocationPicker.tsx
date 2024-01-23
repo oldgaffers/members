@@ -49,7 +49,7 @@ type LocationPickerProps = {
   
     return (<>{markers?.map((m) => <Marker key={JSON.stringify(m)} position={m} icon={defaultIcon}>
       <Popup>
-        <Button onClick={(e) => {
+        <Button onClick={(e: { pageX: any; pageY: any; }) => {
           // console.log(e);
           setHack({ x: e.pageX, y: e.pageY });
           removeMarker(m);

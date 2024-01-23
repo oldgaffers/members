@@ -72,7 +72,7 @@ function ContactDialog({
                     fullWidth
                 />
                 <TextField
-                    onChange={(e) => setText(e.target.value)}
+                    onChange={(e: { target: { value: string | ((prevState: string) => string); }; }) => setText(e.target.value)}
                     margin="dense"
                     label="About your enquiry"
                     type="text"

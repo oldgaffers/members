@@ -1,5 +1,5 @@
 import * as L from 'leaflet';
-import { useState, useEffect, Key } from 'react';
+import { useState, useEffect } from 'react';
 import { MapContainer } from 'react-leaflet/MapContainer';
 import { TileLayer } from 'react-leaflet/TileLayer';
 import { Marker } from 'react-leaflet/Marker';
@@ -149,7 +149,7 @@ export default function CustomMap(props: CustomMapProps) {
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 />
 
-                {(props.markers ?? []).map((port, index: Key) => <Marker
+                {(props.markers ?? []).map((port, index) => <Marker
                     key={index}
                     position={[port.latitude, port.longitude]}
                     icon={customIcons[port.icon]}

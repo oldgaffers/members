@@ -39,8 +39,10 @@ export function useMembers(
   const [filterable, setFilterable] = useState(undefined);
   const [pc, setPc] = useState<any[]>([]);
 
-  const membersResult = useQuery(gql`query members { members { 
+  const membersResult = useQuery(gql`query members
+  { members { 
     salutation firstname lastname member id email GDPR postcode
+
     status telephone mobile town area interests smallboats
     crewing { text pictures published }
    } }`);

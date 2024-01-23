@@ -291,7 +291,7 @@ export default function EventForm({ onCreate }: EventFormProps) {
             <FormControlLabel
               control={<Checkbox
                 checked={oldEnough}
-                onChange={(e) => setOldEnough(e.target.checked)}
+                onChange={(e) => setOldEnough((e.target as HTMLInputElement).checked)}
               />}
               label="I confirm I am over 18 years old"
             />

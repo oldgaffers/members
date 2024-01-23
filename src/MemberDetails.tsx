@@ -29,9 +29,9 @@ type InterestsProps = {
 
 function MembershipStart({ user }: { user: any }) {
   if (user?.start) {
-    return `You have been a member since ${user.start}.`;
+    return <Typography>You have been a member since {user.start}.</Typography>;
   }
-  return "We don't have a record of when you joined.";
+  return <Typography>We don't have a record of when you joined.</Typography>;
 }
 
 export default function Interests({ user, members, onChange }: InterestsProps) {
@@ -184,7 +184,7 @@ export default function Interests({ user, members, onChange }: InterestsProps) {
                   <Checkbox
                     checked={user.interests.includes(area.value) || area.label === user.area}
                     disabled={area.label === user.area}
-                    onChange={(event) => handleCheckChange(area.value, event.target.checked)}
+                    onChange={(e) => handleCheckChange(area.value, (e.target as HTMLInputElement).checked)}
                   />
                 )}
               />

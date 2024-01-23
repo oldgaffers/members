@@ -6,12 +6,12 @@ import Typography from '@mui/material/Typography';
 import { SailingProfile } from './lib/membership.mts';
 import { Box, Checkbox, FormControlLabel, Stack } from '@mui/material';
 import { ReactReallyTinyEditor as ReactTinyEditor } from '@ogauk/react-tiny-editor';
-import { MouseEventHandler, useState } from 'react';
 import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
 import CancelIcon from '@mui/icons-material/Cancel';
 import Contact from './Contact';
 import EditableCardImage from './EditableCardImage';
+import { useState } from 'react';
 
 export type CrewCardProps = {
     name: string
@@ -57,9 +57,9 @@ function TextEdit({ text, onChange, editEnabled }: TextEditProps) {
 function EditTextButton({ editEnabled, editing, onEdit, onSave, onCancel }: {
     editEnabled: boolean,
     editing: boolean,
-    onEdit: MouseEventHandler,
-    onSave: MouseEventHandler,
-    onCancel: MouseEventHandler
+    onEdit: any,
+    onSave: any,
+    onCancel: any
 }) {
     if (editing) {
         return <>
@@ -70,7 +70,7 @@ function EditTextButton({ editEnabled, editing, onEdit, onSave, onCancel }: {
     if (editEnabled) {
         return <IconButton onClick={onEdit} ><ModeEditIcon /></IconButton>;
     }
-    return '';
+    return <span/>;
 }
 
 export default function CrewCard({
@@ -132,7 +132,7 @@ export default function CrewCard({
                         control={<Checkbox
                             disabled={!inviteEnabled}
                             checked={invited}
-                            onChange={(e) => onSaveInvited && onSaveInvited(e.target.checked)}
+                            onChange={(e) => onSaveInvited && onSaveInvited((e.target as HTMLInputElement).checked)}
                         />}
                         label="Invite"
                     />

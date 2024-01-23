@@ -1,4 +1,4 @@
-import { useState, SetStateAction, useEffect } from "react"
+import { useState, useEffect } from "react"
 import { FormControl, FormLabel, RadioGroup, FormControlLabel, Radio, TextField, Button, Stack, IconButton, Box } from "@mui/material"
 import DeleteIcon from '@mui/icons-material/Delete';
 import Photodrop from "./PhotoDrop"
@@ -115,7 +115,7 @@ export default function EditableCardImage({ editEnabled, id, name, email, pictur
         }
     }
 
-    function handleChange(e: { target: { value: SetStateAction<string> } }) {
+    function handleChange(e: any) {
         setImageChoice(e.target.value);
         if (onUseAvatar) {
             onUseAvatar(e.target.value === 'avatar');
@@ -154,7 +154,7 @@ export default function EditableCardImage({ editEnabled, id, name, email, pictur
     }
 
     if (!editEnabled) {
-        return '';
+        return <span/>;
     }
 
     return <>
@@ -169,7 +169,7 @@ export default function EditableCardImage({ editEnabled, id, name, email, pictur
                 <FormControlLabel value="nothing" control={<Radio />} label="No Picture" />
                 <FormControlLabel value="avatar" control={<Radio />} label="My Login Picture" />
                 <FormControlLabel value="web" control={<Radio />} label="From Web" />
-                <FormControlLabel value="upload" control={<Radio />} label="From This Device" />
+                <FormControlLabel value="upload" control='Radio' label="From This Device" />
             </RadioGroup>
         </FormControl>
         {
@@ -178,7 +178,7 @@ export default function EditableCardImage({ editEnabled, id, name, email, pictur
                 <Stack direction='row'>
                     <TextField
                         value={web}
-                        onChange={(event: React.ChangeEvent<HTMLInputElement>) => setWeb(event.target.value)}
+                        onChange={(event: React.ChangeEvent<HTMLInputElement>) => setWeb((event.target as HTMLInputElement).value)}
                         placeholder='type or paste a url'
                     />
                     <Button onClick={handleWebImage}>set</Button>
@@ -190,7 +190,7 @@ export default function EditableCardImage({ editEnabled, id, name, email, pictur
                         <Photodrop onDrop={onDrop} preview={false} />
                     </>
                     :
-                    ''
+                    <span/>
         }
     </>;
 }

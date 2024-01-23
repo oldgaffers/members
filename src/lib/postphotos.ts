@@ -18,7 +18,14 @@ export async function getPrivateImage(url: string) {
     return getSignedUrl(client, command, { expiresIn: 3600 });
 }
 
-export async function postPhotos(fileList: File[], copyright: string, email: string, id: number, albumKey: string | undefined, setProgress: { (value: SetStateAction<number>): void; (arg0: any): void; }) {
+export async function postPhotos(
+    fileList: File[],
+    copyright: string,
+    email: string,
+    id: number,
+    albumKey: string | undefined,
+    setProgress: SetStateAction<number>,
+) {
     if (fileList?.length > 0) {
         try {
             const { bucketName, region, identityId } = await getUploadCredentials();

@@ -1,4 +1,4 @@
-import { SetStateAction, TargetedEvent, useState } from "react";
+import { TargetedEvent, useState } from "react";
 import Stack from '@mui/material/Stack';
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
@@ -10,11 +10,11 @@ import { CircularProgress } from "@mui/material";
 
 export default function PhotoUploader() {
   const { user } = useAuth0();
-  const [pictures, setPictures] = useState([]);
+  const [pictures, setPictures] = useState<File[]>([]);
   const [copyright, setCopyright] = useState(''); // user && user.name);
   const [progress, setProgress] = useState(0);
 
-  const onDrop = (p: SetStateAction<never[]>) => {
+  const onDrop = (p: File[]) => {
     setPictures(p);
   };
 

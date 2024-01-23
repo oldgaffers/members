@@ -65,7 +65,10 @@ export default function Photodrop({ onDrop, preview = true, maxFiles=1 }: { onDr
 
   return (
     <>
-      <Box sx={{ padding: 1, borderRadius: 2, border: '1px dashed' }} {...getRootProps()}>
+      <Box
+        sx={{ padding: 1, borderRadius: 2, border: '1px dashed' }}
+        {...getRootProps()}
+      >
         <input {...getInputProps()} />
         <p>{helperText}</p>
       </Box>

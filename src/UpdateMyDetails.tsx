@@ -2,7 +2,6 @@
 import { PropsWithChildren, useEffect, useState } from 'react';
 import EditIcon from '@mui/icons-material/Edit';
 import { useAuth0 } from '@auth0/auth0-react';
-import { useQuery, gql } from '@apollo/client';
 import {
   Alert, Box, Button, CircularProgress, Snackbar, Stack, Tab, Tabs, Typography,
 } from '@mui/material';
