@@ -14,19 +14,10 @@ import Interests from './MemberDetails';
 import ContactTheMembershipSecretary from './ContactTheMembershipSecretary';
 import { Boat, getBoat, getFilterable, postGeneralEnquiry, postScopedData } from './lib/api.mts';
 import membersBoats from './lib/members_boats.mts';
-import { Member } from './lib/membership.mts';
+import { Member, useGetMembership } from './lib/membership.mts';
 import Profile from './Profile';
 import LoginButton from './LoginButton';
 import Welcome from './Welcome';
-
-const MEMBER_QUERY = gql(`query members($members: [Int]!) {
-    members(members: $members) {
-        salutation firstname lastname member id GDPR 
-        smallboats status telephone mobile area town
-        interests email primary
-        postcode type payment address country yob start
-    }
-  }`);
 
 
 // TODO ReJoin
@@ -93,7 +84,7 @@ function MyDetails() {
   const { user, getAccessTokenSilently } = useAuth0();
   const id = user?.['https://oga.org.uk/id'];
   const memberNo = user?.['https://oga.org.uk/member'];
-  const memberResult = useQuery(MEMBER_QUERY, { variables: { members: [memberNo] } });
+  const memberResult = useGetMembership(memberNo);
   const [tab, setTab] = useState(0);
   const [token, setToken] = useState<string|undefined>();
 

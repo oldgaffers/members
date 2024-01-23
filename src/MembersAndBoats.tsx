@@ -1,4 +1,3 @@
-import { useAuth0 } from '@auth0/auth0-react';
 import Typography from '@mui/material/Typography';
 import { DataGrid, GridColDef, GridRenderCellParams, GridToolbarContainer, GridToolbarExport, GridToolbarFilterButton, GridTreeNodeWithRender, GridCsvExportOptions } from '@mui/x-data-grid';
 import Contact from './Contact';
@@ -12,6 +11,7 @@ type MembersAndBoatsProps = {
   boats: Boat[],
   postcodes?: any[],
   components?: any
+  mylocation?: any
 }
 
 function CustomToolbar() {
@@ -54,12 +54,8 @@ export default function MembersAndBoats({
   members = [],
   boats = [],
   postcodes = [],
+  mylocation,
 }: MembersAndBoatsProps) {
-  const { user } = useAuth0();
-  const id = user?.['https://oga.org.uk/id'];
-  const me = members.find((m) => m.id === id);
-  const r = postcodes.find((pc) => pc.query === me?.postcode);
-  const mylocation = r?.result;
 
   function distanceGetter(params: { value: string; }): number {
     if (mylocation?.longitude) {

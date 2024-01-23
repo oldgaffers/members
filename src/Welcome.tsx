@@ -140,11 +140,7 @@ export default function Welcome() {
     }
     if (user['https://oga.org.uk/id']) {
         return (
-            <Typography variant="h6">
-                Hi{' '}
-                {user.name}
-                . Here are your membership details.
-            </Typography>
+            <Typography variant="h6">Hi{' '}{user.name}.</Typography>
         );
     }
     return (
