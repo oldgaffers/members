@@ -3,7 +3,7 @@ import { DataGrid, GridColDef, GridRenderCellParams, GridToolbarContainer, GridT
 import Contact from './Contact';
 import { Member, areaAbbreviation } from './lib/membership.mts';
 import { Boat } from './lib/api.mts';
-import { distanceFormatterKm, phoneGetter } from './lib/utils.mts';
+import { distanceFormatter, phoneGetter } from './lib/utils.mts';
 import RoleRestricted from './RoleRestricted';
 
 type MembersAndBoatsProps = {
@@ -112,7 +112,7 @@ export default function MembersAndBoats({
       field: 'proximity',
       headerName: 'Proximity',
       width: 160,
-      valueFormatter: distanceFormatterKm,
+      valueFormatter: distanceFormatter,
     },
     {
       field: 'boat', headerName: 'Boat Name', width: 200, valueGetter: boatGetter, valueFormatter: boatFormatter, renderCell: renderBoat,

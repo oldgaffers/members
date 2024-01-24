@@ -88,7 +88,7 @@ function MembersListForMember({
 }: MembersListForMemberProps) {
   const { loading, data } = useMembers(excludeNotPaid, excludeNoConsent, crew, mylocation);
 
-  if (loading) {
+  if (loading || !data) {
     return <CircularProgress />;
   }
 
