@@ -113,3 +113,10 @@ export function distanceFormatter(params: { value: number; }) {
   }
   return `${params.value} nm`;
 }
+
+export function distanceFormatterKm(params: { value: number; }) {
+  if (params.value === UNKNOWN_DISTANCE) {
+    return '?';
+  }
+  return `${params.value} km`;
+}

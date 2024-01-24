@@ -1,16 +1,14 @@
-import { useAuth0 } from '@auth0/auth0-react';
 import Typography from '@mui/material/Typography';
 import { DataGrid, GridColDef, GridRenderCellParams, GridToolbarContainer, GridToolbarExport, GridToolbarFilterButton, GridTreeNodeWithRender, GridCsvExportOptions } from '@mui/x-data-grid';
 import Contact from './Contact';
 import { Member, areaAbbreviation } from './lib/membership.mts';
 import { Boat } from './lib/api.mts';
-import { distanceFormatter, distanceInNM, phoneGetter } from './lib/utils.mts';
+import { distanceFormatterKm, phoneGetter } from './lib/utils.mts';
 import RoleRestricted from './RoleRestricted';
 
 type MembersAndBoatsProps = {
   members: Member[],
   boats: Boat[],
-  postcodes?: any[],
   components?: any
 }
 
@@ -53,23 +51,7 @@ function areaFormatter(params: GridRenderCellParams<any, any, any, GridTreeNodeW
 export default function MembersAndBoats({
   members = [],
   boats = [],
-  postcodes = [],
 }: MembersAndBoatsProps) {
-  const { user } = useAuth0();
-  const id = user?.['https://oga.org.uk/id'];
-  const me = members.find((m) => m.id === id);
-  const r = postcodes.find((pc) => pc.query === me?.postcode);
-  const mylocation = r?.result;
-
-  function distanceGetter(params: { value: string; }): number {
-    if (mylocation?.longitude) {
-      const rec = postcodes.find((pc) => pc.query === params.value);
-      if (rec?.result?.longitude) {        
-        return distanceInNM(mylocation, rec.result);
-      }
-    }
-    return 99999;
-  }
 
   function boatGetter({ row }: { row: Member }) {
     const { id } = row;
@@ -127,11 +109,10 @@ export default function MembersAndBoats({
     },
     { field: 'town', headerName: 'Town', width: 120 },
     {
-      field: 'postcode',
+      field: 'proximity',
       headerName: 'Proximity',
       width: 160,
-      valueGetter: distanceGetter,
-      valueFormatter: distanceFormatter,
+      valueFormatter: distanceFormatterKm,
     },
     {
       field: 'boat', headerName: 'Boat Name', width: 200, valueGetter: boatGetter, valueFormatter: boatFormatter, renderCell: renderBoat,

@@ -139,13 +139,7 @@ export default function Welcome() {
         );
     }
     if (user['https://oga.org.uk/id']) {
-        return (
-            <Typography variant="h6">
-                Hi{' '}
-                {user.name}
-                . Here are your membership details.
-            </Typography>
-        );
+        return <Typography variant="h6">Hi{' '}{user.name}.</Typography>;
     }
     return (
         <Stack marginTop={2} spacing={1}>

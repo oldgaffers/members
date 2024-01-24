@@ -1,3 +1,5 @@
+import { gql, useQuery } from "@apollo/client"
+
 export type SailingProfile = {
   text: string
   pictures: string[]
@@ -50,6 +52,19 @@ export function areaAbbreviation(value: string | undefined) {
     'Rest of World': 'RW',
   }[value];
   return abbrev;
+}
+
+const MEMBER_QUERY = gql(`query members($members: [Int]!) {
+  members(members: $members) {
+      salutation firstname lastname member id GDPR 
+      smallboats status telephone mobile area town
+      interests email primary
+      postcode type payment address country yob start
+  }
+}`);
+
+export function useGetMembership(memberNo: Number) {
+  return useQuery(MEMBER_QUERY, { variables: { members: [memberNo] } });
 }
 
 function memberPredicate(id: number, member: Member, excludeNotPaid = true, excludeNoConsent = true): boolean {
