@@ -245,6 +245,7 @@ function MyDetails() {
         <BoatsByMembership
           boats={boats}
           onChange={onChange}
+          member={myRecord}
         /> 
       </CustomTabPanel>
       <CustomTabPanel value={tab} index={3}>
