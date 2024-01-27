@@ -165,7 +165,7 @@ export function MembersList({ crew = false }) {
   const mylocation = memberResult.data;
 
   return (
-    <Box sx={{ width: '96vw' }}>
+    <Box sx={{ width: '90vw' }}>
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
         <FormGroup>
           {roles.includes.editor ? <FormControlLabel control={<Switch onChange={handleNotPaidSwitchChange} checked={excludeNotPaid} />} label="Exclude not paid" /> : ''}
