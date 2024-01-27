@@ -1,11 +1,14 @@
 import Typography from '@mui/material/Typography';
-import { DataGrid, GridColDef, GridRenderCellParams, GridToolbarContainer, GridToolbarExport, GridToolbarFilterButton, GridTreeNodeWithRender, GridCsvExportOptions } from '@mui/x-data-grid';
-import Contact from './Contact';
+import { DataGrid, GridColDef, GridRenderCellParams, GridToolbarContainer, GridToolbarExport, GridToolbarFilterButton, GridTreeNodeWithRender, GridCsvExportOptions, GridActionsCellItem, GridRowParams } from '@mui/x-data-grid';
+// import Contact from './Contact';
+import MailIcon from "@mui/icons-material/Mail";
 import { Member, areaAbbreviation } from './lib/membership.mts';
 import { Boat } from './lib/api.mts';
 import { distanceFormatter, phoneGetter } from './lib/utils.mts';
 import RoleRestricted from './RoleRestricted';
 import { Box } from '@mui/material';
+import { ContactHelper } from './Contact';
+import { useState } from 'react';
 
 type MembersAndBoatsProps = {
   members: Member[],
@@ -53,6 +56,8 @@ export default function MembersAndBoats({
   members = [],
   boats = [],
 }: MembersAndBoatsProps) {
+  const [open, setOpen] = useState(false);
+  const [contact, setContact] = useState<number>();
 
   function boatGetter({ row }: { row: Member }) {
     const { id } = row;
@@ -80,6 +85,11 @@ export default function MembersAndBoats({
     return params.value ? '✓' : '✗';
   }
 
+  function onContact(params: GridRowParams<any>) {
+    setContact(Number(params.id));
+    setOpen(true);
+  }
+
   const members2 = members.map((m) => {
     const main = areaAbbreviation(m.area ?? '');
     const others = (m.interests ?? []).filter((o) => o !== main);
@@ -103,11 +113,21 @@ export default function MembersAndBoats({
       field: 'telephone', headerName: 'Telephone', valueGetter: phoneGetter, flex: 3,
     },
     {
+      headerName: 'Contact',
+      field: 'actions',
+      type: 'actions',
+      getActions: (params) => [
+        <GridActionsCellItem icon={<MailIcon />} onClick={() => onContact(params)} label="Delete" />,
+      ]
+    },
+    /*    
+    {
       field: 'url',
       headerName: 'Contact',
       minWidth: 120,
       renderCell: ({ row }: { row: { id: number } }) => <Contact memberGoldId={row.id} />,
     },
+    */
     { field: 'town', headerName: 'Town' },
     {
       field: 'proximity',
@@ -147,6 +167,7 @@ export default function MembersAndBoats({
           }}
         />
       </Box>
+      <ContactHelper memberGoldId={contact} onClose={() => setOpen(false)} open={open} />
     </Box>
   );
 }

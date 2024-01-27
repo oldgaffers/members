@@ -28,7 +28,7 @@ type ContactDialogProps = {
     onCancel: Function
 }
 
-function ContactDialog({
+export function ContactDialog({
     open,
     user,
     memberGoldId,
@@ -96,33 +96,29 @@ function ContactDialog({
     );
 }
 
-export default function Contact({ memberGoldId, text = 'Contact' }: ContactProps) {
-    const [open, setOpen] = useState(false);
+export function ContactHelper({ memberGoldId, text = 'Contact', onClose, open }: {
+    memberGoldId: number
+    text?: string
+    onClose: any
+    open: boolean
+}) {
     const [snackBarOpen, setSnackBarOpen] = useState(false);
     const { user, getAccessTokenSilently } = useAuth0();
-
-    const handleClickOpen = () => {
-        setOpen(true);
-    };
-
-    const handleCancel = () => {
-        setOpen(false);
-    };
 
     function handleSnackBarClose() {
         setSnackBarOpen(false);
     }
 
     const handleSend = (params: object) => {
-        setOpen(false);
+        onClose();
         const data: any = { ...params, memberGoldId };
         if (user?.name) {
             data.name = user.name;
         }
         getAccessTokenSilently().then((token) => {
             postGeneralEnquiry('public', 'contact', data, token)
-            .then((response) => {
-                console.log(response)
+            .then((_response) => {
+                // console.log(response)
                 setSnackBarOpen(true);
             })
             .catch((error) => {
@@ -131,6 +127,40 @@ export default function Contact({ memberGoldId, text = 'Contact' }: ContactProps
             });
         });
 
+    };
+
+    return (
+        <>
+            <ContactDialog
+                open={open}
+                user={user}
+                memberGoldId={memberGoldId}
+                onCancel={onClose}
+                onSend={handleSend}
+                title={text}
+                topic='contact'
+            />
+            <Snackbar
+                anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+                open={snackBarOpen}
+                autoHideDuration={2000}
+                onClose={handleSnackBarClose}                
+            >
+                <Alert severity="success">Thanks, we've forwarded your message by email.</Alert>
+                </Snackbar>
+        </>
+    );
+}
+
+export default function Contact({ memberGoldId, text = 'Contact' }: ContactProps) {
+    const [open, setOpen] = useState(false);
+
+    const handleClickOpen = () => {
+        setOpen(true);
+    };
+
+    const handleCancel = () => {
+        setOpen(false);
     };
 
     return (
@@ -144,23 +174,12 @@ export default function Contact({ memberGoldId, text = 'Contact' }: ContactProps
             >
                 {text}
             </Button>
-            <ContactDialog
+            <ContactHelper
                 open={open}
-                user={user}
                 memberGoldId={memberGoldId}
                 onCancel={handleCancel}
-                onSend={handleSend}
-                title={text}
-                topic='contact'
+                text={text}
             />
-            <Snackbar
-                anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-                open={snackBarOpen}
-                autoHideDuration={2000}
-                onClose={handleSnackBarClose}                
-            >
-                <Alert severity="success">Thanks, we've forwarded your message by email.</Alert>
-                </Snackbar>
         </>
     );
 }
