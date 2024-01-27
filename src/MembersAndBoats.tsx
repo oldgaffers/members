@@ -32,10 +32,6 @@ function CustomToolbar() {
   );
 }
 
-function nameGetter({ row }: { row: Member }) {
-  return `${row.salutation} ${row.firstname}`;
-}
-
 function areaFormatter(params: GridRenderCellParams<any, any, any, GridTreeNodeWithRender>) {
   const [area, ...others] = params.value.split(',');
   if (others.length > 0) {
@@ -69,20 +65,8 @@ export default function MembersAndBoats({
     return (<Typography variant="body2" fontStyle="italic">{params.value}</Typography>);
   }
 
-  function boatFormatter(params: { value: string; }) {
-    return params.value;
-  }
-
   function renderLastname(params: GridRenderCellParams<any, any, any, GridTreeNodeWithRender>) {
     return (<Typography variant="body2" fontWeight="bold">{params.value}</Typography>);
-  }
-
-  function lastnameFormatter(params: { value: string; }) {
-    return params.value;
-  }
-
-  function smallboatsFormatter(params: { value: boolean; }) {
-    return params.value ? '✓' : '✗';
   }
 
   function onContact(params: GridRowParams<any>) {
@@ -103,10 +87,14 @@ export default function MembersAndBoats({
 
   const columns: GridColDef<any>[] = [
     {
-      field: 'lastname', headerName: 'Last Name', valueFormatter: lastnameFormatter, renderCell: renderLastname,
+      field: 'lastname', headerName: 'Last Name', renderCell: renderLastname,
     },
     {
-      field: 'name', headerName: 'Given Name', valueGetter: nameGetter, minWidth: 100, flex: 3
+      field: 'name',
+      headerName: 'Given Name',
+      valueGetter: ({row}) => `${row.salutation} ${row.firstname}`, 
+      minWidth: 100,
+      flex: 3,
     },
     { field: 'member', headerName: 'No' },
     {
@@ -131,7 +119,6 @@ export default function MembersAndBoats({
       field: 'boat',
       headerName: 'Boat Name',
       valueGetter: boatGetter,
-      valueFormatter: boatFormatter,
       renderCell: renderBoat,
       minWidth: 100,
       flex: 4,
