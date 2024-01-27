@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
 import Typography from '@mui/material/Typography';
 import { DataGrid, GridToolbarContainer, GridToolbarFilterButton, GridCellModes, GridColDef, GridRenderCellParams, GridTreeNodeWithRender, GridToolbarExport, GridCsvExportOptions, GridRowParams, GridActionsCellItem } from '@mui/x-data-grid';
-import { Box, Button } from '@mui/material';
+import { Box } from '@mui/material';
 import MailIcon from "@mui/icons-material/Mail";
 import ReadMoreIcon from '@mui/icons-material/ReadMore';
 import { Boat, boatUrl } from './lib/api.mts';
