@@ -12,29 +12,42 @@ import { getFilterable } from './lib/api.mts';
 import LoginButton from './LoginButton';
 import Welcome from './Welcome';
 
-export function useMembers(
-  excludeNotPaid: boolean,
-  excludeNoConsent: boolean,
-  crew: boolean,
-  mylocation: any,
-) {
-  const [filterable, setFilterable] = useState(undefined);
-  const [pc, setPc] = useState<any[]>([]);
-
-  // TODO server side paginate
-
-  const membersResult = useQuery(gql`query members($lat: Float, $lng: Float)
+function membersWithLocation(location: { latitude: any; longitude: any; }) {
+  return useQuery(gql`query members($lat: Float, $lng: Float)
   { members(lat: $lat, lng: $lng) { 
     salutation firstname lastname member id GDPR proximity
     status telephone mobile town area interests smallboats  
    } }`,
    {
     variables: {
-      lat: mylocation.latitude,
-      lng: mylocation.longitude,
+      lat: location.latitude,
+      lng: location.longitude,
     }
    }
    );
+}
+
+function membersWithoutLocation() {
+  return useQuery(gql`query members
+  { members { 
+    salutation firstname lastname member id GDPR
+    status telephone mobile town area interests smallboats  
+   } }`
+   );
+}
+
+export function useMembers(
+  excludeNotPaid: boolean,
+  excludeNoConsent: boolean,
+  crew: boolean,
+  mylocation?: any,
+) {
+  const [filterable, setFilterable] = useState(undefined);
+  const [pc, setPc] = useState<any[]>([]);
+
+  // TODO server side paginate
+
+  const membersResult = mylocation ? membersWithLocation(mylocation) : membersWithoutLocation();
 
   useEffect(() => {
     if (!filterable) {
