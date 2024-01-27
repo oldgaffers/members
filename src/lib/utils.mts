@@ -108,6 +108,9 @@ export function distanceInNM(a: any, b: any) {
 }
 
 export function distanceFormatter(params: { value: number; }) {
+  if (!params.value) {
+    return '?';
+  }
   if (params.value === UNKNOWN_DISTANCE) {
     return '?';
   }
@@ -115,6 +118,9 @@ export function distanceFormatter(params: { value: number; }) {
 }
 
 export function distanceFormatterKm(params: { value: number; }) {
+  if (!params.value) {
+    return '?';
+  }
   if (params.value === UNKNOWN_DISTANCE) {
     return '?';
   }
