@@ -1,6 +1,6 @@
 {
   "name": "members",
-  "version": "0.3.14",
+  "version": "0.3.15",
   "private": true,
   "homepage": "/members_area/",
   "type": "module",
