@@ -51,20 +51,21 @@ const columns = (
 ): GridColDef<Boat>[] => {
   const col: GridColDef<Boat>[] = [
     {
-      field: 'name', headerName: 'Boat', valueFormatter: boatFormatter, renderCell: renderBoat,
+      field: 'name', headerName: 'Boat', valueFormatter: boatFormatter, renderCell: renderBoat, minWidth: 100,
     },
-    { field: 'oga_no', headerName: 'No.' },
+    { field: 'oga_no', headerName: 'No.', minWidth: 60 },
     {
-      field: 'owners', headerName: 'Owner', valueGetter: ownerValueGetter, flex: 2,
+      field: 'owners', headerName: 'Owner', valueGetter: ownerValueGetter, minWidth: 200, flex: 2,
     },
     {
-      field: 'home_port', headerName: 'Home Port', flex: 1,
+      field: 'home_port', headerName: 'Home Port', minWidth: 80, flex: 1,
     },
   ];
   if (proximityTo) {
     col.push({
       field: 'home_location',
       headerName: 'Proximity',
+      minWidth: 50,
       valueGetter: (params: { value: any }): number => {
         return distanceInNM(proximityTo, params.value);
       },
@@ -75,6 +76,7 @@ const columns = (
   if (hire) {
     col.push({
       field: 'hire',
+      minWidth: 50,
       headerName: 'For Hire',
       type: 'boolean',
       editable: true,
@@ -85,19 +87,20 @@ const columns = (
       field: 'crewing',
       headerName: 'Crew Wanted',
       type: 'boolean',
+      minWidth: 50,
       editable: true,
     });
   }
   if (showContactButton) {
     col.push({
-      headerName: 'Details/Contact',
+      headerName: 'Actions',
       field: 'actions',
       type: 'actions',
       getActions: (params) => [
         <GridActionsCellItem icon={<ReadMoreIcon />} onClick={() => gotoboatregister(params)} label="more" />,
-        <GridActionsCellItem icon={<MailIcon />} onClick={() => onContact(params)} label="contact" /> ,
+        <GridActionsCellItem icon={<MailIcon />} onClick={() => onContact(params)} label="contact" />,
       ]
-    });  
+    });
   } else {
     col.push({
       headerName: 'More',
@@ -176,24 +179,17 @@ export default function BoatsAndOwners({
 
   return (
     <Box>
-      <Box>
-        <DataGrid
-          cellModesModel={cellModesModel}
-          onCellModesModelChange={handleCellModesModelChange}
-          onCellClick={handleCellClick}
-          getRowId={(row) => row.oga_no}
-          rows={boats}
-          columns={columns(false, false, true, proximityTo, handleContact)}
-          slots={{ toolbar: CustomToolbar }}
-          autoHeight
-          initialState={{
-            sorting: {
-              // sortModel: [{ field: 'name', sort: 'asc' }, { field: 'oga_no', sort: 'asc' }],
-              sortModel: [{ field: 'name', sort: 'asc' }],
-            },
-          }}
-        />
-      </Box>
+      <DataGrid
+        cellModesModel={cellModesModel}
+        onCellModesModelChange={handleCellModesModelChange}
+        onCellClick={handleCellClick}
+        getRowId={(row) => row.oga_no}
+        rows={boats}
+        columns={columns(false, false, true, proximityTo, handleContact)}
+        slots={{ toolbar: CustomToolbar }}
+        autoHeight
+        initialState={{ sorting: { sortModel: [{ field: 'name', sort: 'asc' }] } }}
+      />
       <ContactHelper memberGoldId={contact} onClose={() => setOpen(false)} open={open} />
     </Box>
   );
