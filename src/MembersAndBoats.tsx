@@ -5,6 +5,7 @@ import { Member, areaAbbreviation } from './lib/membership.mts';
 import { Boat } from './lib/api.mts';
 import { distanceFormatter, phoneGetter } from './lib/utils.mts';
 import RoleRestricted from './RoleRestricted';
+import { Box } from '@mui/material';
 
 type MembersAndBoatsProps = {
   members: Member[],
@@ -92,41 +93,41 @@ export default function MembersAndBoats({
 
   const columns: GridColDef<any>[] = [
     {
-      field: 'lastname', headerName: 'Last Name', width: 90, valueFormatter: lastnameFormatter, renderCell: renderLastname,
+      field: 'lastname', headerName: 'Last Name', minWidth: 90, valueFormatter: lastnameFormatter, renderCell: renderLastname,
     },
     {
-      field: 'name', headerName: 'Given Name', width: 130, valueGetter: nameGetter,
+      field: 'name', headerName: 'Given Name', minWidth: 130, valueGetter: nameGetter,
     },
-    { field: 'member', headerName: 'No', width: 90 },
+    { field: 'member', headerName: 'No', minWidth: 90 },
     {
-      field: 'telephone', headerName: 'Telephone', width: 200, valueGetter: phoneGetter,
+      field: 'telephone', headerName: 'Telephone', minWidth: 200, valueGetter: phoneGetter,
     },
     {
       field: 'url',
       headerName: 'Details',
-      width: 150,
+      minWidth: 150,
       renderCell: ({ row }: { row: { id: number } }) => <Contact memberGoldId={row.id} />,
     },
-    { field: 'town', headerName: 'Town', width: 120 },
+    { field: 'town', headerName: 'Town', minWidth: 120 },
     {
       field: 'proximity',
       headerName: 'Proximity',
-      width: 160,
+      minWidth: 160,
       valueFormatter: distanceFormatter,
     },
     {
-      field: 'boat', headerName: 'Boat Name', width: 200, valueGetter: boatGetter, valueFormatter: boatFormatter, renderCell: renderBoat,
+      field: 'boat', headerName: 'Boat Name', minWidth: 200, valueGetter: boatGetter, valueFormatter: boatFormatter, renderCell: renderBoat,
     },
     {
-      field: 'areas', headerName: 'Areas', width: 100, renderCell: areaFormatter,
+      field: 'areas', headerName: 'Areas', minWidth: 100, renderCell: areaFormatter,
     },
     { field: 'area', headerName: 'Area', valueFormatter: (params) => areaAbbreviation(params.value) },
     { field: 'smallboats', headerName: 'SB', valueFormatter: smallboatsFormatter },
   ];
 
   return (
-    <div style={{ height: '100%' }}>
-      <div style={{ flexGrow: 1 }}>
+    <Box height='100%'>
+      <Box>
         <DataGrid
           rows={members2}
           columns={columns}
@@ -142,7 +143,7 @@ export default function MembersAndBoats({
             },
           }}
         />
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 }
