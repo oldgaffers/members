@@ -125,7 +125,7 @@ export default function MembersAndBoats({
   ];
 
   return (
-    <div style={{ display: 'flex', height: '100%' }}>
+    <div style={{ height: '100%' }}>
       <div style={{ flexGrow: 1 }}>
         <DataGrid
           rows={members2}
