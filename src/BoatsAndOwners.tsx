@@ -178,7 +178,7 @@ export default function BoatsAndOwners({
   );
 
   return (
-    <Box>
+    <Box sx={{ width: '90vw' }}>
       <DataGrid
         cellModesModel={cellModesModel}
         onCellModesModelChange={handleCellModesModelChange}
