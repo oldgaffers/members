@@ -93,33 +93,32 @@ export default function MembersAndBoats({
 
   const columns: GridColDef<any>[] = [
     {
-      field: 'lastname', headerName: 'Last Name', minWidth: 90, valueFormatter: lastnameFormatter, renderCell: renderLastname,
+      field: 'lastname', headerName: 'Last Name', valueFormatter: lastnameFormatter, renderCell: renderLastname,
     },
     {
-      field: 'name', headerName: 'Given Name', minWidth: 130, valueGetter: nameGetter,
+      field: 'name', headerName: 'Given Name', valueGetter: nameGetter,
     },
-    { field: 'member', headerName: 'No', minWidth: 90 },
+    { field: 'member', headerName: 'No' },
     {
-      field: 'telephone', headerName: 'Telephone', minWidth: 200, valueGetter: phoneGetter,
+      field: 'telephone', headerName: 'Telephone', valueGetter: phoneGetter,
     },
     {
       field: 'url',
-      headerName: 'Details',
-      minWidth: 150,
+      headerName: 'Contact',
+      minWidth: 120,
       renderCell: ({ row }: { row: { id: number } }) => <Contact memberGoldId={row.id} />,
     },
-    { field: 'town', headerName: 'Town', minWidth: 120 },
+    { field: 'town', headerName: 'Town' },
     {
       field: 'proximity',
       headerName: 'Proximity',
-      minWidth: 160,
       valueFormatter: distanceFormatter,
     },
     {
-      field: 'boat', headerName: 'Boat Name', minWidth: 200, valueGetter: boatGetter, valueFormatter: boatFormatter, renderCell: renderBoat,
+      field: 'boat', headerName: 'Boat Name', valueGetter: boatGetter, valueFormatter: boatFormatter, renderCell: renderBoat,
     },
     {
-      field: 'areas', headerName: 'Areas', minWidth: 100, renderCell: areaFormatter,
+      field: 'areas', headerName: 'Areas', renderCell: areaFormatter,
     },
     { field: 'area', headerName: 'Area', valueFormatter: (params) => areaAbbreviation(params.value) },
     { field: 'smallboats', headerName: 'SB', valueFormatter: smallboatsFormatter },
