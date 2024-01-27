@@ -4,7 +4,7 @@ import { DataGrid, GridColDef, GridRenderCellParams, GridToolbarContainer, GridT
 import MailIcon from "@mui/icons-material/Mail";
 import { Member, areaAbbreviation } from './lib/membership.mts';
 import { Boat } from './lib/api.mts';
-import { distanceFormatter, phoneGetter } from './lib/utils.mts';
+import { UNKNOWN_DISTANCE, distanceFormatter, phoneGetter } from './lib/utils.mts';
 import RoleRestricted from './RoleRestricted';
 import { Box } from '@mui/material';
 import { ContactHelper } from './Contact';
@@ -120,18 +120,11 @@ export default function MembersAndBoats({
         <GridActionsCellItem icon={<MailIcon />} onClick={() => onContact(params)} label="Delete" />,
       ]
     },
-    /*    
-    {
-      field: 'url',
-      headerName: 'Contact',
-      minWidth: 120,
-      renderCell: ({ row }: { row: { id: number } }) => <Contact memberGoldId={row.id} />,
-    },
-    */
     { field: 'town', headerName: 'Town' },
     {
       field: 'proximity',
       headerName: 'Proximity',
+      valueGetter: ({ row }) => row.proximity || UNKNOWN_DISTANCE,
       valueFormatter: distanceFormatter,
     },
     {

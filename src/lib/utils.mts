@@ -90,7 +90,7 @@ export function phoneGetter({ row }: { row: Member }) {
   return `*** M: ${row.mobile} T: ${row.telephone} ***`;
 }
 
-const UNKNOWN_DISTANCE = 99999;
+export const UNKNOWN_DISTANCE = 99999;
 
 export function distanceInNM(a: any, b: any) {
   if (!a) {
