@@ -96,11 +96,11 @@ export default function MembersAndBoats({
       field: 'lastname', headerName: 'Last Name', valueFormatter: lastnameFormatter, renderCell: renderLastname,
     },
     {
-      field: 'name', headerName: 'Given Name', valueGetter: nameGetter,
+      field: 'name', headerName: 'Given Name', valueGetter: nameGetter, minWidth: 100, flex: 3
     },
     { field: 'member', headerName: 'No' },
     {
-      field: 'telephone', headerName: 'Telephone', valueGetter: phoneGetter,
+      field: 'telephone', headerName: 'Telephone', valueGetter: phoneGetter, flex: 3,
     },
     {
       field: 'url',
@@ -115,13 +115,17 @@ export default function MembersAndBoats({
       valueFormatter: distanceFormatter,
     },
     {
-      field: 'boat', headerName: 'Boat Name', valueGetter: boatGetter, valueFormatter: boatFormatter, renderCell: renderBoat,
+      field: 'boat',
+      headerName: 'Boat Name',
+      valueGetter: boatGetter,
+      valueFormatter: boatFormatter,
+      renderCell: renderBoat,
+      minWidth: 100,
+      flex: 4,
     },
-    {
-      field: 'areas', headerName: 'Areas', renderCell: areaFormatter,
-    },
-    { field: 'area', headerName: 'Area', valueFormatter: (params) => areaAbbreviation(params.value) },
-    { field: 'smallboats', headerName: 'SB', valueFormatter: smallboatsFormatter },
+    { field: 'areas', headerName: 'Areas', renderCell: areaFormatter },
+    { field: 'area', headerName: 'Area', valueFormatter: (params) => areaAbbreviation(params.value), minWidth: 10, flex: 0.2 },
+    { field: 'smallboats', headerName: 'SB', valueFormatter: smallboatsFormatter, minWidth: 50, flex: 0.2 },
   ];
 
   return (
