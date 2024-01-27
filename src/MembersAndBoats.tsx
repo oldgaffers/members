@@ -138,7 +138,7 @@ export default function MembersAndBoats({
     },
     { field: 'areas', headerName: 'Areas', renderCell: areaFormatter },
     { field: 'area', headerName: 'Area', valueFormatter: (params) => areaAbbreviation(params.value), minWidth: 10, flex: 0.2 },
-    { field: 'smallboats', headerName: 'SB', valueFormatter: smallboatsFormatter, minWidth: 50, flex: 0.2 },
+    { field: 'smallboats', headerName: 'SB', type: 'boolean', minWidth: 50, flex: 0.2 },
   ];
 
   return (
