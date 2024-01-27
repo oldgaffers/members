@@ -105,7 +105,7 @@ export default function MembersAndBoats({
       field: 'actions',
       type: 'actions',
       getActions: (params) => [
-        <GridActionsCellItem icon={<MailIcon />} onClick={() => onContact(params)} label="Delete" />,
+        <GridActionsCellItem icon={<MailIcon />} onClick={() => onContact(params)} label="contact" />,
       ]
     },
     { field: 'town', headerName: 'Town' },

@@ -78,7 +78,7 @@ export default function BoatList({ places }: { places: any[] }) {
                 marginBottom='auto'
             >Location data for home ports is provided by GeoNames.org and Google.</Typography>
         </Stack>
-        <Typography>Is Your Home Port wrongly placed or not found? Contact the Boat Register Editors.</Typography>
+        <Typography>Is your Home Port wrongly placed or not found? Contact the Boat Register Editors.</Typography>
         <BoatsAndOwners boats={wboats} proximityTo={places.find((p) => p.name === distanceFrom)} />;
     </>
 }

@@ -1,13 +1,15 @@
 import { useCallback, useState } from 'react';
 import Typography from '@mui/material/Typography';
-import { DataGrid, GridToolbarContainer, GridToolbarFilterButton, GridCellModes, GridColDef, GridRenderCellParams, GridTreeNodeWithRender, GridToolbarExport, GridCsvExportOptions } from '@mui/x-data-grid';
-import { Button } from '@mui/material';
-import Contact from './Contact';
+import { DataGrid, GridToolbarContainer, GridToolbarFilterButton, GridCellModes, GridColDef, GridRenderCellParams, GridTreeNodeWithRender, GridToolbarExport, GridCsvExportOptions, GridRowParams, GridActionsCellItem } from '@mui/x-data-grid';
+import { Box, Button } from '@mui/material';
+import MailIcon from "@mui/icons-material/Mail";
+import ReadMoreIcon from '@mui/icons-material/ReadMore';
 import { Boat, boatUrl } from './lib/api.mts';
 import { ownerValueGetter } from './lib/ownership.mts';
 import { areaAbbreviation } from './lib/membership.mts';
 import { distanceFormatter, distanceInNM } from './lib/utils.mts';
 import RoleRestricted from './RoleRestricted';
+import { ContactHelper } from './Contact';
 
 function CustomToolbar() {
   const options: GridCsvExportOptions = {
@@ -19,7 +21,7 @@ function CustomToolbar() {
     <GridToolbarContainer>
       <GridToolbarFilterButton />
       <RoleRestricted role='editor'>
-        <GridToolbarExport csvOptions={options}/>
+        <GridToolbarExport csvOptions={options} />
       </RoleRestricted>
     </GridToolbarContainer>
   );
@@ -33,41 +35,47 @@ function boatFormatter(params: { value: any }) {
   return params.value;
 }
 
+function gotoboatregister(params: GridRowParams<Boat>) {
+  window.open(boatUrl(params.row.oga_no, {
+    origin: '',
+    pathname: ''
+  }), '_blank');
+}
+
 const columns = (
   hire: boolean,
   crewWanted: boolean,
   showContactButton: boolean,
-  proximityTo: { lat: number, lng: number }
+  proximityTo: { lat: number, lng: number } | undefined,
+  onContact: any,
 ): GridColDef<Boat>[] => {
   const col: GridColDef<Boat>[] = [
     {
-      field: 'name', headerName: 'Boat', width: 150, valueFormatter: boatFormatter, renderCell: renderBoat,
+      field: 'name', headerName: 'Boat', valueFormatter: boatFormatter, renderCell: renderBoat,
     },
-    { field: 'oga_no', headerName: 'No.', width: 90 },
+    { field: 'oga_no', headerName: 'No.' },
     {
-      field: 'owners', headerName: 'Owner', width: 320, valueGetter: ownerValueGetter,
-    },
-    {
-      field: 'home_port', headerName: 'Home Port', width: 150,
+      field: 'owners', headerName: 'Owner', valueGetter: ownerValueGetter, flex: 2,
     },
     {
-      field: 'area', headerName: 'Area', width: 90,
+      field: 'home_port', headerName: 'Home Port', flex: 1,
     },
-    {
+  ];
+  if (proximityTo) {
+    col.push({
       field: 'home_location',
       headerName: 'Proximity',
-      width: 150,
       valueGetter: (params: { value: any }): number => {
         return distanceInNM(proximityTo, params.value);
       },
       valueFormatter: distanceFormatter,
-    },
-  ];
+    });
+  }
+  col.push({ field: 'area', headerName: 'Area' });
   if (hire) {
     col.push({
       field: 'hire',
       headerName: 'For Hire',
-      width: 150,
       type: 'boolean',
       editable: true,
     });
@@ -76,37 +84,28 @@ const columns = (
     col.push({
       field: 'crewing',
       headerName: 'Crew Wanted',
-      width: 150,
       type: 'boolean',
       editable: true,
     });
   }
-  col.push({
-    field: 'url',
-    headerName: 'Details',
-    width: 150,
-    renderCell: (params: { row: { oga_no: number; }; }) => (
-      <Button
-        sx= {{padding:"5px"}}
-        size="small"
-        component="a"
-        href={boatUrl(params.row.oga_no, {
-          origin: '',
-          pathname: ''
-        })}
-        variant="contained"
-        color="primary"
-      >
-        More..
-      </Button>
-    ),
-  });
   if (showContactButton) {
     col.push({
-      field: 'data.email',
-      headerName: 'Contact',
-      width: 150,
-      renderCell: (params) => <Contact memberGoldId={params.row.owners[0].id} />,
+      headerName: 'Details/Contact',
+      field: 'actions',
+      type: 'actions',
+      getActions: (params) => [
+        <GridActionsCellItem icon={<ReadMoreIcon />} onClick={() => gotoboatregister(params)} label="more" />,
+        <GridActionsCellItem icon={<MailIcon />} onClick={() => onContact(params)} label="contact" /> ,
+      ]
+    });  
+  } else {
+    col.push({
+      headerName: 'More',
+      field: 'actions',
+      type: 'actions',
+      getActions: (params) => [
+        <GridActionsCellItem icon={<ReadMoreIcon />} onClick={() => onContact(params)} label="more" />,
+      ]
     });
   }
   return col;
@@ -115,8 +114,15 @@ const columns = (
 export default function BoatsAndOwners({
   boats = [],
   proximityTo,
-}: { boats: Boat[], proximityTo: any }) {
+}: { boats: Boat[], proximityTo?: { lat: number, lng: number } }) {
   const [cellModesModel, setCellModesModel] = useState({});
+  const [open, setOpen] = useState(false);
+  const [contact, setContact] = useState<number>(0);
+
+  function handleContact(params: GridRowParams<any>) {
+    setContact(Number(params.id));
+    setOpen(true);
+  }
 
   boats.forEach((boat) => {
     boat.area = areaAbbreviation(boat.owners[0].area);
@@ -133,7 +139,7 @@ export default function BoatsAndOwners({
         return;
       }
 
-      setCellModesModel((prevModel: { [id: string]: any}) => ({
+      setCellModesModel((prevModel: { [id: string]: any }) => ({
         // Revert the mode of the other cells from other rows
         ...Object.keys(prevModel).reduce(
           (acc, id) => ({
@@ -169,15 +175,15 @@ export default function BoatsAndOwners({
   );
 
   return (
-    <div style={{ display: 'flex', height: '100%' }}>
-      <div style={{ flexGrow: 1 }}>
+    <Box>
+      <Box>
         <DataGrid
           cellModesModel={cellModesModel}
           onCellModesModelChange={handleCellModesModelChange}
           onCellClick={handleCellClick}
           getRowId={(row) => row.oga_no}
           rows={boats}
-          columns={columns(false, false, true, proximityTo)}
+          columns={columns(false, false, true, proximityTo, handleContact)}
           slots={{ toolbar: CustomToolbar }}
           autoHeight
           initialState={{
@@ -187,7 +193,8 @@ export default function BoatsAndOwners({
             },
           }}
         />
-      </div>
-    </div>
+      </Box>
+      <ContactHelper memberGoldId={contact} onClose={() => setOpen(false)} open={open} />
+    </Box>
   );
 }
