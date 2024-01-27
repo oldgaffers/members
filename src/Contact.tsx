@@ -177,7 +177,7 @@ export default function Contact({ memberGoldId, text = 'Contact' }: ContactProps
             <ContactHelper
                 open={open}
                 memberGoldId={memberGoldId}
-                onCancel={handleCancel}
+                onClose={handleCancel}
                 text={text}
             />
         </>

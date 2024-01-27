@@ -57,7 +57,7 @@ export default function MembersAndBoats({
   boats = [],
 }: MembersAndBoatsProps) {
   const [open, setOpen] = useState(false);
-  const [contact, setContact] = useState<number>();
+  const [contact, setContact] = useState<number>(0);
 
   function boatGetter({ row }: { row: Member }) {
     const { id } = row;
