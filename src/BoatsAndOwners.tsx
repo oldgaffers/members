@@ -27,6 +27,10 @@ function CustomToolbar() {
   );
 }
 
+function CustomNoRowsOverlay() {
+  return <Box marginTop={2} textAlign='center'>Please Wait</Box>
+}
+
 function renderBoat(params: GridRenderCellParams<Boat, any, any, GridTreeNodeWithRender>) {
   return (<Typography variant="body2" fontStyle="italic">{params.value}</Typography>);
 }
@@ -186,7 +190,7 @@ export default function BoatsAndOwners({
         getRowId={(row) => row.oga_no}
         rows={boats}
         columns={columns(false, false, true, proximityTo, handleContact)}
-        slots={{ toolbar: CustomToolbar }}
+        slots={{ toolbar: CustomToolbar, noRowsOverlay: CustomNoRowsOverlay }}
         autoHeight
         initialState={{ sorting: { sortModel: [{ field: 'name', sort: 'asc' }] } }}
       />
