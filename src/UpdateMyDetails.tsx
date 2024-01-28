@@ -225,7 +225,7 @@ function MyDetails() {
             '& .MuiTab-root': {
               background: '#173161',
               color: 'white',
-              marginRight: 1,
+              margin: '1px',
             },
             '& .Mui-selected': {
               background: 'red',
