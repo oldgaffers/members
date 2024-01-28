@@ -3,6 +3,7 @@ import UpdateConsent from './UpdateConsent';
 import { Member } from './lib/membership.mts';
 
 type MemberStatusProps = {
+    firstname: string
     memberNo: number
     members: Member[]
 }
@@ -27,7 +28,7 @@ function membersAreaStatus({ GDPR, status }: Member) {
     return 'Not shown - consent not given';
 }
 
-export default function MemberStatus({ memberNo, members }: MemberStatusProps) {
+export default function MemberStatus({ firstname, memberNo, members }: MemberStatusProps) {
     if (members.length === 1) {
         if (members[0].status !== 'Left OGA') {
             if (members[0].GDPR) {
@@ -47,7 +48,7 @@ export default function MemberStatus({ memberNo, members }: MemberStatusProps) {
     } else {
         return <>
             <Typography variant='h6'>
-                Membership {memberNo} includes the following people:
+                {firstname}, membership {memberNo} includes the following people:
             </Typography>
             <Table>
                 <TableHead>

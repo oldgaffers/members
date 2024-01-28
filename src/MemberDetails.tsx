@@ -61,7 +61,7 @@ export default function Interests({ user, members, onChange }: InterestsProps) {
   return (
     <Stack spacing={1}>
       <Typography>
-        Your membership number is
+        Hi {user.firstname}, your membership number is
         {' '}
         {user.member}
         .{' '}
