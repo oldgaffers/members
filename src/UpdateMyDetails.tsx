@@ -225,10 +225,11 @@ function MyDetails() {
             '& .MuiTab-root': {
               background: '#173161',
               color: 'white',
+              marginRight: 1,
             },
             '& .Mui-selected': {
               background: 'red',
-              color: 'white'
+              color: 'white!important'
             },
           }}
         >
@@ -260,7 +261,7 @@ function MyDetails() {
         </Button>
       </CustomTabPanel>
       <CustomTabPanel value={tab} index={1}>
-        <MemberStatus key={memberNo} memberNo={memberNo} members={members} />
+        <MemberStatus key={memberNo} firstname={myRecord.firstname} memberNo={memberNo} members={members} />
         <MembersByMembership members={members} boats={boats} />
       </CustomTabPanel>
       <CustomTabPanel value={tab} index={2}>
