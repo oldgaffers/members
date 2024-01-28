@@ -208,8 +208,30 @@ function MyDetails() {
 
   return (
     <Stack spacing={1} width='90vw'>
-      <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-        <Tabs value={tab} onChange={handleTabChange} aria-label="basic tabs example">
+      <Box sx={{ border: 5, borderColor: '#DEEAFD', background: '#DEEAFD' }}>
+        <Tabs
+          // disable the tab indicator because it doesn't work well with wrapped container
+          TabIndicatorProps={{ sx: { display: 'none' } }}
+          value={tab}
+          onChange={handleTabChange}
+          aria-label="membership detail tabs"
+          sx={{
+            '& .MuiTabs-flexContainer': {
+              flexWrap: 'wrap',
+            },
+            '& .MuiTab-textColorPrimary': {
+              color: 'white',
+            },
+            '& .MuiTab-root': {
+              background: '#173161',
+              color: 'white',
+            },
+            '& .Mui-selected': {
+              background: 'red',
+              color: 'white'
+            },
+          }}
+        >
           <Tab label="About You" />
           <Tab label="About Your Membership" />
           <Tab label="Your Boats" />
@@ -273,11 +295,17 @@ function MyDetails() {
 }
 
 export default function UpdateMyDetails() {
-  return (
-    <>
-    <LoginButton />
+  const { user } = useAuth0();
+  if (user?.['https://oga.org.uk/member']) {
+    return (
+      <>
+      <RoleRestricted role="member"><MyDetails /></RoleRestricted>
+      <LoginButton />
+      </>
+    );
+  }
+  return (<>
     <Welcome />
-    <RoleRestricted role="member"><MyDetails /></RoleRestricted>
-    </>
-  );
+    <LoginButton/>
+  </>);
 }
