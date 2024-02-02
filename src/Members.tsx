@@ -168,8 +168,8 @@ export function MembersList({ crew = false }) {
     <Box sx={{ width: '90vw' }}>
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
         <FormGroup>
-          {roles.includes.editor ? <FormControlLabel control={<Switch onChange={handleNotPaidSwitchChange} checked={excludeNotPaid} />} label="Exclude not paid" /> : ''}
-          {roles.includes.editor ? <FormControlLabel control={<Switch onChange={handleNoConsentSwitchChange} checked={excludeNoConsent} />} label="Exclude no Consent" /> : ''}
+          {roles.includes('editor') ? <FormControlLabel control={<Switch onChange={handleNotPaidSwitchChange} checked={excludeNotPaid} />} label="Exclude not paid" /> : ''}
+          {roles.includes('editor') ? <FormControlLabel control={<Switch onChange={handleNoConsentSwitchChange} checked={excludeNoConsent} />} label="Exclude no Consent" /> : ''}
         </FormGroup>
       </Box>
       <MembersListForMember 
