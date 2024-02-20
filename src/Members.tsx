@@ -17,6 +17,7 @@ function membersWithLocation(location: { latitude: any; longitude: any; }) {
   { members(lat: $lat, lng: $lng) { 
     salutation firstname lastname member id GDPR proximity
     status telephone mobile town area interests smallboats  
+    crewing { text pictures published}
    } }`,
    {
     variables: {
@@ -32,6 +33,7 @@ function membersWithoutLocation() {
   { members { 
     salutation firstname lastname member id GDPR
     status telephone mobile town area interests smallboats  
+    crewing { text pictures published}
    } }`
    );
 }

@@ -8,6 +8,7 @@ export type CrewCardsProps = {
   inviteEnabled?: boolean
   onUpdateInvite?: Function
   invites?: Member[]
+  useTestData?: boolean
 }
 
 const testdata = [
@@ -64,7 +65,9 @@ export function CrewCards({
   contactEnabled=false,
   inviteEnabled=false,
   onUpdateInvite,
-  invites=[] }: CrewCardsProps) {
+  invites=[],
+  useTestData = false,
+ }: CrewCardsProps) {
   const { loading, data } = useMembers(false, true, true);
 
   if (loading) {
@@ -72,7 +75,10 @@ export function CrewCards({
   }
 
   const { members } = data;
-  const membersPlusGuests = [...members, ...testdata];
+  const membersPlusGuests = [...members];
+  if (useTestData) {
+    membersPlusGuests.push(...testdata);
+  };
 
   return (
     <Box overflow='auto' minWidth='50vw' maxWidth='85vw' >

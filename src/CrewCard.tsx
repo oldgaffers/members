@@ -50,7 +50,7 @@ function TextEdit({ text, onChange, editEnabled }: TextEditProps) {
         variant="body2"
         color="text.secondary"
         component="div"
-        dangerouslySetInnerHTML={{ __html: text.trim() }}
+        dangerouslySetInnerHTML={{ __html: text?.trim() ?? '' }}
     />
 }
 
