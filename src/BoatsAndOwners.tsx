@@ -6,14 +6,25 @@ import MailIcon from "@mui/icons-material/Mail";
 import ReadMoreIcon from '@mui/icons-material/ReadMore';
 import { Boat, boatUrl } from './lib/api.mts';
 import { ownerValueGetter } from './lib/ownership.mts';
-import { areaAbbreviation } from './lib/membership.mts';
+import { Member, areaAbbreviation } from './lib/membership.mts';
 import { distanceFormatter, distanceInNM } from './lib/utils.mts';
 import RoleRestricted from './RoleRestricted';
 import { ContactHelper } from './Contact';
 
+function ownerFormatter({ value }: { value: Member[] }) {
+  // console.log('M', value);
+  return value[0].member;
+}
+
+function renderOwner(arg: any) {
+  // console.log('M', arg);
+  return ownerValueGetter(arg);
+}
+
 function CustomToolbar() {
   const options: GridCsvExportOptions = {
     fields: ['name', 'oga_no', 'owners', 'home_port', 'area'],
+    // fields: ['owners', 'oga_no', 'name'],
     fileName: 'ogaboats',
     utf8WithBom: true, // navigator.platform.toUpperCase().indexOf('WIN') >= 0,
   };
@@ -59,7 +70,11 @@ const columns = (
     },
     { field: 'oga_no', headerName: 'No.', minWidth: 60 },
     {
-      field: 'owners', headerName: 'Owner', valueGetter: ownerValueGetter, minWidth: 200, flex: 2,
+      field: 'owners', headerName: 'Owner',
+      // valueGetter: ownerValueGetter, 
+      valueFormatter: ownerFormatter,
+      renderCell: renderOwner,
+      minWidth: 200, flex: 2,
     },
     {
       field: 'home_port', headerName: 'Home Port', minWidth: 80, flex: 1,
@@ -181,6 +196,11 @@ export default function BoatsAndOwners({
     [],
   );
 
+  boats.forEach((b) => {
+    if (b.oga_no === 1022) {
+      console.log(b);
+    }
+  });
   return (
     <Box sx={{ width: '90vw' }}>
       <DataGrid
@@ -192,7 +212,12 @@ export default function BoatsAndOwners({
         columns={columns(false, false, true, proximityTo, handleContact)}
         slots={{ toolbar: CustomToolbar, noRowsOverlay: CustomNoRowsOverlay }}
         autoHeight
-        initialState={{ sorting: { sortModel: [{ field: 'name', sort: 'asc' }] } }}
+        initialState={{
+          sorting: { sortModel: [{ field: 'name', sort: 'asc' }] },
+          columns: {
+            columnVisibilityModel: { member: false },
+          },
+        }}
       />
       <ContactHelper memberGoldId={contact} onClose={() => setOpen(false)} open={open} />
     </Box>

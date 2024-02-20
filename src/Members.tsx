@@ -12,42 +12,44 @@ import { getFilterable } from './lib/api.mts';
 import LoginButton from './LoginButton';
 import Welcome from './Welcome';
 
-function membersWithLocation(location: { latitude: any; longitude: any; }) {
-  return useQuery(gql`query members($lat: Float, $lng: Float)
-  { members(lat: $lat, lng: $lng) { 
-    salutation firstname lastname member id GDPR proximity
-    status telephone mobile town area interests smallboats  
-   } }`,
-   {
-    variables: {
-      lat: location.latitude,
-      lng: location.longitude,
-    }
-   }
-   );
-}
-
-function membersWithoutLocation() {
-  return useQuery(gql`query members
-  { members { 
+function Q(mylocation: any) {
+  if (mylocation) {
+    return gql`query members($start: Int!, $size: Int!, $sortdir: String!, $sortby: String!,
+      $lat: Float, $lng: Float)
+    { total members(lat: $lat, lng: $lng, start: $start, size: $size, sortby: $sortby, sortdir: $sortdir) { 
+      salutation firstname lastname member id GDPR proximity
+      status telephone mobile town area interests smallboats  
+     } }`;
+  }
+  return gql`query members($start: Int!, $size: Int!, $sortdir: String!, $sortby: String!)
+  { total members(start: $start, size: $size, sortby: $sortby, sortdir: $sortdir) { 
     salutation firstname lastname member id GDPR
     status telephone mobile town area interests smallboats  
-   } }`
-   );
+   } }`;
 }
 
 export function useMembers(
   excludeNotPaid: boolean,
   excludeNoConsent: boolean,
   crew: boolean,
+  start: number,
+  size: number,
+  sortdir: string,
+  sortby: string,
   mylocation?: any,
 ) {
   const [filterable, setFilterable] = useState(undefined);
   const [pc, setPc] = useState<any[]>([]);
-
-  // TODO server side paginate
-
-  const membersResult = mylocation ? membersWithLocation(mylocation) : membersWithoutLocation();
+  // TODO server side filter
+  const query = Q(mylocation);
+  console.log('Q', query);
+  const variables = {
+    start, size, sortdir, sortby,
+    lat: mylocation?.latitude,
+    lng: mylocation?.longitude,
+  };
+  console.log('V', variables);
+  const membersResult = useQuery(query, { variables });
 
   useEffect(() => {
     if (!filterable) {
@@ -74,7 +76,7 @@ export function useMembers(
     setPc([]);
   }
 
-  const { members } = membersResult.data;
+  const { total, members } = membersResult?.data ?? { total: 0, members: [] };
 
   const filteredMembers = members
     .filter((m: Member) => memberPredicate(m.id, m, excludeNotPaid, excludeNoConsent)
@@ -82,7 +84,7 @@ export function useMembers(
 
   const boats = membersBoats(filterable, filteredMembers);
 
-  const data = { boats, postcodes: pc, members: filteredMembers };
+  const data = { boats, postcodes: pc, total, members: filteredMembers };
   return { data };
 }
 
@@ -99,16 +101,40 @@ function MembersListForMember({
   crew,
   mylocation,
 }: MembersListForMemberProps) {
-  const { loading, data } = useMembers(excludeNotPaid, excludeNoConsent, crew, mylocation);
+  const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 100 });
+  const [sortModel, setSortModel] = useState([{ field: 'lastname', sort: 'asc' }]);
+  const [filterModel, setFilterModel] = useState({
+    items: [],
+    logicOperator: 'and',
+    quickFilterValues: [],
+    quickFilterLogicOperator: 'and',
+  });
+  const { loading, data } = useMembers(
+    excludeNotPaid,
+    excludeNoConsent,
+    crew,
+    paginationModel.pageSize * paginationModel.page,
+    paginationModel.pageSize,
+    sortModel?.[0]?.sort ?? 'asc',
+    sortModel?.[0]?.field ?? 'lastname',
+    mylocation,
+  );
 
   if (loading || !data) {
     return <CircularProgress />;
   }
 
-  const { boats, members } = data;
+  const { boats, total, members } = data;
 
   return (
     <MembersAndBoats
+      onPaginationModelChange={setPaginationModel}
+      paginationModel={paginationModel}
+      onSortModelChange={setSortModel}
+      sortModel={sortModel}
+      filterModel={filterModel}
+      onFilterModelChange={setFilterModel}
+      rowCount={total}
       members={members}
       boats={boats}
     />

@@ -65,7 +65,7 @@ export function CrewCards({
   inviteEnabled=false,
   onUpdateInvite,
   invites=[] }: CrewCardsProps) {
-  const { loading, data } = useMembers(false, true, true);
+  const { loading, data } = useMembers(false, true, true, 0, 100, 'asc', 'lastname');
 
   if (loading) {
     return <CircularProgress />;

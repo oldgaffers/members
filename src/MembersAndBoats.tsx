@@ -1,5 +1,5 @@
 import Typography from '@mui/material/Typography';
-import { DataGrid, GridColDef, GridRenderCellParams, GridToolbarContainer, GridToolbarExport, GridToolbarFilterButton, GridTreeNodeWithRender, GridCsvExportOptions, GridActionsCellItem, GridRowParams } from '@mui/x-data-grid';
+import { DataGrid, GridColDef, GridRenderCellParams, GridToolbarContainer, GridToolbarExport, GridToolbarFilterButton, GridTreeNodeWithRender, GridCsvExportOptions, GridActionsCellItem, GridRowParams, GridPaginationModel, GridFilterModel, GridSortModel } from '@mui/x-data-grid';
 // import Contact from './Contact';
 import MailIcon from "@mui/icons-material/Mail";
 import { Member, areaAbbreviation } from './lib/membership.mts';
@@ -8,12 +8,20 @@ import { UNKNOWN_DISTANCE, distanceFormatter, phoneGetter } from './lib/utils.mt
 import RoleRestricted from './RoleRestricted';
 import { Box } from '@mui/material';
 import { ContactHelper } from './Contact';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 type MembersAndBoatsProps = {
   members: Member[],
   boats: Boat[],
   components?: any
+  rowCount?: number
+  onPaginationModelChange: (model: GridPaginationModel) => void
+  paginationModel: GridPaginationModel
+  filterModel: GridFilterModel
+  onFilterModelChange: (model: GridFilterModel) => void
+  sortModel: GridSortModel
+  onSortModelChange: (model: GridSortModel) => void
+
 }
 
 function CustomToolbar() {
@@ -51,9 +59,23 @@ function areaFormatter(params: GridRenderCellParams<any, any, any, GridTreeNodeW
 export default function MembersAndBoats({
   members = [],
   boats = [],
+  rowCount,
+  onPaginationModelChange,
+  paginationModel,
+  onFilterModelChange,
+  onSortModelChange,
+  filterModel,
+  sortModel,
 }: MembersAndBoatsProps) {
   const [open, setOpen] = useState(false);
   const [contact, setContact] = useState<number>(0);
+  const [rowCountState, setRowCountState] = useState<number|undefined>(rowCount);
+
+  useEffect(() => {
+    setRowCountState((prevRowCountState) =>
+      rowCount !== undefined ? rowCount : prevRowCountState,
+    );
+  }, [rowCount, setRowCountState]);
 
   function boatGetter({ row }: { row: Member }) {
     const { id } = row;
@@ -90,7 +112,7 @@ export default function MembersAndBoats({
       field: 'lastname', headerName: 'Last Name', renderCell: renderLastname,
     },
     {
-      field: 'name',
+      field: 'firstname',
       headerName: 'Given Name',
       valueGetter: ({row}) => `${row.salutation} ${row.firstname}`, 
       minWidth: 100,
@@ -98,7 +120,7 @@ export default function MembersAndBoats({
     },
     { field: 'member', headerName: 'No' },
     {
-      field: 'telephone', headerName: 'Telephone', valueGetter: phoneGetter, flex: 3,
+      field: 'telephone', headerName: 'Telephone', valueGetter: phoneGetter, flex: 3, filterable: false,
     },
     {
       headerName: 'Contact',
@@ -114,6 +136,7 @@ export default function MembersAndBoats({
       headerName: 'Proximity',
       valueGetter: ({ row }) => row.proximity || UNKNOWN_DISTANCE,
       valueFormatter: distanceFormatter,
+      filterable: false,
     },
     {
       field: 'boat',
@@ -124,7 +147,7 @@ export default function MembersAndBoats({
       flex: 4,
     },
     { field: 'areas', headerName: 'Areas', renderCell: areaFormatter },
-    { field: 'area', headerName: 'Area', valueFormatter: (params) => areaAbbreviation(params.value), minWidth: 10, flex: 0.5 },
+    // { field: 'area', headerName: 'Area', valueFormatter: (params) => areaAbbreviation(params.value), minWidth: 10, flex: 2 },
     { field: 'smallboats', headerName: 'SB', type: 'boolean', minWidth: 70, flex: 0.5 },
   ];
 
@@ -132,6 +155,16 @@ export default function MembersAndBoats({
     <Box height='100%'>
       <Box>
         <DataGrid
+          filterMode='server'
+          paginationMode='server'
+          sortingMode='server'
+          rowCount={rowCountState}
+          filterModel={filterModel}
+          onFilterModelChange={onFilterModelChange}
+          paginationModel={paginationModel}
+          onPaginationModelChange={onPaginationModelChange}
+          sortModel={sortModel}
+          onSortModelChange={onSortModelChange}
           rows={members2}
           columns={columns}
           slots={{ toolbar: CustomToolbar }}
