@@ -58,10 +58,6 @@ export default function FindACruise() {
       <Typography variant='h6'>
         Here are the other members who have created a crew profile.
       </Typography>
-      <Typography>
-        You will notice that some of these are not current members of the association.
-        They are here to test the functionality for us.
-      </Typography>
       <RoleRestricted role="member">
         <CrewCards contactEnabled={true} inviteEnabled={false} />
       </RoleRestricted>
