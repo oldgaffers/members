@@ -101,9 +101,16 @@ function MembersListForMember({
   crew,
   mylocation,
 }: MembersListForMemberProps) {
+  console.log('MembersListForMember');
   const { loading, data } = useMembers(excludeNotPaid, excludeNoConsent, crew, mylocation);
 
-  if (loading || !data) {
+  if (loading) {
+    console.log('MembersListForMember loading');
+    return <CircularProgress />;
+  }
+
+  if (!data) {
+    console.log('MembersListForMember no data');
     return <CircularProgress />;
   }
 
@@ -157,10 +164,12 @@ export function MembersList({ crew = false }) {
   };
 
   if (memberResult.loading) {
+    console.log('MembersList loading');
     return <CircularProgress />;
   }
 
   if (!memberResult.data) {
+    console.log('MembersList no data');
     return <CircularProgress />;
   }
 
