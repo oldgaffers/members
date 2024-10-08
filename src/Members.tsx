@@ -11,6 +11,8 @@ import membersBoats from './lib/members_boats.mts';
 import { getFilterable } from './lib/api.mts';
 import LoginButton from './LoginButton';
 import Welcome from './Welcome';
+import { PDFDownloadLink } from '@react-pdf/renderer';
+import { MembersListDoc } from './MembersPDF';
 
 function membersWithLocation(location: { latitude: any; longitude: any; }) {
   return useQuery(gql`query members($lat: Float, $lng: Float)
@@ -93,6 +95,7 @@ interface MembersListForMemberProps {
   excludeNoConsent: boolean
   crew: boolean
   mylocation: any
+  roles: any
 }
 
 function MembersListForMember({
@@ -100,6 +103,7 @@ function MembersListForMember({
   excludeNoConsent,
   crew,
   mylocation,
+  roles,
 }: MembersListForMemberProps) {
   console.log('MembersListForMember');
   const { loading, data } = useMembers(excludeNotPaid, excludeNoConsent, crew, mylocation);
@@ -116,11 +120,19 @@ function MembersListForMember({
 
   const { boats, members } = data;
 
-  return (
+  return (<>
+    <FormGroup>
+        {roles.includes('officer') ? 
+    (<PDFDownloadLink document={<MembersListDoc members={members} boats={boats}/>} fileName="test.pdf">
+    {({ blob, url, loading, error }) => (loading ? 'Loading document...' : 'Download now!')}
+        </PDFDownloadLink>)
+        : ''}
+        </FormGroup>
     <MembersAndBoats
       members={members}
       boats={boats}
     />
+    </>
   );
 }
 
@@ -188,6 +200,7 @@ export function MembersList({ crew = false }) {
         excludeNoConsent={excludeNoConsent}
         crew={crew}
         mylocation={mylocation}
+        roles={roles}
       />
     </Box>
   );
