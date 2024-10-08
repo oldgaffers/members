@@ -2,7 +2,6 @@ import { Page, Text, View, Document, StyleSheet } from '@react-pdf/renderer';
 import { Member } from './lib/membership.mts';
 import { Boat } from './lib/api.mts';
 import { phoneGetter } from './lib/utils.mts';
-import { Key } from 'react';
 
 const styles = StyleSheet.create({
   page: {
