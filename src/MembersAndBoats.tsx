@@ -4,7 +4,7 @@ import { DataGrid, GridColDef, GridRenderCellParams, GridToolbarContainer, GridT
 import MailIcon from "@mui/icons-material/Mail";
 import { Member, areaAbbreviation } from './lib/membership.mts';
 import { Boat } from './lib/api.mts';
-import { UNKNOWN_DISTANCE, distanceFormatter, phoneGetter } from './lib/utils.mts';
+import { UNKNOWN_DISTANCE, distanceFormatter /*, phoneGetter*/ } from './lib/utils.mts';
 import RoleRestricted from './RoleRestricted';
 import { Box } from '@mui/material';
 import { ContactHelper } from './Contact';
@@ -17,17 +17,17 @@ type MembersAndBoatsProps = {
 }
 
 function CustomToolbar() {
-  const options: GridCsvExportOptions = {
+  /*const options: GridCsvExportOptions = {
     fields: ['lastname', 'name', 'member', 'telephone', 'town', 'boat', 'area', 'smallboats'],
     fileName: 'ogamembers',
     utf8WithBom: true, // navigator.platform.toUpperCase().indexOf('WIN') >= 0,
-  };
+  };*/
   return (
     <GridToolbarContainer>
       <GridToolbarFilterButton/>
-      <RoleRestricted role='officer'>
+      {/*<RoleRestricted role='officer'>
         <GridToolbarExport csvOptions={options}/>
-      </RoleRestricted>
+      </RoleRestricted>*/}
     </GridToolbarContainer>
   );
 }
@@ -97,9 +97,9 @@ export default function MembersAndBoats({
       flex: 3,
     },
     { field: 'member', headerName: 'No' },
-    {
+    /*{
       field: 'telephone', headerName: 'Telephone', valueGetter: phoneGetter, flex: 3,
-    },
+    },*/
     {
       headerName: 'Contact',
       field: 'actions',

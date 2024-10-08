@@ -11,8 +11,8 @@ import membersBoats from './lib/members_boats.mts';
 import { getFilterable } from './lib/api.mts';
 import LoginButton from './LoginButton';
 import Welcome from './Welcome';
-import { PDFDownloadLink } from '@react-pdf/renderer';
-import { DownLoadLink, MembersListDoc } from './MembersPDF';
+// import { PDFDownloadLink } from '@react-pdf/renderer';
+// import { DownLoadLink, MembersListDoc } from './MembersPDF';
 
 function membersWithLocation(location: { latitude: any; longitude: any; }) {
   return useQuery(gql`query members($lat: Float, $lng: Float)
@@ -103,7 +103,6 @@ function MembersListForMember({
   excludeNoConsent,
   crew,
   mylocation,
-  roles,
 }: MembersListForMemberProps) {
   console.log('MembersListForMember');
   const { loading, data } = useMembers(excludeNotPaid, excludeNoConsent, crew, mylocation);
@@ -120,6 +119,7 @@ function MembersListForMember({
 
   const { boats, members } = data;
 
+  /*
   return (<>
     <FormGroup>
         {roles.includes('officer') ? 
@@ -137,6 +137,8 @@ function MembersListForMember({
     />
     </>
   );
+  */
+  return (<MembersAndBoats members={members} boats={boats}/>);
 }
 
 function useGetMemberwithLocation(memberNo: number, id: number) {
