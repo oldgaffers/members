@@ -28,6 +28,7 @@ export interface Member {
   interests?: string[]
   skipper?: SailingProfile
   crewing?: SailingProfile
+  town?: string
   __typename?: string
 }
 

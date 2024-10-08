@@ -98,6 +98,8 @@ interface MembersListForMemberProps {
   roles: any
 }
 
+const DownLoadLink = ({ loading }: { loading: any }) => (loading ? 'Loading document...' : 'Download now!');
+
 function MembersListForMember({
   excludeNotPaid,
   excludeNoConsent,
@@ -124,7 +126,7 @@ function MembersListForMember({
     <FormGroup>
         {roles.includes('officer') ? 
     (<PDFDownloadLink document={<MembersListDoc members={members} boats={boats}/>} fileName="test.pdf">
-    {({ blob, url, loading, error }) => (loading ? 'Loading document...' : 'Download now!')}
+        <DownLoadLink loading={loading}/>
         </PDFDownloadLink>)
         : ''}
         </FormGroup>

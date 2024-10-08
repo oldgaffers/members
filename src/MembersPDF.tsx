@@ -60,14 +60,13 @@ function chunkify(a: Array<any>, n: number) {
 }
 
 // Create Document Component
-export function MembersListDoc({members, boats}) {
+export function MembersListDoc({members, boats}: { members: Member[], boats: Boat[]}) {
   const sorted = [...members];
   sorted.sort((a, b) => a.lastname.localeCompare(b.lastname) );
   const chunked = chunkify(sorted, 20);
-  console.log(' MembersListDoc');
   return (<Document>
-    {chunked.map((chunk: any[], i: any) =>(
-    <Page size="A4" style={styles.page}>
+    {chunked.map((chunk: Member[], i: number) =>(
+    <Page size="A4" style={styles.page} key={i}>
       <View style={[styles.row, styles.bold, styles.header]}>
         <Text style={styles.col1}>Name</Text>
         <Text style={styles.col2}>No.</Text>
@@ -76,7 +75,7 @@ export function MembersListDoc({members, boats}) {
         <Text style={styles.col5}>Boat Name</Text>
         <Text style={styles.col6}>Area</Text>
       </View>
-      {chunk.map((row: Member, i: Key | null | undefined) => {
+      {chunk.map((row: Member, i: number) => {
         return (<View key={i} style={styles.row} wrap={false}>
           <Text style={styles.col1}>{row.lastname}{'\n'}{row.salutation} {row.firstname}</Text>
           <Text style={styles.col2}>{row.member}</Text>
@@ -90,36 +89,3 @@ export function MembersListDoc({members, boats}) {
     ))}
   </Document>);
 }
-/*
-{
-  "__typename": "Member",
-  "salutation": "Mr",
-  "firstname": "Jon",
-  "lastname": "Hall",
-  "member": 6780,
-  "id": 35260,
-  "GDPR": true,
-  "proximity": 340.5,
-  "status": "Paid Up",
-  "telephone": "",
-  "mobile": "07899 066035",
-  "town": "Dartmouth",
-  "area": "South West",
-  "interests": [],
-  "smallboats": false,
-  "crewing": null
-}
-/*
-        
-          <Text style={styles.col1}>
-            <Text style={styles.bold}>{row}</Text>, {row}
-          </Text>
-          <Text style={styles.col2}>{row}</Text>
-          <Text style={styles.col3}>{row}</Text>
-          <Text style={styles.col4}>
-            <Text style={styles.bold}>{row}</Text> of{' '}
-            {row}
-          </Text>
-          <Text style={styles.col5}>{row}</Text>
-          <Text style={styles.col6}>{row}</Text>
-*/
