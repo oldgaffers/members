@@ -12,7 +12,7 @@ import { getFilterable } from './lib/api.mts';
 import LoginButton from './LoginButton';
 import Welcome from './Welcome';
 import { PDFDownloadLink } from '@react-pdf/renderer';
-import { MembersListDoc } from './MembersPDF';
+import { DownLoadLink, MembersListDoc } from './MembersPDF';
 
 function membersWithLocation(location: { latitude: any; longitude: any; }) {
   return useQuery(gql`query members($lat: Float, $lng: Float)
@@ -98,8 +98,6 @@ interface MembersListForMemberProps {
   roles: any
 }
 
-const DownLoadLink = ({ loading }: { loading: any }) => (loading ? 'Loading document...' : 'Download now!');
-
 function MembersListForMember({
   excludeNotPaid,
   excludeNoConsent,
@@ -125,7 +123,10 @@ function MembersListForMember({
   return (<>
     <FormGroup>
         {roles.includes('officer') ? 
-    (<PDFDownloadLink document={<MembersListDoc members={members} boats={boats}/>} fileName="test.pdf">
+    (<PDFDownloadLink
+      document={<MembersListDoc
+      members={members} boats={boats}/>} fileName="oga_yearbook.pdf"
+    >
         <DownLoadLink loading={loading}/>
         </PDFDownloadLink>)
         : ''}

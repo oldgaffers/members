@@ -88,3 +88,5 @@ export function MembersListDoc({members, boats}: { members: Member[], boats: Boa
     ))}
   </Document>);
 }
+
+export const DownLoadLink = ({ loading }: { loading: any }) => (loading ? 'Loading document...' : 'Download now!');
