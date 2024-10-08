@@ -17,17 +17,17 @@ type MembersAndBoatsProps = {
 }
 
 function CustomToolbar() {
-  /*const options: GridCsvExportOptions = {
+  const options: GridCsvExportOptions = {
     fields: ['lastname', 'name', 'member', 'telephone', 'town', 'boat', 'area', 'smallboats'],
     fileName: 'ogamembers',
     utf8WithBom: true, // navigator.platform.toUpperCase().indexOf('WIN') >= 0,
-  };*/
+  };
   return (
     <GridToolbarContainer>
       <GridToolbarFilterButton/>
-      {/*<RoleRestricted role='officer'>
+      {<RoleRestricted role='editor'>
         <GridToolbarExport csvOptions={options}/>
-      </RoleRestricted>*/}
+      </RoleRestricted>}
     </GridToolbarContainer>
   );
 }
