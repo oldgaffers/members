@@ -13,7 +13,7 @@ import { ContactHelper } from './Contact';
 
 function CustomToolbar() {
   const options: GridCsvExportOptions = {
-    fields: ['name', 'oga_no', 'owners', 'home_port', 'area'],
+    fields: ['name', 'oga_no', 'owners', 'home_port', 'area', 'generic_type', 'updated_at'],
     fileName: 'ogaboats',
     utf8WithBom: true, // navigator.platform.toUpperCase().indexOf('WIN') >= 0,
   };
@@ -63,6 +63,12 @@ const columns = (
     },
     {
       field: 'home_port', headerName: 'Home Port', minWidth: 80, flex: 1,
+    },
+    {
+      field: 'generic_type', headerName: 'Generic Type', minWidth: 20, flex: 1,
+    },
+    {
+      field: 'updated_at', headerName: 'Modified', minWidth: 40, flex: 1,
     },
   ];
   if (proximityTo) {

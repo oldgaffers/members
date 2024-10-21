@@ -144,20 +144,28 @@ export default function Welcome() {
     return (
         <Stack marginTop={2} spacing={1}>
             <Typography>
-                Sorry{user.given_name ? ` ${user.given_name}` : ''}, we didn't manage to associate your login with a member.
-                If this is your first time logging in, and you used the same email for your login as the OGA has on
-                record, then please log-out now and log straight back in again. If this doesn't work, don't worry.
-                Just read on.
+                Sorry {user?.given_name ?? ''}, we didn't manage to associate your login with a member.
             </Typography>
             <Typography>
+                If you have recently joined the OGA, please wait until the morning after you
+                receive your welcome email from our Membership Secretary, and then log-out and
+                back in again.
+            </Typography>
+            <Typography>
+                If this is your first time logging in, and you used the same email for your login as the OGA has on
+                record, and you have already been given a membership number, then please log-out now and log straight back in again.
+            </Typography>
+            <Typography>
+                If this hasn't worked, don't worry.
                 When you create a login, the system matches your email address with the one we have on record.
-                If you used the same one, the second time you log in, it almost always just works.
-                If you use a different one we need to make the association for you.
+                If you used the same one, the above instructions almost always work.
+                If your login uses a different email, we need to make the association for you.
             </Typography>
             <Typography>
                If you've tried logging out and back in again and you are still getting this message then click the button below and we'll contact you to sort it out.
             </Typography>
             <Contact />
+            <Typography>&nbsp;</Typography>
         </Stack>
     );
 }

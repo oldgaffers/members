@@ -56,6 +56,9 @@ export default function BoatList({ places }: { places: any[] }) {
     }
 
     const { members } = membersResult.data;
+    if (!members) {
+        return 'Our apologies, something went wrong, please contact membership@oga.org.uk to report the error';
+    }
     const ybmembers = members.filter((m: any) => memberPredicate(m.id, m, false, false));
 
     const wboats = membersBoats(boats.data, ybmembers);
