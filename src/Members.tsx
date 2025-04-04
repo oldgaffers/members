@@ -18,7 +18,7 @@ function membersWithLocation(location: { latitude: any; longitude: any; }) {
   return useQuery(gql`query members($lat: Float, $lng: Float)
   { members(lat: $lat, lng: $lng) { 
     salutation firstname lastname member id GDPR proximity
-    status telephone mobile town area interests smallboats younger_member  
+    status telephone mobile town area interests smallboats youngermember  
     crewing { text pictures published}
    } }`,
    {
@@ -34,7 +34,7 @@ function membersWithoutLocation() {
   return useQuery(gql`query members
   { members { 
     salutation firstname lastname member id GDPR
-    status telephone mobile town area interests smallboats younger_member
+    status telephone mobile town area interests smallboats youngermember
     crewing { text pictures published}
    } }`
    );

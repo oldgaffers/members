@@ -18,7 +18,7 @@ type MembersAndBoatsProps = {
 
 function CustomToolbar() {
   const options: GridCsvExportOptions = {
-    fields: ['lastname', 'name', 'member', 'telephone', 'town', 'boat', 'area', 'smallboats', 'younger_member'],
+    fields: ['lastname', 'name', 'member', 'telephone', 'town', 'boat', 'area', 'smallboats', 'youngermember'],
     fileName: 'ogamembers',
     utf8WithBom: true, // navigator.platform.toUpperCase().indexOf('WIN') >= 0,
   };
@@ -126,7 +126,7 @@ export default function MembersAndBoats({
     { field: 'areas', headerName: 'Areas', renderCell: areaFormatter },
     { field: 'area', headerName: 'Area', valueFormatter: (params) => areaAbbreviation(params.value), minWidth: 10, flex: 0.5 },
     { field: 'smallboats', headerName: 'SB', type: 'boolean', minWidth: 70, flex: 0.5 },
-    { field: 'younger_member', headerName: 'YG', type: 'boolean', minWidth: 70, flex: 0.5 },
+    { field: 'youngermember', headerName: 'YG', type: 'boolean', minWidth: 70, flex: 0.5 },
     {
       field: 'GDPR',
       headerName: 'GDPR',

@@ -19,7 +19,7 @@ export interface Member {
   status?: string
   GDPR?: boolean
   smallboats?: boolean
-  younger_member?: boolean
+  youngermember?: boolean
   primary?: boolean
   postcode?: string
   area?: string
@@ -58,7 +58,7 @@ export function areaAbbreviation(value: string | undefined) {
 const MEMBER_QUERY = gql(`query members($members: [Int]!) {
   members(members: $members) {
       salutation firstname lastname member id GDPR 
-      smallboats younger_member status telephone mobile area town
+      smallboats youngermember status telephone mobile area town
       interests email primary
       postcode type payment address country yob start
   }

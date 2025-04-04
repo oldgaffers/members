@@ -144,7 +144,7 @@ export default function Interests({ user, members, onChange }: InterestsProps) {
         />
         <FormControlLabel
           control={
-            <Checkbox checked={user.younger_member} onChange={(_, checked) => onChange({...user, younger_member: checked})} />
+            <Checkbox checked={user.youngermember} onChange={(_, checked) => onChange({...user, youngermember: checked})} />
                     }
           label="Younger Gaffers"
         />

@@ -22,7 +22,7 @@ import Welcome from './Welcome';
 const MEMBER_QUERY = gql(`query members($members: [Int]!) {
     members(members: $members) {
         salutation firstname lastname member id GDPR 
-        smallboats younger_member status
+        smallboats youngermember status
         telephone mobile area town
         interests email primary
         postcode type payment address country yob start
@@ -51,7 +51,7 @@ function recordToHtml(d: Member | undefined) {
 <br />Primary Area: ${d.area}
 <br />Additional Areas: ${(d?.interests || []).join(', ')}
 <br />Small Boats: ${d.smallboats ? 'Yes' : 'No'}
-<br />Younger Gaffers: ${d.younger_member ? 'Yes' : 'No'}
+<br />Younger Gaffers: ${d.youngermember ? 'Yes' : 'No'}
 <br />
 <br />kind regards ${d.firstname}
 `;
