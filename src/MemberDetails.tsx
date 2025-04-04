@@ -142,6 +142,12 @@ export default function Interests({ user, members, onChange }: InterestsProps) {
                     }
           label="Small boats"
         />
+        <FormControlLabel
+          control={
+            <Checkbox checked={user.younger_member} onChange={(_, checked) => onChange({...user, younger_member: checked})} />
+                    }
+          label="Younger Gaffers"
+        />
       </FormGroup>
       <FormGroup>
         <FormLabel sx={{ marginTop: 1 }}>Primary Area</FormLabel>

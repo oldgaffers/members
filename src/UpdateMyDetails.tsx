@@ -22,12 +22,12 @@ import Welcome from './Welcome';
 const MEMBER_QUERY = gql(`query members($members: [Int]!) {
     members(members: $members) {
         salutation firstname lastname member id GDPR 
-        smallboats status telephone mobile area town
+        smallboats younger_member status
+        telephone mobile area town
         interests email primary
         postcode type payment address country yob start
     }
   }`);
-
 
 // TODO ReJoin
 
@@ -51,7 +51,7 @@ function recordToHtml(d: Member | undefined) {
 <br />Primary Area: ${d.area}
 <br />Additional Areas: ${(d?.interests || []).join(', ')}
 <br />Small Boats: ${d.smallboats ? 'Yes' : 'No'}
-<br />Younger Gaffers: ${d.youngergaffers ? 'Yes' : 'No'}
+<br />Younger Gaffers: ${d.younger_member ? 'Yes' : 'No'}
 <br />
 <br />kind regards ${d.firstname}
 `;
