@@ -12,10 +12,10 @@ export type Boat = {
 
 const boatRegisterHome = 'https://oldgaffers.github.io';
 
-const api1 = 'https://14nggp589h.execute-api.eu-west-1.amazonaws.com';
+const api1 = 'https://2homjmdye9.execute-api.eu-west-1.amazonaws.com';
 const api2 = 'https://7epryku6aipef3mzdoxtds3e5i0yfgwn.lambda-url.eu-west-1.on.aws';
 const api3 = 'https://n5sfnt3ewfaq3lp4wqg64lzen40gzpdq.lambda-url.eu-west-1.on.aws';
-const stage = 'Prod';
+const stage = 'prod';
 export function prefix(location: { origin: string; pathname: string }) {
   const origin = location.origin || window.location.origin;
   const pathname = location.pathname || window.location.pathname;
