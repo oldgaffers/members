@@ -75,6 +75,9 @@ function memberPredicate(id: number, member: Member, excludeNotPaid = true, excl
   if (id !== member.id) {
     return false;
   }
+  if (member.status === 'Deceased') {
+    return false;
+  }
   if (member.status === 'Left OGA') {
     return false;
   }
