@@ -12,6 +12,9 @@ function printedYearbookStatus({ GDPR, status }: Member) {
     if (status === 'Left OGA') {
         return 'Not in Yearbook - left OGA';
     }
+    if (status === 'Deceased') {
+        return 'Not in Yearbook - sadly departed';
+    }
     if (GDPR) {
         return 'will be in the next printed Yearbook';
     }
@@ -22,6 +25,9 @@ function membersAreaStatus({ GDPR, status }: Member) {
     if (status === 'Left OGA') {
         return 'Not listed in the members area - left OGA';
     }
+    if (status === 'Deceased') {
+        return 'Not listed in the members area - sadly departed';
+    }
     if (GDPR) {
         return 'shown';
     }
@@ -30,21 +36,25 @@ function membersAreaStatus({ GDPR, status }: Member) {
 
 export default function MemberStatus({ firstname, memberNo, members }: MemberStatusProps) {
     if (members.length === 1) {
-        if (members[0].status !== 'Left OGA') {
-            if (members[0].GDPR) {
-                return <Typography> Your Yearbook entry will be as shown below.</Typography>;
-            } else {
-                return <Typography>
-                    Your Yearbook entry would be as shown below, but you would
-                    have to contact the membership secretary to give consent.
-                </Typography>;
-            }
-        } else {
+        if (members[0].status === 'Deceased') {
+            return <Typography>
+                Our records indicate that {firstname} has died.
+                If you are acting on their behalf, please contact the membership secretary.
+            </Typography>
+        }
+        if (members[0].status === 'Left OGA') {
             return <Typography>
                 Our records indicate you are no-longer a member. If you want to be in the Yearbook,
                 please rejoin.
             </Typography>
         }
+        if (members[0].GDPR) {
+            return <Typography> Your Yearbook entry will be as shown below.</Typography>;
+        }
+        return <Typography>
+          Your Yearbook entry would be as shown below, but you would
+          have to contact the membership secretary to give consent.
+        </Typography>;
     } else {
         return <>
             <Typography variant='h6'>
