@@ -5,7 +5,7 @@ React Single Page Application to help OGA members.
 
 ## Deployment
 
-Use in a <div> on any web page after including the script and styles.
+Use in a div element on any web page after including the script and styles.
 
     <link href="https://oldgaffers.github.io/members/main.css" rel="stylesheet" />
     <script type="module" defer="defer" src="https://oldgaffers.github.io/members/main.js"></script>
