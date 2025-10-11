@@ -12,7 +12,7 @@ Use in a div element on any web page after including the script and styles.
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="page to render">&nbsp;</div>
 
-Where "page to render is one of:
+Where "page to render" is one of:
 
 - update_my_details
 - members
