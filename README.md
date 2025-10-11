@@ -1,30 +1,21 @@
-# React + TypeScript + Vite
+# OGS Members Services using React + TypeScript + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Purpose
+React Single Page Application to help OGA members.
 
-Currently, two official plugins are available:
+## Deployment
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Use in a <div> on any web page after including the script and styles.
 
-## Expanding the ESLint configuration
+.     
+    <link href="https://oldgaffers.github.io/members/main.css" rel="stylesheet" />
+    <script type="module" defer="defer" src="https://oldgaffers.github.io/members/main.js"></script>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="update_my_details">&nbsp;</div>
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+## Build
 
-- Configure the top-level `parserOptions` property like this:
+    npm run build
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
-```
+<div class="v-label v-widget v-label-undef-w infoTextgrey v-label-infoTextgrey" id="target7cf1aeca_e62b_4b26_8337_f656569c7946">[[&quot;Need Help Logging in?&quot;,452,77362,badge badge-primary,&quot;&amp;#xf05a;&quot;]]</div>
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
