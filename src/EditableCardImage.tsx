@@ -128,6 +128,7 @@ export default function EditableCardImage({ editEnabled, id, name, email, pictur
         }
         postPhotos(files, '', email, id, undefined, () => { }).then(
             (r: any) => {
+                // console.log(r);
                 setUrl(r[0]);
             }
         );
