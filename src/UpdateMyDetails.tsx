@@ -31,32 +31,6 @@ const MEMBER_QUERY = gql(`query members($members: [Int]!) {
 
 // TODO ReJoin
 
-function recordToHtml(d: Member | undefined) {
-  if (!d) {
-    return '';
-  }
-  return `Dear OGA Membership Secretary,
-<br />my Membership number is ${d.member} and my GOLD Id is ${d.id}.
-<br />I would like my membership data to match the following:
-<br />salutation: ${d.salutation}
-<br />first name: ${d.firstname}
-<br />last name: ${d.lastname}
-<br />address ${(d?.address || []).join(', ')}
-<br />post code: ${d.postcode}
-<br />country: ${d.country}
-<br />Yearbook permission: ${d.GDPR ? 'Yes' : 'No'}
-<br />Telephone: ${d.telephone}
-<br />Mobile: ${d.mobile}
-<br />Email: ${d.email}
-<br />Primary Area: ${d.area}
-<br />Additional Areas: ${(d?.interests || []).join(', ')}
-<br />Small Boats: ${d.smallboats ? 'Yes' : 'No'}
-<br />Younger Members: ${d.youngermember ? 'Yes' : 'No'}
-<br />
-<br />kind regards ${d.firstname}
-`;
-}
-
 type CustomTabPanelProps = {
   value: number
   index: number
@@ -273,7 +247,7 @@ function MyDetails() {
         <Profile profileName='crewing' />
       </CustomTabPanel>
       <ContactTheMembershipSecretary
-        data={recordToHtml(myRecord)}
+        data={myRecord}
         onSubmit={handleSubmitContact}
         onCancel={() => setOpenContact(false)}
         open={openContact}
