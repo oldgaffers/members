@@ -48,7 +48,7 @@ export async function postPhotos(fileList: File[], copyright: string, email: str
             });
             const p = await Promise.allSettled(uploads);
             const fullfilled = p.filter((u) => u.status === 'fulfilled');
-            return fullfilled.map((u : PromiseSettledResult<{ uuid: string; contentType: string; }>) => u?.value);
+            return fullfilled.map((u: any) => u?.value);
         } catch (e) {
             // console.log(e);
         }
