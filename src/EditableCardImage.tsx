@@ -128,8 +128,9 @@ export default function EditableCardImage({ editEnabled, id, name, email, pictur
         }
         postPhotos(files, '', email, id, undefined, () => { }).then(
             (r: any) => {
-                // console.log(r);
-                setUrl(r[0]);
+                const { uuid, contentType } = r[0];
+                const ext = contentType.split('/')[1];
+                setUrl(`s3://boatregister-public/${id}/${uuid}.${ext}`);
             }
         );
     }

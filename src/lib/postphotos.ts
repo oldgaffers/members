@@ -44,18 +44,9 @@ export async function postPhotos(fileList: File[], copyright: string, email: str
                     // console.log('progress', p, progress);
                     setProgress(p);
                 });
-                return upload.done();
+                return { uuid, contentType: file.type };
             });
-            await Promise.allSettled(uploads);
-            const settled = await Promise.allSettled(x.map(async ({file, uuid}) => {
-                const key = `${id}/${uuid}.${file.name.replace(/^.*\./, '')}`;
-                const command = new GetObjectCommand({
-                    Bucket: 'boatregister-public',
-                    Key: key,
-                });
-                return getSignedUrl(client, command, { expiresIn: 3600 });
-            }));
-            return settled.map((r: any) => (r.value));
+            return (await Promise.allSettled(uploads)).filter((u) => u.status === 'fulfilled').map((u) => u.value);
         } catch (e) {
             // console.log(e);
         }
