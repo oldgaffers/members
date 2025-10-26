@@ -60,7 +60,7 @@ export default function ContactTheMembershipSecretary({
   const handleSubmit = () => {
     onSubmit(text);
   };
-  console.log('T', data, text);
+
   return (
     <Dialog
       open={open}
