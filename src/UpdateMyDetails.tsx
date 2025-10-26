@@ -101,11 +101,6 @@ function MyDetails() {
     setTab(newValue);
   };
 
-  const handleInterestChange = (data: Member) => {
-    // console.log('handleInterestChange', data);
-    setMyRecord(data);
-  };
-
   useEffect(() => {
     async function fetchBoatData() {
       if (boats.length > 0) {
@@ -241,7 +236,7 @@ function MyDetails() {
         </Tabs>
       </Box>
       <CustomTabPanel value={tab} index={0}>
-        <Interests user={myRecord} members={members} onChange={handleInterestChange} />
+        <Interests user={myRecord} members={members} onChange={(data: Member) => setMyRecord(data)} />
         <Typography>
           Changes you make to your selections on this tab will not take effect until they have
           been updated in our central membership database by the membership secretary.
