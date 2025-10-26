@@ -5,7 +5,6 @@ import {
 } from '@mui/material';
 import { emailIndication, infoOrEmpty, membershipType } from './lib/utils.mts';
 import { Member } from './lib/membership.mts';
-import { MosqueRounded } from '@mui/icons-material';
 
 const areas = [
   { label: 'Bristol Channel', value: 'BC', funded: true },
@@ -35,7 +34,7 @@ function MembershipStart({ user }: { user: any }) {
   return "We don't have a record of when you joined.";
 }
 
-function unfunded(areas: [{ label: string, funded: boolean }]) {
+function unfunded(areas: { label: string; value: string; funded: boolean; }[]) {
   const most = areas.filter((a) => !a.funded);
   if (most.length === 1) return most[0].label;
   const last = most.pop();
