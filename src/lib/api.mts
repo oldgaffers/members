@@ -12,9 +12,8 @@ export type Boat = {
 
 const boatRegisterHome = 'https://oldgaffers.github.io';
 
-const api1 = 'https://3q9wa2j7s1.execute-api.eu-west-1.amazonaws.com';
-const api2 = 'https://7epryku6aipef3mzdoxtds3e5i0yfgwn.lambda-url.eu-west-1.on.aws';
-const api3 = 'https://n5sfnt3ewfaq3lp4wqg64lzen40gzpdq.lambda-url.eu-west-1.on.aws';
+const api = 'https://3q9wa2j7s1.execute-api.eu-west-1.amazonaws.com';
+
 const stage = 'default';
 export function prefix(location: { origin: string; pathname: string }) {
   const origin = location.origin || window.location.origin;
@@ -32,7 +31,7 @@ export function boatUrl(ogaNo: number, location: { origin: string; pathname: str
 }
 
 export async function geolocate(place: string) {
-  const r = await fetch(`${api1}/${stage}/public/place?name=${place}`);
+  const r = await fetch(`${api}/${stage}/public/place?name=${place}`);
   if (r.ok) {
     return r.json()
   }
@@ -73,7 +72,7 @@ export async function postGeneralEnquiry(scope: string, subject: string, data: a
     headers.Authorization = `Bearer ${token}`;
   }
   return fetch(
-    `${api1}/${stage}/${scope}/${subject}`,
+    `${api}/${stage}/${scope}/${subject}`,
     {
       method: 'post',
       body: JSON.stringify(data),
@@ -90,7 +89,7 @@ export async function postScopedData(scope: string, subject: string, data: any, 
     headers.Authorization = `Bearer ${accessToken}`;
   }
   return fetch(
-    `${api1}/${stage}/${scope}/${subject}`,
+    `${api}/${stage}/${scope}/${subject}`,
     {
       method: 'POST',
       body: JSON.stringify(data),
@@ -112,7 +111,7 @@ export async function getScopedData(
     headers.Authorization = `Bearer ${accessToken}`;
   }
   const r = await fetch(
-    `${api1}/${stage}/${scope}/${subject}?${new URLSearchParams(filters)}`,
+    `${api}/${stage}/${scope}/${subject}?${new URLSearchParams(filters)}`,
     {
       headers,
     },
@@ -158,21 +157,4 @@ export async function geolocateGeonames(place: string) {
   if (r.ok) {
     return r.json();
   }
-}
-
-export async function createPhotoAlbum(name: string, id: number) {
-  const r = await fetch(`${api2}/`,
-    {
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ name, id: id }),
-      method: 'POST',
-    }
-  );
-  if (r.ok) {
-    return r.json();
-  }
-}
-
-export async function getUploadCredentials() {
-  return (await fetch(`${api3}/`)).json();
 }
