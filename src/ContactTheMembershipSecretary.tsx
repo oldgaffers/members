@@ -40,7 +40,7 @@ export default function ContactTheMembershipSecretary({
                 m: 1, border: 1, paddingBottom: 1, height: '30rem', width: '100%',
               }}
               >
-                <ReactTinyEditor html={data} onChange={setText} />
+                <ReactTinyEditor html={text} onChange={setText} />
               </Box>
             </Box>
           </Stack>
