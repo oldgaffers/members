@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 import { Alert, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Snackbar } from '@mui/material';
-import { postGeneralEnquiry } from './lib/api.mts';
+import { postGeneralEnquiry } from './lib/boatregister-api.mts';
 import { type Member } from './lib/membership.mts';
 
 type UpdateConsentProps = {

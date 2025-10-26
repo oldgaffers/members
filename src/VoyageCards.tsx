@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"; import { Box } from "@mui/material"
 import Grid from '@mui/material/Unstable_Grid2'; // Grid version 2
 import { useAuth0 } from "@auth0/auth0-react";
 import VoyageCard from "./VoyageCard";
-import { getScopedData } from "./lib/api.mts";
+import { getScopedData } from "./lib/boatregister-api.mts";
 
 export function VoyageCards() {
     const { getAccessTokenSilently } = useAuth0();

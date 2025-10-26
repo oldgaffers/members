@@ -6,7 +6,7 @@ import { Marker } from 'react-leaflet/Marker';
 import { Popup } from 'react-leaflet/Popup';
 import { Stack } from '@mui/system';
 import { Typography } from '@mui/material';
-import { getScopedData } from './lib/api.mts';
+import { getScopedData } from './lib/boatregister-api.mts';
 import 'leaflet/dist/leaflet.css';
 
 interface BoatLocation {

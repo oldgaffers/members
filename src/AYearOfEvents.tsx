@@ -1,5 +1,5 @@
 import { useAuth0 } from "@auth0/auth0-react";
-import { getScopedData } from "./lib/api.mts";
+import { getScopedData } from "./lib/boatregister-api.mts";
 import { useEffect, useRef, useState } from "react";
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Stack } from "@mui/material";
 import mermaid from 'mermaid';

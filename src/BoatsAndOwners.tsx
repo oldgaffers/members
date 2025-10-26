@@ -4,7 +4,7 @@ import { DataGrid, GridToolbarContainer, GridToolbarFilterButton, GridCellModes,
 import { Box } from '@mui/material';
 import MailIcon from "@mui/icons-material/Mail";
 import ReadMoreIcon from '@mui/icons-material/ReadMore';
-import { Boat, boatUrl } from './lib/api.mts';
+import { Boat, boatUrl } from './lib/boatregister-api.mts';
 import { ownerValueGetter } from './lib/ownership.mts';
 import { areaAbbreviation } from './lib/membership.mts';
 import { distanceFormatter, distanceInNM } from './lib/utils.mts';

@@ -15,7 +15,7 @@ import { LatLng } from 'leaflet';
 import { ReactReallyTinyEditor as ReactTinyEditor } from '@ogauk/react-tiny-editor';
 // import '@ogauk/react-tiny-editor/lib/index.css';
 import membersBoats from './lib/members_boats.mts';
-import { Boat, getFilterable } from './lib/api.mts';
+import { Boat, getFilterable } from './lib/boatregister-api.mts';
 import LocationPicker from './LocationPicker';
 import { CrewCards } from './CrewCards'
 import { Voyage } from './VoyageCard';
@@ -265,7 +265,7 @@ export default function EventForm({ onCreate }: EventFormProps) {
               <FormHelperText id="component-specifics-text">
                 Describe this sailing activity in more detail, for example
                 your expectations of crew, level of skill, suitability for
-                beginers and/or younger Gaffers, cost sharing arrangements,
+                beginers and/or Younger Members, cost sharing arrangements,
                 and any other need-to-know
                 information
               </FormHelperText>

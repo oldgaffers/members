@@ -3,7 +3,7 @@ import { DataGrid, GridColDef, GridRenderCellParams, GridToolbarContainer, GridT
 // import Contact from './Contact';
 import MailIcon from "@mui/icons-material/Mail";
 import { Member, areaAbbreviation } from './lib/membership.mts';
-import { Boat } from './lib/api.mts';
+import { Boat } from './lib/boatregister-api.mts';
 import { UNKNOWN_DISTANCE, distanceFormatter /*, phoneGetter*/ } from './lib/utils.mts';
 import RoleRestricted from './RoleRestricted';
 import { Box } from '@mui/material';

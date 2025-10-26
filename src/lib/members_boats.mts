@@ -1,4 +1,4 @@
-import { Boat } from "./api.mts";
+import { Boat } from "./boatregister-api.mts";
 import { Member } from "./membership.mts";
 
 export default function membersBoats(boats: Boat[] = [], members: Member[] = []): Boat[] {

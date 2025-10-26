@@ -2,7 +2,7 @@ import { SetStateAction } from 'react';
 import { fromCognitoIdentity } from "@aws-sdk/credential-providers";
 import { GetObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { Upload } from "@aws-sdk/lib-storage";
-import { getUploadCredentials } from './api.mjs';
+import { getUploadCredentials } from './boatregister-api.mjs';
 import { v4 as uuidv4 } from 'uuid';
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 

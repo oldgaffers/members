@@ -8,7 +8,7 @@ import RoleRestricted from './RoleRestricted';
 import MembersAndBoats from './MembersAndBoats';
 import memberPredicate, { Member, useGetMembership } from './lib/membership.mts';
 import membersBoats from './lib/members_boats.mts';
-import { getFilterable } from './lib/api.mts';
+import { getFilterable } from './lib/boatregister-api.mts';
 import LoginButton from './LoginButton';
 import Welcome from './Welcome';
 // import { PDFDownloadLink } from '@react-pdf/renderer';

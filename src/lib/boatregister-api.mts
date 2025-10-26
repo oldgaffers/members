@@ -158,3 +158,7 @@ export async function geolocateGeonames(place: string) {
     return r.json();
   }
 }
+
+export async function getUploadCredentials() {
+  return (await fetch(`${api}/`)).json();
+}

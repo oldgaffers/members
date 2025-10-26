@@ -1,7 +1,7 @@
 import { Typography } from '@mui/material';
 import MembersAndBoats from './MembersAndBoats';
 import { Member } from './lib/membership.mts';
-import { Boat } from './lib/api.mts';
+import { Boat } from './lib/boatregister-api.mts';
 
 type MembersByMembershipProps = {
   members: Member[]

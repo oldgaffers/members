@@ -10,7 +10,7 @@ import DialogContentText from "@mui/material/DialogContentText";
 import SendIcon from "@mui/icons-material/Send";
 import MailIcon from "@mui/icons-material/Mail";
 import { useAuth0 } from "@auth0/auth0-react";
-import { postGeneralEnquiry } from "./lib/api.mts";
+import { postGeneralEnquiry } from "./lib/boatregister-api.mts";
 import { Alert } from "@mui/material";
 
 type ContactProps = {

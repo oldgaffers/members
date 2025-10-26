@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { gql, useQuery } from '@apollo/client';
 import { Autocomplete, CircularProgress, Stack, TextField, Typography } from '@mui/material';
 import BoatsAndOwners from './BoatsAndOwners';
-import { Boat, boatsWithHomeLocation } from './lib/api.mts';
+import { Boat, boatsWithHomeLocation } from './lib/boatregister-api.mts';
 import memberPredicate from './lib/membership.mts';
 import membersBoats from './lib/members_boats.mts';
 

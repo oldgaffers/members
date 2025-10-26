@@ -2,7 +2,7 @@ import { User, useAuth0 } from "@auth0/auth0-react";
 import { Stack, Typography } from '@mui/material';
 // import MyCalendar from './Calendar';
 import EventForm from './EventForm';
-import { postGeneralEnquiry, postScopedData } from './lib/api.mts';
+import { postGeneralEnquiry, postScopedData } from './lib/boatregister-api.mts';
 import AYearOfEvents from "./AYearOfEvents";
 import RoleRestricted from "./RoleRestricted";
 import { Voyage, voyageInvitationBody } from "./VoyageCard";

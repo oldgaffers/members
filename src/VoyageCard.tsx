@@ -4,7 +4,7 @@ import { LatLng } from "leaflet";
 import VoyageMap from "./VoyageMap";
 import { SetStateAction, useState } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
-import { postGeneralEnquiry } from "./lib/api.mts";
+import { postGeneralEnquiry } from "./lib/boatregister-api.mts";
 import SkipperPopover from "./SkipperPopover";
 import Disclaimer from "./Disclaimer";
 

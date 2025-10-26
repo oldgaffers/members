@@ -6,7 +6,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { Alert, Autocomplete, Button, CircularProgress, Snackbar, Stack, Switch, TextField, Typography } from '@mui/material';
-import { Boat, boatUrl, getFilterable, postGeneralEnquiry } from './lib/api.mts';
+import { Boat, boatUrl, getFilterable, postGeneralEnquiry } from './lib/boatregister-api.mts';
 import { ownerList, ownerValueGetter } from './lib/ownership.mts';
 import { useEffect, useState } from 'react';
 import { Member } from './lib/membership.mts';

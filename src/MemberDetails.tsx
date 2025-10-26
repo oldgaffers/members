@@ -5,6 +5,7 @@ import {
 } from '@mui/material';
 import { emailIndication, infoOrEmpty, membershipType } from './lib/utils.mts';
 import { Member } from './lib/membership.mts';
+import { MosqueRounded } from '@mui/icons-material';
 
 const areas = [
   { label: 'Bristol Channel', value: 'BC', funded: true },
@@ -34,6 +35,14 @@ function MembershipStart({ user }: { user: any }) {
   return "We don't have a record of when you joined.";
 }
 
+function unfunded(areas: [{ label: string, funded: boolean }]) {
+  const most = areas.filter((a) => !a.funded);
+  if (most.length === 1) return most[0].label;
+  const last = most.pop();
+  const front =  most.map((a) => a.label).join(', ');
+  return [front, last?.label].join(' and ');
+}
+
 export default function Interests({ user, members, onChange }: InterestsProps) {
 
   const handleCheckChange = (a: unknown, checked: boolean) => {
@@ -43,11 +52,11 @@ export default function Interests({ user, members, onChange }: InterestsProps) {
     } else {
       s.delete(a);
     }
-    onChange({...user, interests: [...s]});
+    onChange({ ...user, interests: [...s] });
   };
 
   const handleChangePrimaryArea = (_a: any, { props }: any) => {
-    onChange({...user, area: props.value});
+    onChange({ ...user, area: props.value });
   };
 
   const thePrimaryMember = () => {
@@ -65,7 +74,7 @@ export default function Interests({ user, members, onChange }: InterestsProps) {
         {' '}
         {user.member}
         .{' '}
-        <MembershipStart user={user}/>
+        <MembershipStart user={user} />
       </Typography>
       <Typography>
         {emailIndication(user)}
@@ -109,52 +118,44 @@ export default function Interests({ user, members, onChange }: InterestsProps) {
       <Typography>{infoOrEmpty('mobile number', user.mobile)}</Typography>
       <Typography>{membershipType(user)}</Typography>
       <FormGroup>
-        <Typography>
-          If you check the Younger Gaffers box,
-          you will be told about activities for younger members in all areas.
-        </Typography>
-        <FormControlLabel
-          control={
-            <Checkbox checked={user.younggaffer} onChange={(_, checked) => onChange({...user, youngaffer: checked})} />
-                    }
-          label="Younger Gaffers"
-        />
-        <Typography variant="body2">
-          Younger Gaffers is a new interest section, not a membership category.
-          Junior Membership is available to people under 25
-          who want to be members in their own right.
-        </Typography>
-        <Typography variant="body2">
-          Younger Gaffers might be junior members, family members or full members.
-        </Typography>
-        <Typography variant="body2">
-          A Facebook group has been set up for Younger Gaffers to join and meet fellow
-          members as well as have honest peer to peer discussions –
-          just search for 'OGA Younger Members'.
-        </Typography>
-        <Typography>
-          If you check the small boats box,
-          you will be told about events for small boats in all areas
-        </Typography>
-        <FormControlLabel
-          control={
-            <Checkbox checked={user.smallboats} onChange={(_, checked) => onChange({...user, smallboats: checked})} />
-                    }
-          label="Small boats"
-        />
-        <FormControlLabel
-          control={
-            <Checkbox checked={user.youngermember} onChange={(_, checked) => onChange({...user, youngermember: checked})} />
-                    }
-          label="Younger Gaffers"
-        />
-      </FormGroup>
-      <FormGroup>
-        <FormLabel sx={{ marginTop: 1 }}>Primary Area</FormLabel>
-        <Typography>
-          Your primary area will receive a portion of your membership fee.
-        </Typography>
-        <Box>
+        <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 3fr', gap: 1 }}>
+          <FormControlLabel
+            control={
+              <Checkbox checked={user.smallboats} onChange={(_, checked) => onChange({ ...user, smallboats: checked })} />
+            }
+            label="Small boats"
+          />
+          <Box>
+            <Typography variant="body2">
+              If you check the small boats box,
+              you will be told about events for small boats in all areas
+            </Typography>
+          </Box>
+          <FormControlLabel
+            control={
+              <Checkbox checked={user.youngermember} onChange={(_, checked) => onChange({ ...user, youngermember: checked })} />
+            }
+            label="Younger Members"
+          />
+          <Box>
+            <Typography variant="body2">
+              Younger Members is an interest section for members between 18 and 35.
+              We also have a Junior Membership category with reduced fees for people under 25
+              who want to be members in their own right.
+            </Typography>
+            <Typography variant="body2">
+              Younger Members might be junior members, family members or full members.
+            </Typography>
+            <Typography variant="body2">
+              A Facebook group has been set up for Younger Members to join and meet fellow
+              members as well as have honest peer to peer discussions –
+              just search on Facebook for 'OGA Younger Members'.
+            </Typography>
+            <Typography variant="body2">
+              The Younger Members area of the website can be found under the Areas menu.
+            </Typography>
+          </Box>
+          <Box>
           <FormControlLabel
             label="Primary Area: "
             labelPlacement="start"
@@ -167,16 +168,22 @@ export default function Interests({ user, members, onChange }: InterestsProps) {
                 {areas
                   .map((area) => (<MenuItem key={area.label} value={area.label}>{area.label}</MenuItem>))}
               </Select>
-)}
+            )}
           />
+          </Box>
+          <Box>
+            <Typography>
+              Your primary area will receive a portion of your membership fee.
+            </Typography>
+            <Typography>
+              If your primary area is not a funded area, then your full fee will be held centrally.
+            </Typography>
+            <Typography>
+              The unfunded areas are currently
+              {unfunded(areas)}
+            </Typography>
+          </Box>
         </Box>
-        <Typography>
-          If your primary area is not a funded area, then your full fee will be held centrally.
-        </Typography>
-        <Typography>
-          The unfunded areas are currently
-          {areas.filter((a) => !a.funded).map((a) => a.label).join(', ')}
-        </Typography>
       </FormGroup>
       <FormGroup>
         <FormLabel sx={{ marginTop: 1 }}>Areas</FormLabel>

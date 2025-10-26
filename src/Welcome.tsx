@@ -3,7 +3,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 import SendIcon from "@mui/icons-material/Send";
 import MailIcon from "@mui/icons-material/Mail";
 import { Alert, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Snackbar, Stack, Typography } from "@mui/material";
-import { postGeneralEnquiry } from "./lib/api.mts";
+import { postGeneralEnquiry } from "./lib/boatregister-api.mts";
 
 type ContactDialogProps = {
     open: boolean

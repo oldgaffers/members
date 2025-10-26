@@ -12,7 +12,7 @@ import BoatsByMembership from './BoatsByMembership';
 import MemberStatus from './MemberStatus';
 import Interests from './MemberDetails';
 import ContactTheMembershipSecretary from './ContactTheMembershipSecretary';
-import { Boat, getBoat, getFilterable, postGeneralEnquiry, postScopedData } from './lib/api.mts';
+import { Boat, getBoat, getFilterable, postGeneralEnquiry, postScopedData } from './lib/boatregister-api.mts';
 import membersBoats from './lib/members_boats.mts';
 import { Member } from './lib/membership.mts';
 import Profile from './Profile';
@@ -51,7 +51,7 @@ function recordToHtml(d: Member | undefined) {
 <br />Primary Area: ${d.area}
 <br />Additional Areas: ${(d?.interests || []).join(', ')}
 <br />Small Boats: ${d.smallboats ? 'Yes' : 'No'}
-<br />Younger Gaffers: ${d.youngermember ? 'Yes' : 'No'}
+<br />Younger Members: ${d.youngermember ? 'Yes' : 'No'}
 <br />
 <br />kind regards ${d.firstname}
 `;
