@@ -11,10 +11,9 @@ export type Boat = {
 }
 
 const boatRegisterHome = 'https://oldgaffers.github.io';
-
 const api = 'https://3q9wa2j7s1.execute-api.eu-west-1.amazonaws.com';
-
 const stage = 'default';
+
 export function prefix(location: { origin: string; pathname: string }) {
   const origin = location.origin || window.location.origin;
   const pathname = location.pathname || window.location.pathname;
@@ -160,5 +159,5 @@ export async function geolocateGeonames(place: string) {
 }
 
 export async function getUploadCredentials() {
-  return (await fetch(`${api}/`)).json();
+  return (await fetch(`${api}/${stage}/upload_credentials`)).json();
 }
