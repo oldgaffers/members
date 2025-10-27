@@ -1,3 +1,6 @@
+import { Alert, Autocomplete, Button, CircularProgress, Snackbar, Stack, Switch, TextField, Typography } from '@mui/material';
+import { Boat, boatUrl, getFilterable, postGeneralEnquiry } from './lib/boatregister-api.mts';
+
 function ChooseABoat({ boats, onClick }: { boats: Boat[], onClick: Function }) {
   const [filterable, setFilterable] = useState<Boat[] | undefined>();
   const [year, setYear] = useState<string>();
