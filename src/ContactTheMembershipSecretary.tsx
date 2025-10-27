@@ -4,7 +4,6 @@ import {
   Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Stack, Typography,
 } from '@mui/material';
 import { ReactReallyTinyEditor as ReactTinyEditor } from '@ogauk/react-tiny-editor';
-import { Member } from './lib/membership.mts';
 
 type ContactTheMembershipSecretaryProps = {
   data: string
