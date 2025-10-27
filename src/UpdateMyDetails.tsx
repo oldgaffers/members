@@ -90,19 +90,14 @@ function toHtml(d: Member | string | undefined) {
 `;
 }
 
-async function fetchBoatData(members: Member[], tok: string) {
-  try {
+async function fetchBoatData(members: Member[], token: string) {
         const r = await getFilterable();
-        const myBoats = membersBoats(r, members);
-        const f: Boat[] = [];
-        const f1 = await Promise.all(myBoats.map((b) => (getBoat(b.oga_no, tok))));
-        f1.forEach((b) => {
-          if (b) {
-            f.push(b);
-          }
-        })
-        const p = f.map((b: Boat) => {
-          const n = myBoats.find((l) => l.oga_no === b.oga_no);
+        const owned = membersBoats(r, members);
+
+        const details = await Promise.all(owned.map((b) => (getBoat(b.oga_no, token))));
+
+        const p = details.filter((b) => b).map((b: Boat) => {
+          const n = owned.find((l) => l.oga_no === b.oga_no);
           // set options explicity so switches are always controlled
           return {
             ...b, owners: n?.owners, hire: b.hire || false, crewing: b.crewing || false,
@@ -110,9 +105,6 @@ async function fetchBoatData(members: Member[], tok: string) {
         });
         p.sort((a, b) => a.oga_no - b.oga_no);
         return p;
-      } catch (e) {
-        console.log(e);
-  }
 }
 
 function MyDetails() {
