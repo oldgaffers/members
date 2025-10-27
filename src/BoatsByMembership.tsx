@@ -5,10 +5,10 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import { Alert, Button, Snackbar, Stack, Switch, TextField, Typography } from '@mui/material';
+import { Alert, Button, Snackbar, Stack, Switch, Typography } from '@mui/material';
 import { Boat, boatUrl } from './lib/boatregister-api.mts';
 import { ownerList, ownerValueGetter } from './lib/ownership.mts';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Member } from './lib/membership.mts';
 import ChooseABoat from './ChooseABoat';
 
