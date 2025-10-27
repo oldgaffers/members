@@ -170,7 +170,7 @@ function MyDetails() {
     throw response;
   };
 
-  const onChange = (row: { oga_no: number; }, field: any, checked: any) => {
+  const handleBoatChange = (row: { oga_no: number; }, field: any, checked: any) => {
     // console.log('onswitch', field, checked, row.oga_no);
     postCrewingData({ oga_no: row.oga_no, [field]: checked })
       .then(() => {
@@ -257,7 +257,7 @@ function MyDetails() {
       <CustomTabPanel value={tab} index={2}>
         <BoatsByMembership
           boats={boats}
-          onChange={onChange}
+          onChange={handleBoatChange}
           member={myRecord}
         /> 
       </CustomTabPanel>
