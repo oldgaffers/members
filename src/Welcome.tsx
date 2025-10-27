@@ -54,7 +54,7 @@ function ContactDialog({
 function Contact() {
     const [open, setOpen] = useState(false);
     const [snackBarOpen, setSnackBarOpen] = useState(false);
-    const { user } = useAuth0();
+    const { user, getAccessTokenSilently } = useAuth0();
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -82,15 +82,17 @@ function Contact() {
             If this was you, you should get an email from an OGA officer.
 ${Object.entries(user).map(([k, v]) => `${k}: ${v}`).join('\n')}`;
         }
-        postGeneralEnquiry('public', 'associate', data)
-            .then((response) => {
-                console.log(response)
-                setSnackBarOpen(true);
-            })
-            .catch((error) => {
-                console.log("post", error);
-                // TODO snackbar from response.data
-            });
+        getAccessTokenSilently().then((token) => {
+            postGeneralEnquiry('public', 'associate', data, token)
+                .then((response) => {
+                    console.log(response)
+                    setSnackBarOpen(true);
+                })
+                .catch((error) => {
+                    console.log("post", error);
+                    // TODO snackbar from response.data
+                });
+        });
     };
 
     return (
@@ -162,7 +164,7 @@ export default function Welcome() {
                 If your login uses a different email, we need to make the association for you.
             </Typography>
             <Typography>
-               If you've tried logging out and back in again and you are still getting this message then click the button below and we'll contact you to sort it out.
+                If you've tried logging out and back in again and you are still getting this message then click the button below and we'll contact you to sort it out.
             </Typography>
             <Contact />
             <Typography>&nbsp;</Typography>
