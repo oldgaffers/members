@@ -90,7 +90,7 @@ function toHtml(d: Member | string | undefined) {
 `;
 }
 
-async function fetchBoatData(members, tok) {
+async function fetchBoatData(members: Member[], tok: string) {
   try {
         const r = await getFilterable();
         const myBoats = membersBoats(r, members);
