@@ -1,9 +1,9 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Member } from './lib/membership.mts';
 import { Autocomplete, Button, CircularProgress, TextField } from '@mui/material';
-import { Boat, boatUrl, getFilterable, postGeneralEnquiry } from './lib/boatregister-api.mts';
+import { Boat, getFilterable, postGeneralEnquiry } from './lib/boatregister-api.mts';
 
-export default function ChooseABoat({ member, boats, onClick }: { boats: Boat[], onClick: Function }) {
+export default function ChooseABoat({ member, boats, onClick }: { member: Member, boats: Boat[], onClick: Function }) {
   const [filterable, setFilterable] = useState<Boat[] | undefined>();
   const [year, setYear] = useState<string>();
   const [inputValue, setInputValue] = useState<string>();
