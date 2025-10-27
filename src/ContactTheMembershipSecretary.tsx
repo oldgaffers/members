@@ -5,42 +5,9 @@ import {
 } from '@mui/material';
 import { ReactReallyTinyEditor as ReactTinyEditor } from '@ogauk/react-tiny-editor';
 import { Member } from './lib/membership.mts';
-// import {type  User } from '@auth0/auth0-react';
-
-function toHtml(d: Member | string | undefined) {
-  if (!d) {
-    return '';
-  }
-  if (typeof d === 'string') {
-    return d;
-  }
-  const a = (d?.interests || []).join(', ');
-  const additionalAreas = (a === '') ? 'None' : a;
-
-  return `Dear OGA Membership Secretary,
-<br />my Membership number is ${d.member} and my GOLD Id is ${d.id}.
-<br />I would like my membership data to match the following:
-<br />salutation: ${d.salutation}
-<br />first name: ${d.firstname}
-<br />last name: ${d.lastname}
-<br />address ${(d?.address || []).join(', ')}
-<br />post code: ${d.postcode}
-<br />country: ${d.country}
-<br />Yearbook permission: ${d.GDPR ? 'Yes' : 'No'}
-<br />Telephone: ${d.telephone}
-<br />Mobile: ${d.mobile}
-<br />Email: ${d.email}
-<br />Primary Area: ${d.area}
-<br />Additional Areas: ${additionalAreas}
-<br />Small Boats: ${d.smallboats ? 'Yes' : 'No'}
-<br />Younger Members: ${d.youngermember ? 'Yes' : 'No'}
-<br />
-<br />kind regards ${d.firstname}
-`;
-}
 
 type ContactTheMembershipSecretaryProps = {
-  data: Member
+  data: string
   onCancel: Function
   onSubmit: Function
   open: boolean
@@ -53,13 +20,9 @@ export default function ContactTheMembershipSecretary({
 
   useEffect(() => {
     if (!open) {
-      setText(toHtml(data));
+      setText(data);
     }
   }, [data, open]);
-
-  const handleSubmit = () => {
-    onSubmit(text);
-  };
 
   return (
     <Dialog
@@ -85,7 +48,7 @@ export default function ContactTheMembershipSecretary({
         </DialogContent>
         <DialogActions>
           <Button onClick={() => onCancel()}>Cancel</Button>
-          <Button onClick={handleSubmit}>Submit</Button>
+          <Button onClick={() => onSubmit(text)}>Submit</Button>
         </DialogActions>
       </ScopedCssBaseline>
     </Dialog>
