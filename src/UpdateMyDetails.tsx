@@ -133,11 +133,10 @@ function MyDetails() {
   }, [token, getAccessTokenSilently]);
 
   useEffect(() => {
-    if (boats.length > 0) {
-      return;
-    }
-    fetchBoatData(members, tok).then((b) => setBoats(b));
-  }, [boats, members]);
+    if (boats.length > 0) return;
+    if (!token) return;
+    fetchBoatData(members, token).then((b) => setBoats(b));
+  }, [boats, members, token]);
 
   if (memberResult.loading) {
     return <CircularProgress />;
