@@ -94,7 +94,8 @@ async function fetchBoatData(members: Member[], token: string) {
         const r = await getFilterable();
         const owned = membersBoats(r, members);
         const details = await Promise.all(owned.map((b) => getBoat(b.oga_no, token)));
-        const got = details.filter((b): is Boat => b);
+        const notNull = (b: Boat | undefined): is Boat => b;
+        const got = details.filter(notNull);
         const p = got.map((b) => {
           const { owners } = owned.find((l) => l.oga_no === b.oga_no) || {};
           // set options explicity so switches are always controlled
