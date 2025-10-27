@@ -16,6 +16,26 @@ function ChooseABoat({ boats, onClick }: { boats: Boat[], onClick: Function }) {
     return <CircularProgress />;
   }
 
+  function handleClaimBoat() {
+        const data: any = {
+            subject: `claim boat ${inputValue}`,
+            cc: [member.email],
+            to: ['boatregister@oga.org.uk'],
+            message: `Member ${member.member}, ${member.firstname} ${member.lastname} has owned boat ${inputValue} since ${year}
+
+            If this was you, you should get an email from the boat register editors.`
+        }
+        postGeneralEnquiry('public', 'associate', data)
+            .then((response) => {
+                console.log(response)
+                onClick();
+            })
+            .catch((error) => {
+                console.log("post", error);
+                // TODO snackbar from response.data
+            });
+    };
+
   const ex = boats.map((b) => b.oga_no);
 
   const names = filterable.filter((b) => !ex.includes(b.oga_no)).map((b) => `${b.name} (${b.oga_no})`);
@@ -29,6 +49,6 @@ function ChooseABoat({ boats, onClick }: { boats: Boat[], onClick: Function }) {
       }}      renderInput={(params) => <TextField  name="type" {...params} label="Boat" />}
     />
     <TextField onChange={(e) => setYear(e.target.value)} label='Year you acquired her'></TextField>
-    <Button sx={{ width: 150  }} onClick={() => onClick(inputValue, year)}>Claim this boat</Button>
+    <Button sx={{ width: 150  }} onClick={handleClaimBoat}>Claim this boat</Button>
   </>;
 }
