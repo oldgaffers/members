@@ -3,7 +3,6 @@ import { useAuth0 } from '@auth0/auth0-react';
 import { Autocomplete, Button, CircularProgress, TextField } from '@mui/material';
 import { Boat, getFilterable, postGeneralEnquiry } from './lib/boatregister-api.mts';
 import { Member } from './lib/membership.mts';
-import { G } from '@react-pdf/renderer';
 
 export default function ChooseABoat({ member, boats, onClick }: { member: Member, boats: Boat[], onClick: Function }) {
   const [filterable, setFilterable] = useState<Boat[] | undefined>();
