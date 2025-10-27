@@ -6,7 +6,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { Alert, Autocomplete, Button, CircularProgress, Snackbar, Stack, Switch, TextField, Typography } from '@mui/material';
-import { Boat, boatUrl, getFilterable, postGeneralEnquiry } from './lib/boatregister-api.mts';
+import { Boat, boatUrl, postGeneralEnquiry } from './lib/boatregister-api.mts';
 import { ownerList, ownerValueGetter } from './lib/ownership.mts';
 import { useEffect, useState } from 'react';
 import { Member } from './lib/membership.mts';
@@ -39,34 +39,13 @@ function BoatsByMembershipFooter({ boats, member }: { boats: Boat[], member: Mem
         setSnackBarOpen(false);
     }
 
-    function handleClaimBoat(selection: string, year: string) {
-        const data: any = {
-            subject: `claim boat ${selection}`,
-            cc: [member.email],
-            to: ['boatregister@oga.org.uk'],
-            message: `Member ${member.member}, ${member.firstname} ${member.lastname} has owned boat ${selection} since ${year}
-
-            If this was you, you should get an email from the boat register editors.`
-        }
-        postGeneralEnquiry('public', 'associate', data)
-            .then((response) => {
-                console.log(response)
-                setSnackBarOpen(true);
-            })
-            .catch((error) => {
-                console.log("post", error);
-                // TODO snackbar from response.data
-            });
-    };
-
-
     return <Stack sx={{ marginTop: 1 }} spacing={1}>
       <Typography variant='h6'>If you have {(boats.length === 0)? 'a boat ' : 'other boats '}
       you can get them added.
       </Typography>
       <Typography variant='h6'>
       If your boat is already on the register you can claim ownership here.</Typography>
-      <ChooseABoat boats={boats} onClick={handleClaimBoat} />
+      <ChooseABoat boats={boats} onClick={() => setSnackBarOpen(true)} />
       <Typography variant='h6'>If your boat isn't on the list, then you add it on the <a href='/browse_the_register/index.html'>boat register</a>.</Typography>
       <Snackbar
                 anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
