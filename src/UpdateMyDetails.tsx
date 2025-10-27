@@ -58,33 +58,42 @@ function CustomTabPanel(props: PropsWithChildren<CustomTabPanelProps>) {
   );
 }
 
-function MyDetails() {
-  const [openContact, setOpenContact] = useState(false);
-  const [snackBarOpen, setSnackBarOpen] = useState(false);
-  const [members, setMembers] = useState<Member[]>([]);
-  const [boats, setBoats] = useState<Boat[]>([]);
-  const [myRecord, setMyRecord] = useState<Member | undefined>();
-  const { user, getAccessTokenSilently } = useAuth0();
-  const id = user?.['https://oga.org.uk/id'];
-  const memberNo = user?.['https://oga.org.uk/member'];
-  const memberResult = useQuery(MEMBER_QUERY, { variables: { members: [memberNo] } });
-  const [tab, setTab] = useState(0);
-  const [token, setToken] = useState<string|undefined>();
+function toHtml(d: Member | string | undefined) {
+  if (!d) {
+    return '';
+  }
+  if (typeof d === 'string') {
+    return d;
+  }
+  const a = (d?.interests || []).join(', ');
+  const additionalAreas = (a === '') ? 'None' : a;
 
-  const handleTabChange = (_event: any, newValue: SetStateAction<number>) => {
-    setTab(newValue);
-  };
+  return `Dear OGA Membership Secretary,
+<br />my Membership number is ${d.member} and my GOLD Id is ${d.id}.
+<br />I would like my membership data to match the following:
+<br />salutation: ${d.salutation}
+<br />first name: ${d.firstname}
+<br />last name: ${d.lastname}
+<br />address ${(d?.address || []).join(', ')}
+<br />post code: ${d.postcode}
+<br />country: ${d.country}
+<br />Yearbook permission: ${d.GDPR ? 'Yes' : 'No'}
+<br />Telephone: ${d.telephone}
+<br />Mobile: ${d.mobile}
+<br />Email: ${d.email}
+<br />Primary Area: ${d.area}
+<br />Additional Areas: ${additionalAreas}
+<br />Small Boats: ${d.smallboats ? 'Yes' : 'No'}
+<br />Younger Members: ${d.youngermember ? 'Yes' : 'No'}
+<br />
+<br />kind regards ${d.firstname}
+`;
+}
 
-  useEffect(() => {
-    async function fetchBoatData() {
-      if (boats.length > 0) {
-        return;
-      }
-      try {
+async function fetchBoatData(members, tok) {
+  try {
         const r = await getFilterable();
         const myBoats = membersBoats(r, members);
-        const tok = await getAccessTokenSilently();
-        setToken(tok);
         const f: Boat[] = [];
         const f1 = await Promise.all(myBoats.map((b) => (getBoat(b.oga_no, tok))));
         f1.forEach((b) => {
@@ -100,12 +109,34 @@ function MyDetails() {
           } as Boat;
         });
         p.sort((a, b) => a.oga_no - b.oga_no);
-        setBoats(p);
+        return p;
       } catch (e) {
         console.log(e);
-      }
+  }
+}
+
+function MyDetails() {
+  const [openContact, setOpenContact] = useState(false);
+  const [snackBarOpen, setSnackBarOpen] = useState(false);
+  const [members, setMembers] = useState<Member[]>([]);
+  const [boats, setBoats] = useState<Boat[]>([]);
+  const [myRecord, setMyRecord] = useState<Member | undefined>();
+  const { user, getAccessTokenSilently } = useAuth0();
+  const id = user?.['https://oga.org.uk/id'];
+  const memberNo = user?.['https://oga.org.uk/member'];
+  const memberResult = useQuery(MEMBER_QUERY, { variables: { members: [memberNo] } });
+  const [tab, setTab] = useState(0);
+  const [token, setToken] = useState<string|undefined>();
+
+  useEffect(() => {
+    if (!token) getAccessTokenSilently().then((tok) => setToken(tok));
+  }, [token, getAccessTokenSilently]);
+
+  useEffect(() => {
+    if (boats.length > 0) {
+      return;
     }
-    fetchBoatData();
+    fetchBoatData(members, tok).then((b) => setBoats(b));
   }, [boats, members]);
 
   if (memberResult.loading) {
@@ -124,9 +155,11 @@ function MyDetails() {
     }
   }
 
+  const handleTabChange = (_event: any, newValue: SetStateAction<number>) => {
+    setTab(newValue);
+  };
+
   const handleSubmitContact = (text: string) => {
-    // console.log('handleSubmitContact', user);
-    // console.log('handleSubmitContact', myRecord);
     const { firstname, lastname } = myRecord as Member; 
     setOpenContact(false);
     postGeneralEnquiry('member', 'profile', { firstname, lastname, id, text }, token)
@@ -247,7 +280,7 @@ function MyDetails() {
         <Profile profileName='crewing' />
       </CustomTabPanel>
       <ContactTheMembershipSecretary
-        data={myRecord}
+        data={toHtml(myRecord)}
         onSubmit={handleSubmitContact}
         onCancel={() => setOpenContact(false)}
         open={openContact}
