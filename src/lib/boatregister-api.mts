@@ -14,6 +14,18 @@ const boatRegisterHome = 'https://oldgaffers.github.io';
 const api = 'https://3q9wa2j7s1.execute-api.eu-west-1.amazonaws.com';
 const stage = 'default';
 
+export async function getIsMember(email: string, accessToken: string) {
+  return (await fetch(
+    `https://5swyv5ett6lo7zhnimjxb4bzru0ssrdt.lambda-url.eu-west-1.on.aws/?email=${email}`,
+    {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      }
+    }
+  )).json();
+}
+
 export function prefix(location: { origin: string; pathname: string }) {
   const origin = location.origin || window.location.origin;
   const pathname = location.pathname || window.location.pathname;
