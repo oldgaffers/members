@@ -49,7 +49,7 @@ export default function CheckMembership() {
                 <li>You haven't yet joined. <a href="/about/membership/membership.html">Join Here</a></li>
                 <li>Our records are in error</li>
             </ul>
-            <Typography variant="subtitle2">* That's fine, but it involves an extra step for us.</Typography>
+            <Typography variant="body2">* That's fine, but it involves an extra step for us.</Typography>
             <Typography>Click the button below and we'll contact you to sort it out.</Typography>
             <Contact />
         </Stack >
