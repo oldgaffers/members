@@ -1,22 +1,21 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 import { Box, CircularProgress, Stack, Typography } from "@mui/material";
 import { getIsMember } from './lib/boatregister-api.mts';
 import Contact from './Associate';
-import LoginButton from "./LoginButton";
 
 export default function CheckMembership() {
     const { user, getAccessTokenSilently } = useAuth0();
     const [found, setFound] = useState<any>();
     useEffect(() => {
-        if (!found) {
+        if (user?.email && !found) {
             getAccessTokenSilently().then((accessToken) => {
-                getIsMember(user.email, accessToken).then((data) => {
+                getIsMember(user.email||'', accessToken).then((data) => {
                     setFound(data);
                 });
             });
         }
-    }, [user.email, found]);
+    }, [user, found]);
 
     if (!found) {
         return (
