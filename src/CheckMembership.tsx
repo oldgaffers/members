@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
-import { Box, CircularProgress, List, ListItem, Stack, Typography } from "@mui/material";
+import { Box, CircularProgress, Stack, Typography } from "@mui/material";
 import { getIsMember } from './lib/boatregister-api.mts';
 import Contact from './Associate';
 
@@ -44,11 +44,11 @@ export default function CheckMembership() {
                 Sorry, we have checked and we couldn't find a membership record for you.
             </Typography>
             <Typography>Perhaps</Typography>
-            <List>
-                <ListItem>different email addresses when you joined and when you created a login</ListItem>
-                <ListItem>You haven't yet joined, <a href="/about/membership/membership.html">Join Here</a></ListItem>
-                <ListItem>Our records are in error</ListItem>
-            </List>
+            <ul>
+                <li>different email addresses when you joined and when you created a login</li>
+                <li>You haven't yet joined. <a href="/about/membership/membership.html">Join Here</a></li>
+                <li>Our records are in error</li>
+            </ul>
             <Typography>Click the button below and we'll contact you to sort it out.</Typography>
             <Contact />
         </Stack >
