@@ -45,10 +45,11 @@ export default function CheckMembership() {
             </Typography>
             <Typography>Perhaps</Typography>
             <ul>
-                <li>different email addresses when you joined and when you created a login</li>
+                <li>You used different email addresses when you joined and when you created a login*</li>
                 <li>You haven't yet joined. <a href="/about/membership/membership.html">Join Here</a></li>
                 <li>Our records are in error</li>
             </ul>
+            <Typography variant="subtitle2">* That's fine, but it involves an extra step for us.</Typography>
             <Typography>Click the button below and we'll contact you to sort it out.</Typography>
             <Contact />
         </Stack >
