@@ -5,6 +5,7 @@ import {
 } from '@mui/material';
 import { emailIndication, infoOrEmpty, membershipType } from './lib/utils.mts';
 import { Member } from './lib/membership.mts';
+import { User } from '@auth0/auth0-react';
 
 const areas = [
   { label: 'Bristol Channel', value: 'BC', funded: true },
@@ -38,8 +39,35 @@ function unfunded(areas: { label: string; value: string; funded: boolean; }[]) {
   const most = areas.filter((a) => !a.funded);
   if (most.length === 1) return most[0].label;
   const last = most.pop();
-  const front =  most.map((a) => a.label).join(', ');
+  const front = most.map((a) => a.label).join(', ');
   return [front, last?.label].join(' and ');
+}
+
+function GaffersLog({ member, members }: { member: Member; members: Member[] }) {
+
+  const thePrimaryMember = () => {
+    const p = members.find((m) => m.primary);
+    if (p) {
+      return `${p.firstname} ${p.lastname}`;
+    }
+    return 'none of the members in this membership seem to be the primary member';
+  }
+
+  if (member.status === 'Not Renewing') {
+    return <Typography>
+      As you are not renewing your membership, you will not receive further issues of Gaffers Log.
+    </Typography>
+  }
+  if (member.primary) {
+    return <Typography>
+      You are the 'primary' member in this membership.
+      Gaffers Log will be sent to you.
+    </Typography>
+  }
+  return <Typography>
+    You are not the 'primary' member in this membership.
+    Gaffers Log will be sent to {thePrimaryMember()}
+  </Typography>
 }
 
 export default function Interests({ user, members, onChange }: InterestsProps) {
@@ -58,14 +86,6 @@ export default function Interests({ user, members, onChange }: InterestsProps) {
     onChange({ ...user, area: props.value });
   };
 
-  const thePrimaryMember = () => {
-    const p = members.find((m) => m.primary);
-    if (p) {
-      return `${p.firstname} ${p.lastname}`;
-    }
-    return 'none of the members in this membership seem to be the primary member';
-  }
-
   return (
     <Stack spacing={1}>
       <Typography>
@@ -78,14 +98,7 @@ export default function Interests({ user, members, onChange }: InterestsProps) {
       <Typography>
         {emailIndication(user)}
       </Typography>
-      <Typography>
-        {(user.primary)
-          ? `You are the 'primary' member in this membership.
-                          Gaffers Log will be sent to you.`
-          : `You are not the 'primary' member in this membership.
-                          Gaffers Log will be sent to ${thePrimaryMember()}`}
-
-      </Typography>
+      <GaffersLog member={user} members={members} />
       <Typography>
         Your postal address is recorded as
       </Typography>
@@ -155,20 +168,20 @@ export default function Interests({ user, members, onChange }: InterestsProps) {
             </Typography>
           </Box>
           <Box>
-          <FormControlLabel
-            label="Primary Area: "
-            labelPlacement="start"
-            control={(
-              <Select
-                value={user.area}
-                label="Primary Area"
-                onChange={handleChangePrimaryArea}
-              >
-                {areas
-                  .map((area) => (<MenuItem key={area.label} value={area.label}>{area.label}</MenuItem>))}
-              </Select>
-            )}
-          />
+            <FormControlLabel
+              label="Primary Area: "
+              labelPlacement="start"
+              control={(
+                <Select
+                  value={user.area}
+                  label="Primary Area"
+                  onChange={handleChangePrimaryArea}
+                >
+                  {areas
+                    .map((area) => (<MenuItem key={area.label} value={area.label}>{area.label}</MenuItem>))}
+                </Select>
+              )}
+            />
           </Box>
           <Box>
             <Typography>

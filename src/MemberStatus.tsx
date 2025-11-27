@@ -9,7 +9,7 @@ type MemberStatusProps = {
 }
 
 function printedYearbookStatus({ GDPR, status }: Member) {
-    if (status === 'Not renewing') {
+    if (status === 'Not Renewing') {
         return 'Not in Yearbook - will be leaving the OGA';
     }
     if (status === 'Left OGA') {
@@ -45,7 +45,7 @@ export default function MemberStatus({ firstname, memberNo, members }: MemberSta
                 If you are acting on their behalf, please contact the membership secretary.
             </Typography>
         }
-        if (members[0].status === 'Not renewing') {
+        if (members[0].status === 'Not Renewing') {
             return <Typography>
                 Our records indicate you are not intending to renew. We are sorry to see you go!
             </Typography>
