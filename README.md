@@ -1,4 +1,4 @@
-# OGS Members Services using React + TypeScript + Vite
+# OGA Members Services using React + TypeScript + Vite
 
 ## Purpose
 React Single Page Application to help OGA members.
