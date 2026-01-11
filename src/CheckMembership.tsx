@@ -47,8 +47,11 @@ export default function CheckMembership() {
             <ul>
                 <li>You used different email addresses when you joined and when you created a login*</li>
                 <li>You haven't yet joined. <a href="/about/membership/membership.html">Join Here</a></li>
+                <li>You have applied to join but haven't yet had an email giving you your membership number.</li>
+                <li>You have received your membership number today.**</li>
                 <li>Our records are in error</li>
             </ul>
+            <Typography variant="body2">** Please try again tomorrow.</Typography>
             <Typography variant="body2">* That's fine, but it involves an extra step for us.</Typography>
             <Typography>Click the button below and we'll contact you to sort it out.</Typography>
             <Contact />
