@@ -1,13 +1,15 @@
 import { useEffect, useState } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
-import { Autocomplete, Button, CircularProgress, TextField } from '@mui/material';
+import { Autocomplete, Button, CircularProgress, Stack, TextField } from '@mui/material';
 import { Boat, getFilterable, postGeneralEnquiry } from './lib/boatregister-api.mts';
 import { Member } from './lib/membership.mts';
+import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
 export default function ChooseABoat({ member, boats, onClick }: { member: Member, boats: Boat[], onClick: Function }) {
   const [filterable, setFilterable] = useState<Boat[] | undefined>();
-  const [year, setYear] = useState<string>();
-  const [inputValue, setInputValue] = useState<string>();
+  const [year, setYear] = useState<Date | null>(null);
+  const [inputValue, setInputValue] = useState<string | null>(null);
   const { isAuthenticated, getAccessTokenSilently } = useAuth0();
 
   useEffect(() => {
@@ -32,7 +34,7 @@ export default function ChooseABoat({ member, boats, onClick }: { member: Member
       subject: `claim boat ${inputValue}`,
       cc: [member.email],
       to: ['boatregister@oga.org.uk'],
-      message: `Member ${member.member}, ${member.firstname} ${member.lastname} has owned boat ${inputValue} since ${year}
+      message: `Member ${member.member}, ${member.firstname} ${member.lastname} has owned boat ${inputValue} since ${year?.getFullYear()}.
 
             If this was you, you should get an email from the boat register editors.`
     }
@@ -54,7 +56,8 @@ export default function ChooseABoat({ member, boats, onClick }: { member: Member
 
   const names = filterable.filter((b) => !ex.includes(b.oga_no)).map((b) => `${b.name} (${b.oga_no})`);
 
-  return <>
+  return <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="en-gb">
+    <Stack spacing={2} sx={{ width: 300, marginBottom: 2 }}>
     <Autocomplete
       options={names}
       inputValue={inputValue ?? ''}
@@ -62,7 +65,16 @@ export default function ChooseABoat({ member, boats, onClick }: { member: Member
         setInputValue(newInputValue);
       }} renderInput={(params) => <TextField name="type" {...params} label="Boat" />}
     />
-    <TextField onChange={(e) => setYear(e.target.value)} label='Year you acquired her'></TextField>
-    <Button sx={{ width: 150 }} onClick={handleClaimBoat}>Claim this boat</Button>
-  </>;
+    <DatePicker
+      views={['year']} label="Year you acquired her" value={year} 
+      onChange={(newValue) => setYear(newValue)}
+    />
+    <Button
+      disabled={!inputValue || !year}
+      variant='contained'
+      onClick={handleClaimBoat}>
+        Claim this boat
+    </Button>
+    </Stack>
+  </LocalizationProvider>;
 }
