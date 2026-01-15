@@ -1,4 +1,4 @@
-import { useState, useEffect, Key } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth0 } from "@auth0/auth0-react";
 import RoleRestricted from "./RoleRestricted";
 
@@ -16,7 +16,7 @@ export async function getApiWeb(doc: string, accessToken: string) {
   )).text();
 }
 
-export default function Members({ name }: { name: string }) {
+export default function Members({ name }: { name?: string }) {
   const [text, setText] = useState<string | undefined>();
   const { getAccessTokenSilently } = useAuth0();
   const [token, setToken] = useState<string | undefined>();
@@ -33,7 +33,7 @@ export default function Members({ name }: { name: string }) {
 
   useEffect(() => {
     const getData = async () => {
-      const p = await getApiWeb(name, token);
+      const p = await getApiWeb(name ?? '', token);
       setText(p);
     }
     if (!text) {
@@ -44,7 +44,7 @@ export default function Members({ name }: { name: string }) {
   return (
     <>
       <RoleRestricted role="member">
-        <div dangerouslySetInnerHTML={{ __html: text }}></div>
+        <div dangerouslySetInnerHTML={{ __html: text ?? '' }}></div>
       </RoleRestricted>
     </>
   );
