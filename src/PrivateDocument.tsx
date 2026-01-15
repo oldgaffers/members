@@ -33,7 +33,7 @@ export default function Members({ name }: { name?: string }) {
 
   useEffect(() => {
     const getData = async () => {
-      if (name) {
+      if (name && token) {
         setText(await getApiWeb(name, token))
       }
     }
