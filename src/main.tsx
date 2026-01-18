@@ -48,7 +48,8 @@ if (map) {
 }
 
 if (doc) {
-  ReactDOM.createRoot(doc).render(<App><PrivateDocument  /></App>);
+  const attr = doc.dataset;
+  ReactDOM.createRoot(doc).render(<App><PrivateDocument  name={attr['name']}/></App>);
 }
 
 // convert paragraph elements with <<xxxx>> to divs so that we can nest p and divs inside them
