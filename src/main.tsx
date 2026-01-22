@@ -48,7 +48,7 @@ if (map) {
 }
 
 if (doc) {
-  ReactDOM.createRoot(doc).render(<App><PrivateDocument  /></App>);
+  ReactDOM.createRoot(doc).render(<App><PrivateDocument name={doc.dataset['oga-arg0']} /></App>);
 }
 
 // convert paragraph elements with <<xxxx>> to divs so that we can nest p and divs inside them
