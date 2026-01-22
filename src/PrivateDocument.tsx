@@ -3,6 +3,13 @@ import { useAuth0 } from "@auth0/auth0-react";
 import RoleRestricted from "./RoleRestricted";
 import LoginButton from './LoginButton';
 
+import {h} from 'https://esm.sh/hastscript@9'
+import {toJsxRuntime} from 'https://esm.sh/hast-util-to-jsx-runtime@2'
+import {Fragment, jsx, jsxs} from 'https://esm.sh/preact@10/jsx-runtime'
+import {render} from 'https://esm.sh/preact@10'
+
+
+
 const apiWeb = 'https://5li1jytxma.execute-api.eu-west-1.amazonaws.com/default/doc';
 
 export async function getApiWeb(doc: string, accessToken: string) {
@@ -15,6 +22,18 @@ export async function getApiWeb(doc: string, accessToken: string) {
       }
     }
   )).text();
+}
+  
+function RenderToElement() {
+return(
+  toJsxRuntime(h('h1', 'hi!'), {
+    Fragment,
+    jsx,
+    jsxs,
+    elementAttributeNameCase: 'html'
+  }),
+  document.getElementById('root')
+)
 }
 
 export default function PrivateDocument({ name }: { name?: string }) {
@@ -49,6 +68,7 @@ export default function PrivateDocument({ name }: { name?: string }) {
         <div dangerouslySetInnerHTML={{ __html: text ?? '' }}></div>
       </RoleRestricted>
       <LoginButton />
+      <RenderToElement />
     </>
   );
 }
