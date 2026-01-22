@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth0 } from "@auth0/auth0-react";
 import RoleRestricted from "./RoleRestricted";
+import LoginButton from './LoginButton';
 
 const apiWeb = 'https://5li1jytxma.execute-api.eu-west-1.amazonaws.com/default/doc';
 
@@ -16,7 +17,7 @@ export async function getApiWeb(doc: string, accessToken: string) {
   )).text();
 }
 
-export default function Members({ name }: { name?: string }) {
+export default function PrivateDocument({ name }: { name?: string }) {
   const [text, setText] = useState<string | undefined>();
   const { getAccessTokenSilently } = useAuth0();
   const [token, setToken] = useState<string | undefined>();
@@ -40,13 +41,14 @@ export default function Members({ name }: { name?: string }) {
     if (!text) {
       getData();
     }
-  }, [text]);
+  }, [text, name, token]);
 
   return (
     <>
       <RoleRestricted role="member">
         <div dangerouslySetInnerHTML={{ __html: text ?? '' }}></div>
       </RoleRestricted>
+      <LoginButton />
     </>
   );
 }
