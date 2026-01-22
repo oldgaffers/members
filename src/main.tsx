@@ -12,14 +12,14 @@ import PrivateDocument from './PrivateDocument.tsx';
 declare global {
   interface Window { markers: { latitude: number; longitude: number; icon: string; name: string; }[]; }
 }
-
+const component = document.dataset['oga-component'];
 const details = document.getElementById('update_my_details');
 const members = document.getElementById('members');
 const boats = document.getElementById('members_boats');
 const crewfinder = document.getElementById('crewfinder');
 const cruisefinder = document.getElementById('cruisefinder');
 const map = document.getElementById('map');
-const doc = document.getElementById('doc');
+const doc = document.getElementById('doc') || component;
 
 if (details) {
   ReactDOM.createRoot(details).render(<App><UpdateMyDetails /></App>);
