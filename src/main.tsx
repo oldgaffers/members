@@ -13,45 +13,48 @@ declare global {
   interface Window { markers: { latitude: number; longitude: number; icon: string; name: string; }[]; }
 }
 
-const details = document.getElementById('update_my_details');
-const members = document.getElementById('members');
-const boats = document.getElementById('members_boats');
-const crewfinder = document.getElementById('crewfinder');
-const cruisefinder = document.getElementById('cruisefinder');
-const map = document.getElementById('map');
-const doc = document.getElementById('doc');
+function handleDivs() {
+  const body = document.getElementsByTagName('body').item(0);
+  if (!body) throw new Error('No body element found');
+  const alldivs = body.getElementsByTagName('div');
+  for (let i = 0; i < alldivs.length; i++) {
+    const div = alldivs.item(i) as HTMLDivElement | null;
+    if (!div) continue;
+    const id = div.id;
+    const comp = div.dataset['ogaComponent'] ?? id;
+    if (comp === 'update_my_details') {
+      ReactDOM.createRoot(div).render(<App><UpdateMyDetails /></App>);
+    }
 
-if (details) {
-  ReactDOM.createRoot(details).render(<App><UpdateMyDetails /></App>);
+    if (comp === 'members') {
+      ReactDOM.createRoot(div).render(<App><Members /></App>);
+    }
+
+    if (comp === 'members_boats') {
+      ReactDOM.createRoot(div).render(<App><Boats /></App>);
+    }
+
+    if (comp === 'crewfinder') {
+      ReactDOM.createRoot(div).render(<App><FindCrew /></App>);
+    }
+
+    if (comp === 'cruisefinder') {
+      ReactDOM.createRoot(div).render(<App><FindACruise /></App>);
+    }
+
+    if (comp === 'map') {
+      const attr = div.dataset;
+      const markers = window.markers ?? [];
+      ReactDOM.createRoot(div).render(<App><CustomMap height={800} markers={markers} scope={attr['scope'] ?? 'public'} /></App>);
+    }
+
+    if (comp === 'doc') {
+      const name = div.dataset['ogaArg0'];
+      ReactDOM.createRoot(div).render(<App><PrivateDocument name={name} /></App>);
+    }
+  }
+
 }
-
-if (members) {
-  ReactDOM.createRoot(members).render(<App><Members /></App>);
-}
-
-if (boats) {
-  ReactDOM.createRoot(boats).render(<App><Boats /></App>);
-}
-
-if (crewfinder) {
-  ReactDOM.createRoot(crewfinder).render(<App><FindCrew /></App>);
-}
-
-if (cruisefinder) {
-  ReactDOM.createRoot(cruisefinder).render(<App><FindACruise /></App>);
-}
-
-if (map) {
-  const attr = map.dataset;
-  const markers = window.markers ?? [];
-  ReactDOM.createRoot(map).render(<App><CustomMap height={800} markers={markers} scope={attr['scope'] ?? 'public'} /></App>);
-}
-
-if (doc) {
-  const attr = doc.dataset;
-  ReactDOM.createRoot(doc).render(<App><PrivateDocument  name={attr['oga-arg0']}/></App>);
-}
-
 // convert paragraph elements with <<xxxx>> to divs so that we can nest p and divs inside them
 // we need this because most editors don't have html access.
 function handleParagraphs() {
@@ -65,11 +68,11 @@ function handleParagraphs() {
       const [, component, arglist] = q;
       const args = arglist.split(':');
       const al = args.map((a, index) => `data-oga-arg${index}="${a.trim()}"`).join(' ');
-      p.outerHTML = `<div id="${component}" ${al}></div>`;
+      p.outerHTML = `<div data-oga-component="${component}" ${al}></div>`;
     }
   }
 }
 
 handleParagraphs();
-
+handleDivs();
 // registerServiceWorker();

@@ -1,14 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, ReactNode } from 'react';
 import { useAuth0 } from "@auth0/auth0-react";
 import RoleRestricted from "./RoleRestricted";
 import LoginButton from './LoginButton';
 
-import {h} from 'https://esm.sh/hastscript@9'
-import {toJsxRuntime} from 'https://esm.sh/hast-util-to-jsx-runtime@2'
-import {Fragment, jsx, jsxs} from 'https://esm.sh/preact@10/jsx-runtime'
-import {render} from 'https://esm.sh/preact@10'
-
-
+import { toJsxRuntime } from 'hast-util-to-jsx-runtime';
+import { Fragment, jsx, jsxs } from 'preact/jsx-runtime';
+import { toHast } from '@googleworkspace/google-docs-hast';
 
 const apiWeb = 'https://5li1jytxma.execute-api.eu-west-1.amazonaws.com/default/doc';
 
@@ -18,26 +15,21 @@ export async function getApiWeb(doc: string, accessToken: string) {
     {
       method: 'GET',
       headers: {
+        Accept: 'application/javascript',
         Authorization: `Bearer ${accessToken}`,
       }
     }
-  )).text();
+  )).json();
 }
-  
-function RenderToElement() {
-return(
-  toJsxRuntime(h('h1', 'hi!'), {
-    Fragment,
-    jsx,
-    jsxs,
-    elementAttributeNameCase: 'html'
-  }),
-  document.getElementById('root')
-)
+
+function RenderToElement({ doc }: { doc?: object }): ReactNode{
+  if (!doc) return null;
+  const tree = toHast(doc);
+  return toJsxRuntime(tree, { Fragment, jsx, jsxs });
 }
 
 export default function PrivateDocument({ name }: { name?: string }) {
-  const [text, setText] = useState<string | undefined>();
+  const [doc, setDoc] = useState<object | undefined>();
   const { getAccessTokenSilently } = useAuth0();
   const [token, setToken] = useState<string | undefined>();
 
@@ -54,21 +46,20 @@ export default function PrivateDocument({ name }: { name?: string }) {
   useEffect(() => {
     const getData = async () => {
       if (name && token) {
-        setText(await getApiWeb(name, token))
+        setDoc(await getApiWeb(name, token))
       }
     }
-    if (!text) {
+    if (!doc) {
       getData();
     }
-  }, [text, name, token]);
+  }, [doc, name, token]);
 
   return (
     <>
       <RoleRestricted role="member">
-        <div dangerouslySetInnerHTML={{ __html: text ?? '' }}></div>
+      <RenderToElement doc={doc} />
       </RoleRestricted>
       <LoginButton />
-      <RenderToElement />
     </>
   );
 }
