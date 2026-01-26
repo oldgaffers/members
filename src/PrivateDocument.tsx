@@ -4,7 +4,7 @@ import RoleRestricted from "./RoleRestricted";
 import LoginButton from './LoginButton';
 
 import { toJsxRuntime } from 'hast-util-to-jsx-runtime';
-import { Fragment, jsx, jsxs } from 'preact/jsx-runtime';
+import { Fragment, jsx, jsxs } from 'react/jsx-runtime';
 import { toHast } from '@googleworkspace/google-docs-hast';
 
 const apiWeb = 'https://5li1jytxma.execute-api.eu-west-1.amazonaws.com/default/doc';
