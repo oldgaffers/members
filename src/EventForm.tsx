@@ -6,7 +6,7 @@ import {
   Input, InputLabel,
   TextField, Typography,
 } from '@mui/material';
-import Grid from '@mui/material/Unstable_Grid2/Grid2';
+import Grid from '@mui/material/Grid';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
@@ -21,6 +21,7 @@ import { CrewCards } from './CrewCards'
 import { Voyage } from './VoyageCard';
 import { Member } from './lib/membership.mts';
 import Disclaimer from './Disclaimer';
+import { Dayjs } from 'dayjs';
 
 type EventFormProps = {
   onCreate: Function
@@ -57,13 +58,19 @@ export default function EventForm({ onCreate }: EventFormProps) {
   const member = Object.fromEntries(q);
   const { loading, data } = useGetMyBoats([member]);
 
-  function commitEnd(value: Date) {
+  function commitEnd(value: Dayjs|null) {
+    if (!value) {
+      return;
+    }
     const d = value.toISOString().slice(0, 10);
     // console.log('end', d);
     setEnd(d);
   }
 
-  function commitStart(value: Date) {
+  function commitStart(value: Dayjs|null) {
+    if (!value) {
+      return;
+    }
     const d = value.toISOString().slice(0, 10);
     // console.log('start', d);
     setStart(d);
@@ -147,7 +154,7 @@ export default function EventForm({ onCreate }: EventFormProps) {
           <Grid>
             <Typography></Typography>
           </Grid>
-          <Grid xs="auto">
+          <Grid size="auto">
             <FormControl variant="standard">
               <InputLabel htmlFor="component-title">Title</InputLabel>
               <Input name="eventTitle" id="component-title" defaultValue="My Summer Cruise" />
@@ -156,7 +163,7 @@ export default function EventForm({ onCreate }: EventFormProps) {
               </FormHelperText>
             </FormControl>
           </Grid>
-          <Grid xs="auto">
+          <Grid size="auto">
             <FormControl variant="standard">
               <InputLabel htmlFor="component-skipper">Skipper</InputLabel>
               <Input
@@ -170,7 +177,7 @@ export default function EventForm({ onCreate }: EventFormProps) {
               </FormHelperText>
             </FormControl>
           </Grid>
-          <Grid xs="auto">
+          <Grid size="auto">
             <FormControl>
               <Autocomplete
                 disablePortal
@@ -186,7 +193,7 @@ export default function EventForm({ onCreate }: EventFormProps) {
               </FormHelperText>
             </FormControl>
           </Grid>
-          <Grid xs="auto">
+          <Grid size="auto">
             <FormControl>
               <Autocomplete
                 disablePortal
@@ -203,19 +210,19 @@ export default function EventForm({ onCreate }: EventFormProps) {
               </FormHelperText>
             </FormControl>
           </Grid>
-          <Grid xs="auto">
+          <Grid size="auto">
             <FormControl variant="standard">
-              <DatePicker label="Start" onChange={(value) => commitStart(value as Date)} />
+              <DatePicker label="Start" onChange={(value) => commitStart(value)} />
               <FormHelperText>first day on board</FormHelperText>
             </FormControl>
           </Grid>
-          <Grid xs="auto">
+          <Grid size="auto">
             <FormControl variant="standard">
-              <DatePicker label="End" onChange={(value) => commitEnd(value as Date)} />
+              <DatePicker label="End" onChange={(value) => commitEnd(value)} />
               <FormHelperText>last day on board</FormHelperText>
             </FormControl>
           </Grid>
-          <Grid xs="auto">
+          <Grid size="auto">
             <Autocomplete
               defaultValue="round trip cruise"
               disablePortal
@@ -227,7 +234,7 @@ export default function EventForm({ onCreate }: EventFormProps) {
               renderInput={(params) => <TextField name="type" {...params} label="Type of Sailing" />}
             />
           </Grid>
-          <Grid xs="auto">
+          <Grid size="auto">
             <FormControl variant="standard">
               <InputLabel htmlFor="component-distance">Distance</InputLabel>
               <Input
@@ -241,13 +248,13 @@ export default function EventForm({ onCreate }: EventFormProps) {
               </FormHelperText>
             </FormControl>
           </Grid>
-          <Grid xs={12}>
+          <Grid size={12}>
             <Typography component="span" marginRight={1}>
               {placesToVisit()}
             </Typography>
             <Button variant="contained" onClick={() => setOpen(true)}>Choose on a Map</Button>
           </Grid>
-          <Grid xs={12}>
+          <Grid size={12}>
             <FormControl variant="standard">
               <Typography>Specifics</Typography>
               <Box
@@ -287,7 +294,7 @@ export default function EventForm({ onCreate }: EventFormProps) {
           <Grid>
             <Disclaimer border={1} />
           </Grid>
-          <Grid xs={12}>
+          <Grid size={12}>
             <FormControlLabel
               control={<Checkbox
                 checked={oldEnough}

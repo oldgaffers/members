@@ -92,7 +92,7 @@ export default function MembersAndBoats({
     {
       field: 'name',
       headerName: 'Given Name',
-      valueGetter: ({row}) => `${row.salutation} ${row.firstname}`, 
+      valueGetter: ({row}: any) => `${row.salutation} ${row.firstname}`, 
       minWidth: 100,
       flex: 3,
     },
@@ -112,7 +112,7 @@ export default function MembersAndBoats({
     {
       field: 'proximity',
       headerName: 'Proximity',
-      valueGetter: ({ row }) => row.proximity || UNKNOWN_DISTANCE,
+      valueGetter: ({ row }: any) => row.proximity || UNKNOWN_DISTANCE,
       valueFormatter: distanceFormatter,
     },
     {
@@ -124,7 +124,7 @@ export default function MembersAndBoats({
       flex: 4,
     },
     { field: 'areas', headerName: 'Areas', renderCell: areaFormatter },
-    { field: 'area', headerName: 'Area', valueFormatter: (params) => areaAbbreviation(params.value), minWidth: 10, flex: 0.5 },
+    { field: 'area', headerName: 'Area', valueFormatter: (params: any) => areaAbbreviation(params.value), minWidth: 10, flex: 0.5 },
     { field: 'smallboats', headerName: 'SB', type: 'boolean', minWidth: 70, flex: 0.5 },
     { field: 'youngermember', headerName: 'YG', type: 'boolean', minWidth: 70, flex: 0.5 },
     {

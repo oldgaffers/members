@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
-import { gql, useQuery } from '@apollo/client';
+import { gql } from '@apollo/client';
+import { useQuery } from '@apollo/client/react';
 import { Autocomplete, CircularProgress, Stack, TextField, Typography } from '@mui/material';
 import BoatsAndOwners from './BoatsAndOwners';
 import { Boat, boatsWithHomeLocation } from './lib/boatregister-api.mts';
-import memberPredicate from './lib/membership.mts';
+import memberPredicate, { Member } from './lib/membership.mts';
 import membersBoats from './lib/members_boats.mts';
 
 export function useGetMembersBoats(membersResult: any) {
@@ -55,10 +56,10 @@ export default function BoatList({ places }: { places: any[] }) {
         return (<div>{JSON.stringify(membersResult.error)}</div>);
     }
 
-    const { members } = membersResult.data;
-    if (!members) {
+    if (!membersResult.data) {
         return 'Our apologies, something went wrong, please contact membership@oga.org.uk to report the error';
     }
+    const { members } = membersResult.data as { members: Member[] };
     const ybmembers = members.filter((m: any) => memberPredicate(m.id, m, false, false));
 
     const wboats = membersBoats(boats.data, ybmembers);

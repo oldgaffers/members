@@ -16,19 +16,20 @@ const testdata = [
     id: -1,
     firstname: 'James',
     lastname: 'Turner',
-    crewing: { text: 'He\’s been all over the world and got cups for rowing at Oxford. His neice once tipped him the Black Spot' },
+    crewing: { published: true, text: 'He\’s been all over the world and got cups for rowing at Oxford. His neice once tipped him the Black Spot', pictures: [] },
   },
   {
     id: -2,
     firstname: 'Missee',
     lastname: 'Lee',
-    crewing: { text: 'She\'s really good at latin. Experienced at sailing Junk rigged vessels.' },
+    crewing: { published: true, text: 'She\'s really good at latin. Experienced at sailing Junk rigged vessels.', pictures: [] },
   },
   {
     id: -3,
     firstname: 'Jack',
     lastname: 'Sparrow',
     crewing: {
+      published: true,
       text: 'He can be treacherous and survives mostly by using wit and negotiation rather than by force, opting to flee most dangerous situations and to fight only when necessary.',
       pictures: ['https://www.disneyfanatic.com/wp-content/uploads/2023/10/jim-carrey-replace-johnny-depp--620x330.jpg'],
     },
@@ -37,27 +38,29 @@ const testdata = [
     id: -4,
     firstname: 'Peggy',
     lastname: 'Blacket',
-    crewing: { text: 'You need her in your crew' },
+    crewing: { published: true, text: 'You need her in your crew', pictures: [] },
   },
   {
     id: -5,
     firstname: 'Titty',
     lastname: 'Walker',
     crewing: {
-      text: 'Able Seaman of the Swallow.'
+      published: true, 
+      text: 'Able Seaman of the Swallow.',
+      pictures: []
     },
   },
   {
     id: -6,
     firstname: 'Dick',
     lastname: 'Callum',
-    crewing: { text: 'Astronomer, scientist, naturalist and master of the Scarab.' },
+    crewing: { published: true, text: 'Astronomer, scientist, naturalist and master of the Scarab.', pictures: [] },
   },
   {
     id: -7,
     firstname: 'Dorothea',
     lastname: 'Callum',
-    crewing: { text: 'Sailing and adventure do not come naturally to her but her loyalty and bravery make her worth having on-board.' },
+    crewing: { published: true, text: 'Sailing and adventure do not come naturally to her but her loyalty and bravery make her worth having on-board.', pictures: [] },
   }
 ];
 
@@ -74,7 +77,8 @@ export function CrewCards({
     return <CircularProgress />;
   }
 
-  const { members } = data;
+  const { members } = data as { members: Member[] };
+
   const membersPlusGuests = [...members];
   if (useTestData) {
     membersPlusGuests.push(...testdata);
@@ -85,9 +89,9 @@ export function CrewCards({
       <Stack direction='row'>{membersPlusGuests.map((m) => <CrewCard
         key={m.id}
         goldId={m.id}
-        email={m.email}
+        email={m.email||''}
         name={`${m.firstname} ${m.lastname}`}
-        profile={m.crewing}
+        profile={m.crewing||{ published: false, text: '', pictures: [] }}
         contactEnabled={contactEnabled}
         inviteEnabled={inviteEnabled}
         invited={!!invites.find((invite) => invite.id === m.id)}

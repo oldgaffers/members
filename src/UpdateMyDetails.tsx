@@ -2,7 +2,9 @@
 import { PropsWithChildren, SetStateAction, useEffect, useState } from 'react';
 import EditIcon from '@mui/icons-material/Edit';
 import { useAuth0 } from '@auth0/auth0-react';
-import { useQuery, gql } from '@apollo/client';
+import { gql } from '@apollo/client';
+import { useQuery } from '@apollo/client/react';
+
 import {
   Alert, Box, Button, CircularProgress, Snackbar, Stack, Tab, Tabs, Typography,
 } from '@mui/material';
@@ -136,8 +138,8 @@ function MyDetails() {
   }
 
   if (members.length === 0) {
-    const m = memberResult?.data?.members;
-    if (m) {
+    if (memberResult?.data) {
+      const m: Member[] = (memberResult.data as { members: Member[] }).members;
       setMembers(m);
       setMyRecord((m).find((i: { id: any; }) => i.id === id));
     }

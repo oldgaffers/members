@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import CircularProgress from '@mui/material/CircularProgress';
 import { Box, FormControlLabel, FormGroup, Switch } from '@mui/material';
-import { gql, useQuery } from '@apollo/client';
+import { gql } from '@apollo/client';
+import { useQuery } from '@apollo/client/react';
 import { useAuth0 } from '@auth0/auth0-react';
 import * as postcodes from 'node-postcodes.io';
 import RoleRestricted from './RoleRestricted';
@@ -21,13 +22,13 @@ function membersWithLocation(location: { latitude: any; longitude: any; }) {
     status telephone mobile town area interests smallboats youngermember  
     crewing { text pictures published}
    } }`,
-   {
-    variables: {
-      lat: location.latitude,
-      lng: location.longitude,
+    {
+      variables: {
+        lat: location.latitude,
+        lng: location.longitude,
+      }
     }
-   }
-   );
+  );
 }
 
 function membersWithoutLocation() {
@@ -37,7 +38,7 @@ function membersWithoutLocation() {
     status telephone mobile town area interests smallboats youngermember
     crewing { text pictures published}
    } }`
-   );
+  );
 }
 
 export function useMembers(
@@ -78,7 +79,7 @@ export function useMembers(
     setPc([]);
   }
 
-  const { members } = membersResult.data;
+  const { members } = membersResult.data as { members: Member[] };
 
   const filteredMembers = members
     .filter((m: Member) => memberPredicate(m.id, m, excludeNotPaid, excludeNoConsent)
@@ -117,7 +118,7 @@ function MembersListForMember({
     return <CircularProgress />;
   }
 
-  const { boats, members } = data;
+  const { boats, members } = data as { boats: any; members: any; };
 
   /*
   return (<>
@@ -138,7 +139,7 @@ function MembersListForMember({
     </>
   );
   */
-  return (<MembersAndBoats members={members} boats={boats}/>);
+  return (<MembersAndBoats members={members} boats={boats} />);
 }
 
 function useGetMemberwithLocation(memberNo: number, id: number) {
@@ -150,12 +151,15 @@ function useGetMemberwithLocation(memberNo: number, id: number) {
   useEffect(() => {
     async function fetchPostcodeData() {
       if (memberResult.data) {
-        const me = memberResult?.data?.members?.find((m: { id: any; }) => m.id === id);
-        const { result } = await postcodes.lookup([me.postcode]);
-        if (result[0].result) {
-          const m = { ...me, ...result[0].result};
-          setData(m);
-          setLoading(false);
+        const { members } = memberResult.data as { members: Member[] };
+        const me = members.find((m: { id: any; }) => m.id === id);
+        if (me) {
+          const { result } = await postcodes.lookup([me.postcode]);
+          if (result[0].result) {
+            const m = { ...me, ...result[0].result };
+            setData(m);
+            setLoading(false);
+          }
         }
       }
     };
@@ -200,7 +204,7 @@ export function MembersList({ crew = false }) {
           {roles.includes('officer') ? <FormControlLabel control={<Switch onChange={handleNoConsentSwitchChange} checked={excludeNoConsent} />} label="Exclude no Consent" /> : ''}
         </FormGroup>
       </Box>
-      <MembersListForMember 
+      <MembersListForMember
         excludeNotPaid={excludeNotPaid}
         excludeNoConsent={excludeNoConsent}
         crew={crew}

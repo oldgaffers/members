@@ -5,10 +5,11 @@ import { Boat, getFilterable, postGeneralEnquiry } from './lib/boatregister-api.
 import { Member } from './lib/membership.mts';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { Dayjs } from 'dayjs';
 
 export default function ChooseABoat({ member, boats, onClick }: { member: Member, boats: Boat[], onClick: Function }) {
   const [filterable, setFilterable] = useState<Boat[] | undefined>();
-  const [year, setYear] = useState<Date | null>(null);
+  const [year, setYear] = useState<Dayjs | null>(null);
   const [inputValue, setInputValue] = useState<string | null>(null);
   const { isAuthenticated, getAccessTokenSilently } = useAuth0();
 
@@ -34,7 +35,7 @@ export default function ChooseABoat({ member, boats, onClick }: { member: Member
       subject: `claim boat ${inputValue}`,
       cc: [member.email],
       to: ['boatregister@oga.org.uk'],
-      message: `Member ${member.member}, ${member.firstname} ${member.lastname} has owned boat ${inputValue} since ${year?.getFullYear()}.
+      message: `Member ${member.member}, ${member.firstname} ${member.lastname} has owned boat ${inputValue} since ${year?.year()}.
 
             If this was you, you should get an email from the boat register editors.`
     }

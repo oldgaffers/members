@@ -1,5 +1,5 @@
 import { Stack } from '@mui/system';
-import Grid from '@mui/material/Unstable_Grid2/Grid2';
+import Grid from '@mui/material/Grid';
 import {
   Box, Checkbox, FormControlLabel, FormGroup, FormLabel, MenuItem, Select, Typography,
 } from '@mui/material';
@@ -201,7 +201,7 @@ export default function Interests({ user, members, onChange }: InterestsProps) {
         <Typography>You will receive updates for checked areas</Typography>
         <Grid container>
           {areas.map((area) => (
-            <Grid xs={3} key={area.label}>
+            <Grid size={3} key={area.label}>
               <FormControlLabel
                 label={area.label}
                 control={(

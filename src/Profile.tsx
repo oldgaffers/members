@@ -3,7 +3,8 @@ import { Checkbox, CircularProgress, FormControlLabel, LinearProgress, Stack, Sw
 import CrewCard from "./CrewCard";
 import { Member, SailingProfile } from "./lib/membership.mts";
 import { useAuth0 } from "@auth0/auth0-react";
-import { DocumentNode, gql, useMutation, useQuery } from "@apollo/client";
+import { DocumentNode, gql } from "@apollo/client";
+import { useMutation, useQuery } from '@apollo/client/react';
 import Disclaimer from "./Disclaimer";
 
 const mutations: Record<string, DocumentNode> = {
@@ -111,10 +112,10 @@ export default function Profile({ profileName }: { profileName: string }) {
   }
 
   if (data && !member) {
-    const m = data.members[0];
+    const m = (data as { members: Member[] }).members[0];
     setMember(m);
     const p = (profileName == 'skipper') ? m.skipper : m.crewing;
-    if (JSON.stringify(p) !== JSON.stringify(profile)) {
+    if (p && JSON.stringify(p) !== JSON.stringify(profile)) {
       setProfile(p);
     }
   }

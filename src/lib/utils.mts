@@ -1,7 +1,6 @@
 import distance from '@turf/distance';
 import { ParsedPhoneNumber, parsePhoneNumber } from 'awesome-phonenumber';
 import { Member } from './membership.mts';
-import { isNullish } from '@apollo/client/cache/inmemory/helpers';
 
 export function emailIndication(record: { email: any; }) {
   if ((record?.email || '').includes('@')) {
@@ -109,13 +108,13 @@ export function distanceInNM(a: any, b: any) {
 }
 
 export function distanceFormatter(params: { value: number; }) {
-  if (isNullish(params.value)) {
-    return '?';
-  }
   if (params.value === UNKNOWN_DISTANCE) {
     return '?';
   }
-  return `${params.value} nm`;
+  if (params.value) {
+    return `${params.value} nm`;
+  }
+  return '?';
 }
 
 export function distanceFormatterKm(params: { value: number; }) {

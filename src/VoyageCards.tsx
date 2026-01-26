@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"; import { Box } from "@mui/material";
-import Grid from '@mui/material/Unstable_Grid2'; // Grid version 2
+import Grid from '@mui/material/Grid'; // Grid version 2
 import { useAuth0 } from "@auth0/auth0-react";
 import VoyageCard from "./VoyageCard";
 import { getScopedData } from "./lib/boatregister-api.mts";
@@ -36,7 +36,7 @@ export function VoyageCards() {
         <Box overflow='auto' minWidth='50vw' maxWidth='85vw'>
             <Grid container spacing={2}>
                 {sortedVoyages.map((voyage, index) =>
-                    <Grid key={index} xs={4} minWidth={300}>
+                    <Grid key={index} size={4} minWidth={300}>
                         <VoyageCard key={index} voyage={voyage} />
                     </Grid>
                 )}
