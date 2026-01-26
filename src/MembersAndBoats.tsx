@@ -92,7 +92,7 @@ export default function MembersAndBoats({
     {
       field: 'name',
       headerName: 'Given Name',
-      valueGetter: ({row}: any) => `${row.salutation} ${row.firstname}`, 
+      valueGetter: (_value, row) => `${row.salutation} ${row.firstname}`, 
       minWidth: 100,
       flex: 3,
     },
@@ -112,13 +112,13 @@ export default function MembersAndBoats({
     {
       field: 'proximity',
       headerName: 'Proximity',
-      valueGetter: ({ row }: any) => row.proximity || UNKNOWN_DISTANCE,
+      valueGetter: (_value, row) => row.proximity || UNKNOWN_DISTANCE,
       valueFormatter: distanceFormatter,
     },
     {
       field: 'boat',
       headerName: 'Boat Name',
-      valueGetter: boatGetter,
+      // valueGetter: boatGetter,
       renderCell: renderBoat,
       minWidth: 100,
       flex: 4,
