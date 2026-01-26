@@ -1,7 +1,7 @@
 import { useState, useEffect, PropsWithChildren } from 'react';
 import { InMemoryCache, ApolloClient, createHttpLink } from '@apollo/client';
 import { setContext } from "@apollo/client/link/context";
-import { ApolloProvider } from '@apollo/react-hooks';
+import { ApolloProvider } from "@apollo/client/react";
 import { useAuth0 } from "@auth0/auth0-react";
 
 type OGAProviderProps = {
