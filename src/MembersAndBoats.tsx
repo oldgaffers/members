@@ -55,7 +55,7 @@ export default function MembersAndBoats({
   const [open, setOpen] = useState(false);
   const [contact, setContact] = useState<number>(0);
 
-  function boatGetter({ row }: { row: Member }) {
+  function boatGetter(_value: any, row: Member) {
     const { id } = row;
     const theirBoats = boats.filter((b) => b.owners?.find((o) => o?.id === id));
     return theirBoats.map((b) => b.name).sort().join(', ');
@@ -118,7 +118,7 @@ export default function MembersAndBoats({
     {
       field: 'boat',
       headerName: 'Boat Name',
-      // valueGetter: boatGetter,
+      valueGetter: boatGetter,
       renderCell: renderBoat,
       minWidth: 100,
       flex: 4,
