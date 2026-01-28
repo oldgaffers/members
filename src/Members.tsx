@@ -4,7 +4,7 @@ import { Box, FormControlLabel, FormGroup, Switch } from '@mui/material';
 import { gql } from '@apollo/client';
 import { useQuery } from '@apollo/client/react';
 import { useAuth0 } from '@auth0/auth0-react';
-import * as postcodes from 'node-postcodes.io';
+import postcodes from 'node-postcodes.io';
 import RoleRestricted from './RoleRestricted';
 import MembersAndBoats from './MembersAndBoats';
 import memberPredicate, { Member, useGetMembership } from './lib/membership.mts';

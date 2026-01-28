@@ -21,7 +21,7 @@ export function namelist(value: any[]) {
   return r;
 }
 
-export function ownerAreaValueGetter({ value }: { value: Member[] }) {
+export function ownerAreaValueGetter(value: Member[]) {
   if (!value) {
     return '';
   }
@@ -32,7 +32,7 @@ export function ownerAreaValueGetter({ value }: { value: Member[] }) {
   return value[0].area;
 }
 
-export function ownerValueGetter({ value }: { value: Member[] }) {
+export function ownerValueGetter(value: Member[]) {
   if (!value) {
     return '';
   }

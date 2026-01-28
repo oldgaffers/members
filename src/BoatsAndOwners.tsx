@@ -35,10 +35,6 @@ function renderBoat(params: GridRenderCellParams<Boat, any, any, GridTreeNodeWit
   return (<Typography variant="body2" fontStyle="italic">{params.value}</Typography>);
 }
 
-function boatFormatter(params: { value: any }) {
-  return params.value;
-}
-
 function gotoboatregister(params: GridRowParams<Boat>) {
   window.open(boatUrl(params.row.oga_no, {
     origin: '',
@@ -55,7 +51,7 @@ const columns = (
 ): GridColDef<Boat>[] => {
   const col: GridColDef<Boat>[] = [
     {
-      field: 'name', headerName: 'Boat', valueFormatter: boatFormatter, renderCell: renderBoat, minWidth: 100,
+      field: 'name', headerName: 'Boat', renderCell: renderBoat, minWidth: 100,
     },
     { field: 'oga_no', headerName: 'No.', minWidth: 60 },
     {

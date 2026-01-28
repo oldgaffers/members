@@ -107,22 +107,22 @@ export function distanceInNM(a: any, b: any) {
   return Math.floor(d);
 }
 
-export function distanceFormatter(params: { value: number; }) {
-  if (params.value === UNKNOWN_DISTANCE) {
+export function distanceFormatter(value: number) {
+  if (value === UNKNOWN_DISTANCE) {
     return '?';
   }
-  if (params.value) {
-    return `${params.value} nm`;
+  if (value) {
+    return `${value} nm`;
   }
   return '?';
 }
 
-export function distanceFormatterKm(params: { value: number; }) {
-  if (!params.value) {
+export function distanceFormatterKm(value: number): string {
+  if (value) {
     return '?';
   }
-  if (params.value === UNKNOWN_DISTANCE) {
+  if (value === UNKNOWN_DISTANCE) {
     return '?';
   }
-  return `${params.value} km`;
+  return `${value} km`;
 }
