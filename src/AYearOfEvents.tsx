@@ -50,9 +50,9 @@ function convert(allVoyages: Voyage[]) {
     title Our ${new Date().getFullYear()} Voyages
     dateFormat YYYY-MM-DD`;
     const now = Temporal.Now.zonedDateTimeISO();
-    const next = now.getTimeZoneTransition('next');
-    const then = next.add({ days: 10 });
-    const after = then.getTimeZoneTransition('next');
+    const next = now.getTimeZoneTransition('next') || now;
+    const then = next.add({ days: 10 }) || now;
+    const after = then.getTimeZoneTransition('next') || now;
 
     return `${header}
     section -
