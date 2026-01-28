@@ -5,7 +5,7 @@ import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Stack } from
 import mermaid from 'mermaid';
 import VoyageCard, { Voyage } from "./VoyageCard";
 
-let MyTemporal;
+let MyTemporal: any;
 if (Date.prototype.toTemporalInstant) {
     MyTemporal = Temporal;
 } else {

@@ -17,6 +17,13 @@ module.exports = {
       },
     },
   ],
+  languageOptions: {
+    ecmaVersion: 'latest',
+    sourceType: 'module',
+    globals: {
+      Temporal: 'readonly',
+    },
+  },
   parserOptions: {
     ecmaVersion: 'latest',
     sourceType: 'module',
