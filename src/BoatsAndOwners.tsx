@@ -73,7 +73,7 @@ const columns = (
       headerName: 'Proximity',
       minWidth: 50,
       valueGetter: (value: any): number => {
-        return distanceInNM(proximityTo, params.value);
+        return distanceInNM(proximityTo, value);
       },
       valueFormatter: distanceFormatter,
     });
