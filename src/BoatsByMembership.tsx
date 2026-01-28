@@ -85,7 +85,7 @@ export default function BoatsByMembership({
                 </TableCell>
                 <TableCell align="right">{row.oga_no}</TableCell>
                 <TableCell align="right">{ownerList(row.owners)}</TableCell>
-                <TableCell align="right">{ownerValueGetter({ value: row.owners })}</TableCell>
+                <TableCell align="right">{ownerValueGetter( row.owners }}</TableCell>
                 <TableCell align="right"><Switch onChange={(e) => onChange(row, 'hire', e.target.checked)} checked={row.hire} /></TableCell>
                 <TableCell align="right"><Switch onChange={(e) => onChange(row, 'crewing', e.target.checked)} checked={row.crewing} /></TableCell>
                 <TableCell align="right">
