@@ -5,16 +5,6 @@ import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Stack } from
 import mermaid from 'mermaid';
 import VoyageCard, { Voyage } from "./VoyageCard";
 
-let MyTemporal: any;
-if (Date.prototype.toTemporalInstant) {
-    MyTemporal = Temporal;
-} else {
-    const t = await import('@js-temporal/polyfill');
-    MyTemporal = t.Temporal;
-    Date.prototype.toTemporalInstant = t.toTemporalInstant;
-}
-
-
 mermaid.initialize({
     startOnLoad: false,
     securityLevel: 'loose',
@@ -58,7 +48,7 @@ function convert(allVoyages: Voyage[]) {
     tickInterval 1month
     title Our ${new Date().getFullYear()} Voyages
     dateFormat YYYY-MM-DD`;
-    const now = MyTemporal.Now.zonedDateTimeISO();
+    const now = Temporal.Now.zonedDateTimeISO();
     const next = now.getTimeZoneTransition('next');
     const then = next.add({ days: 10 });
     const after = then.getTimeZoneTransition('next');
