@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Stack } from "@mui/material";
 import mermaid from 'mermaid';
 import VoyageCard, { Voyage } from "./VoyageCard";
+import '@js-temporal/polyfill';
 
 mermaid.initialize({
     startOnLoad: false,
