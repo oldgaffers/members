@@ -5,6 +5,16 @@ import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Stack } from
 import mermaid from 'mermaid';
 import VoyageCard, { Voyage } from "./VoyageCard";
 
+let MyTemporal;
+if (Date.prototype.toTemporalInstant) {
+    MyTemporal = Temporal;
+} else {
+    const t = await import('@js-temporal/polyfill');
+    MyTemporal = t.Temporal;
+    Date.prototype.toTemporalInstant = t.toTemporalInstant;
+}
+
+
 mermaid.initialize({
     startOnLoad: false,
     securityLevel: 'loose',
@@ -46,12 +56,17 @@ function convert(allVoyages: Voyage[]) {
     const sections = [...types].map((type) => section(type, voyages.filter((v) => v.type === type)));
     const header = `gantt
     tickInterval 1month
-    title Our 2024 Voyages
+    title Our ${new Date().getFullYear()} Voyages
     dateFormat YYYY-MM-DD`;
+    const now = MyTemporal.Now.zonedDateTimeISO();
+    const next = now.getTimeZoneTransition('next');
+    const then = next.add({ days: 10 });
+    const after = then.getTimeZoneTransition('next');
+
     return `${header}
     section -
-    AGM: milestone, m1, 2024-01-14, 0d
-    Hogmanay: milestone, m2, 2024-12-31, 0d
+    Summer: milestone, m1, ${next.toPlainDate().toString()}, 0d
+    Winter: milestone, m2, ${after.toPlainDate().toString()}, 0d
     ${sections.join('\n')}
     `;
 }
@@ -97,7 +112,12 @@ export default function AYearOfEvents() {
             const pub = await getScopedData('public', 'voyage');
             const priv: any[] = await getScopedData('member', 'voyage', undefined, token);
             const vis = priv.filter((v) => v.visibility !== 'hidden');
-            setVoyages([...pub, ...vis].map((v: any) => {
+            const start = new Date().toISOString().split('T')[0];
+            const endDate = new Date();
+            endDate.setFullYear(endDate.getFullYear() + 1);
+            const end = endDate.toISOString().split('T')[0];
+            const inrange = [...pub, ...vis].filter((v) => v.start >= start && v.end <= end);
+            setVoyages(inrange.map((v: any) => {
                 const { member, ...rest } = v;
                 return { organiserGoldId: member, ...rest };
             }));
