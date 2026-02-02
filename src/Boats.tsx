@@ -22,7 +22,6 @@ const places = [
   { name: 'Milford Haven', area: 'BC', lat: 51.703, lng: -5.067 },
   { name: 'Holyhead', area: 'NWa', lat: 53.32, lng: -4.639 },
 { name: 'Conwy', area: 'NWa', lat: 51.699825958, lng: -5.044766},
-{ name: 'Milford Haven', area: 'NWa', lat: 51.699825958, lng: -5.044766 },
   { name: 'Dublin', area: 'DB', lat: 53.346, lng: -6.226 },
   { name: 'Belfast', area: 'DB', lat: 54.6, lng: -5.9 }, 
   { name: 'Killybegs', area: 'DB', lat: 54.63, lng: -8.442 }, 
