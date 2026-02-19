@@ -130,7 +130,7 @@ export default function MembersAndBoats({
     { field: 'smallboats', headerName: 'SB', type: 'boolean', minWidth: 70, flex: 0.5 },
     { field: 'youngermember', headerName: 'YG', type: 'boolean', minWidth: 70, flex: 0.5 },
    ];
-   if (officerColumns) (
+  if (officerColumns) {
 			columns.push({ field: 'GDPR', headerName: 'GDPR', type: 'boolean', minWidth: 70, flex: 0.5 });
 			columns.push({ field: 'status', headerName: 'Status', type: 'boolean', minWidth: 70, flex: 0.5 });
   }
