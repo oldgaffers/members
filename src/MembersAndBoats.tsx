@@ -13,7 +13,8 @@ import { useState } from 'react';
 type MembersAndBoatsProps = {
   members: Member[],
   boats: Boat[],
-  components?: any
+  components?: any,
+  officerColumns?: boolean,
 }
 
 function CustomToolbar() {
@@ -51,6 +52,7 @@ function areaFormatter(params: GridRenderCellParams<any, any, any, GridTreeNodeW
 export default function MembersAndBoats({
   members = [],
   boats = [],
+  officerColumns = false,
 }: MembersAndBoatsProps) {
   const [open, setOpen] = useState(false);
   const [contact, setContact] = useState<number>(0);
@@ -127,22 +129,11 @@ export default function MembersAndBoats({
     { field: 'area', headerName: 'Area', valueFormatter: (params: any) => areaAbbreviation(params.value), minWidth: 10, flex: 0.5 },
     { field: 'smallboats', headerName: 'SB', type: 'boolean', minWidth: 70, flex: 0.5 },
     { field: 'youngermember', headerName: 'YG', type: 'boolean', minWidth: 70, flex: 0.5 },
-    {
-      field: 'GDPR',
-      headerName: 'GDPR',
-      type: 'boolean',
-      minWidth: 70,
-      flex: 0.5,
-    },
-    {
-      field: 'status',
-      headerName: 'Status',
-      type: 'boolean',
-      minWidth: 70,
-      flex: 0.5,
-    },
-  ];
-
+   ];
+   if (officerColumns) (
+			columns.push({ field: 'GDPR', headerName: 'GDPR', type: 'boolean', minWidth: 70, flex: 0.5 });
+			columns.push({ field: 'status', headerName: 'Status', type: 'boolean', minWidth: 70, flex: 0.5 });
+  }
   return (
     <Box height='100%'>
       <Box>
