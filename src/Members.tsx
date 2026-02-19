@@ -104,8 +104,9 @@ function MembersListForMember({
   excludeNoConsent,
   crew,
   mylocation,
+  roles,
 }: MembersListForMemberProps) {
-  console.log('MembersListForMember');
+  // console.log('MembersListForMember');
   const { loading, data } = useMembers(excludeNotPaid, excludeNoConsent, crew, mylocation);
 
   if (loading) {
@@ -139,7 +140,7 @@ function MembersListForMember({
     </>
   );
   */
-  return (<MembersAndBoats members={members} boats={boats} />);
+  return (<MembersAndBoats members={members} boats={boats} officerColumns={roles.includes('officer')} />);
 }
 
 function useGetMemberwithLocation(memberNo: number, id: number) {
