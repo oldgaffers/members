@@ -7,6 +7,7 @@ import FindCrew from './FindCrew.tsx';
 import FindACruise from './FindACruise.tsx';
 import CustomMap from './CustomMap.tsx';
 import PrivateDocument from './PrivateDocument.tsx';
+import PrivateFolder from './PrivateFolder.tsx';
 // import { registerServiceWorker } from './rsw.mjs';
 
 declare global {
@@ -51,6 +52,11 @@ function handleDivs() {
     if (comp === 'doc') {
       const name = div.dataset['ogaArg0'];
       ReactDOM.createRoot(div).render(<App><PrivateDocument name={name} /></App>);
+    }
+    if (comp === 'folder') {
+      const folder = div.dataset['ogaArg0'];
+      console.log('folder', folder);
+      ReactDOM.createRoot(div).render(<App><PrivateFolder name={folder} /></App>);
     }
   }
 
