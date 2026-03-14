@@ -1,69 +1,58 @@
-import { useState, useEffect, ReactNode } from 'react';
-import { useAuth0 } from "@auth0/auth0-react";
-import { Document } from 'react-pdf'
+import { useState, useEffect } from 'react';
+import { Document, Page } from 'react-pdf'
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import { fromCognitoIdentity } from "@aws-sdk/credential-providers";
+import { GetObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import { getUploadCredentials } from './lib/boatregister-api.mjs';
 import RoleRestricted from "./RoleRestricted";
 import LoginButton from './LoginButton';
+import { pdfjs } from 'react-pdf';
 
-const apiWeb = 'https://5li1jytxma.execute-api.eu-west-1.amazonaws.com/default/doc';
+pdfjs.GlobalWorkerOptions.workerSrc = new URL(
+  'pdfjs-dist/build/pdf.worker.min.mjs',
+  import.meta.url,
+).toString();
 
-export async function getPdf(folder: string, accessToken: string) {
-  return (await fetch(
-    `${apiWeb}?folder_name=${encodeURIComponent(folder)}`,
-    {
-      method: 'GET',
-      headers: {
-        Accept: 'application/javascript',
-        Authorization: `Bearer ${accessToken}`,
-      }
-    }
-  )).json();
+export async function getPdf(name: string): Promise<Blob> {
+    const { region, identityId } = await getUploadCredentials();
+    const credentials = fromCognitoIdentity({ identityId, clientConfig: { region } });
+    const client = new S3Client({ region, credentials });
+    const command = new GetObjectCommand({
+        Bucket: 'boatregister-upload',
+        Key: `Gaffers Log/${name}`,
+    });
+    return getSignedUrl(client, command, { expiresIn: 3600 }) as Promise<unknown> as Promise<Blob>;
 }
 
-function LinkList({ links }: { links: [any] }) {
-  console.log('links', links);
-  return (
-    <>
-      {links.map(({name, id}) => (
-        <li key={name}>
-          <a href={id as string} target="_blank" rel="noopener noreferrer">{name}</a>
-        </li>
-      ))}
-    </>
-  );
-}
+export default function PrivatePdf({ id }: { id?: string }) {
+  const [doc, setDoc] = useState<Blob | undefined>();
+  const [numPages, setNumPages] = useState<number>();
+  const [pageNumber, setPageNumber] = useState<number>(1);
 
-export default function PrivatePdf({ name }: { name?: string }) {
-  const [doc, setDoc] = useState<object | undefined>();
-  const { getAccessTokenSilently } = useAuth0();
-  const [token, setToken] = useState<string | undefined>();
-
-  useEffect(() => {
-    async function getToken() {
-      if (!token) {
-        const tok = await getAccessTokenSilently();
-        setToken(tok);
-      }
-    }
-    getToken();
-  }, [token]);
+  function onDocumentLoadSuccess({ numPages }: { numPages: number }): void {
+    setNumPages(numPages);
+  }
 
   useEffect(() => {
     const getData = async () => {
-      if (name && token) {
-        setDoc(await getFolder(name, token))
+      if (id) {
+        setDoc(await getPdf(id))
       }
     }
     if (!doc) {
       getData();
     }
-  }, [doc, name, token]);
+  }, [doc, id]);
 
   return (
     <>
       <RoleRestricted role="member">
-        <ul>
-      { doc ? <LinkList links={doc} /> : <p>Loading...</p>   }
-      </ul>
+        {doc ? <Document file={doc} onLoadSuccess={onDocumentLoadSuccess}>
+          <Page pageNumber={pageNumber} />
+        </Document> : 'Loading...'}
+      <p>
+        Page {pageNumber} of {numPages}
+      </p>
       </RoleRestricted>
       <LoginButton />
     </>

@@ -1,7 +1,9 @@
-import { useState, useEffect, ReactNode } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth0 } from "@auth0/auth0-react";
 import RoleRestricted from "./RoleRestricted";
 import LoginButton from './LoginButton';
+import PrivatePdf from './PrivatePdf';
+import { Link, Typography } from '@mui/material';
 
 const apiWeb = 'https://5li1jytxma.execute-api.eu-west-1.amazonaws.com/default/doc';
 
@@ -18,23 +20,29 @@ export async function getFolder(folder: string, accessToken: string) {
   )).json();
 }
 
-function LinkList({ links }: { links: [any] }) {
-  console.log('links', links);
-  return (
-    <>
-      {links.map(({name, id}) => (
+function FolderList({ folders, onClick }: { folders: [any], onClick: (id: string) => void }) {
+  return (    
+    <ul>
+      {folders.map(({name}) => (
         <li key={name}>
-          <a href={id as string} target="_blank" rel="noopener noreferrer">{name}</a>
+          <Link component="button" variant="body2" onClick={() => onClick(name as string)}>
+            {name as string}
+          </Link>
         </li>
       ))}
-    </>
+    </ul>
   );
 }
 
 export default function PrivateFolder({ name }: { name?: string }) {
-  const [doc, setDoc] = useState<object | undefined>();
+  const [doc, setDoc] = useState<[any] | undefined>();
   const { getAccessTokenSilently } = useAuth0();
   const [token, setToken] = useState<string | undefined>();
+  const [selectedId, setSelectedId] = useState<string | undefined>();
+
+  const handleClick = (id: string) => {
+    setSelectedId(id);
+  };
 
   useEffect(() => {
     async function getToken() {
@@ -57,12 +65,14 @@ export default function PrivateFolder({ name }: { name?: string }) {
     }
   }, [doc, name, token]);
 
+  if (selectedId) {
+    return <PrivatePdf id={selectedId} />;
+  }
+  
   return (
     <>
       <RoleRestricted role="member">
-        <ul>
-      { doc ? <LinkList links={doc} /> : <p>Loading...</p>   }
-      </ul>
+      { doc ? <FolderList folders={doc} onClick={handleClick} /> : <p>Loading...</p>   }
       </RoleRestricted>
       <LoginButton />
     </>
