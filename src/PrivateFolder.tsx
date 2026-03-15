@@ -1,30 +1,22 @@
 import { useState, useEffect } from 'react';
 import { useAuth0 } from "@auth0/auth0-react";
 import RoleRestricted from "./RoleRestricted";
-import { getPdf } from './PrivatePdf';
+import { getCredentials } from './lib/boatregister-api.mts';
+import { fromCognitoIdentity } from '@aws-sdk/credential-providers';
+import { GetObjectCommand, ListObjectsV2Command, S3Client } from '@aws-sdk/client-s3';
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 
-const apiWeb = 'https://5li1jytxma.execute-api.eu-west-1.amazonaws.com/default/doc';
-
-export async function getFolder(folder: string, accessToken: string) {
-  return (await fetch(
-    `${apiWeb}?folder_name=${encodeURIComponent(folder)}`,
-    {
-      method: 'GET',
-      headers: {
-        Accept: 'application/javascript',
-        Authorization: `Bearer ${accessToken}`,
-      }
-    }
-  )).json();
-}
-
-function PdfInNewTab({ name, token }: { name: string; token: string }) {
+function PdfInNewTab({ bucket, name, client }: { bucket: string; name: string; client: S3Client }) {
   const [url, setUrl] = useState<string | undefined>();
 
   useEffect(() => {
     const getData = async () => {
       if (name) {
-        setUrl(await getPdf(name, token))
+        const command = new GetObjectCommand({
+          Bucket: bucket,
+          Key: name,
+        });
+        setUrl(await getSignedUrl(client, command, { expiresIn: 1800 }))
       }
     }
     if (!url) {
@@ -34,54 +26,90 @@ function PdfInNewTab({ name, token }: { name: string; token: string }) {
 
   if (url) {
     return <a href={url} target="_blank" rel="noopener noreferrer">
-      {name}
+      {name.split('/').slice(-1)[0]}
     </a>
   } else {
     return <p>Loading...</p>
   }
 }
 
-export function FolderList({ folders, token }: { folders: [any]; token: string }) {
-  return (
-    <ul>
-      {folders.map(({ name }) => (
-        <li key={name}>
-          <PdfInNewTab name={name as string} token={token} />
-        </li>
-      ))}
-    </ul>
-  );
-}
-
-export default function PrivateFolder({ name }: { name?: string }) {
-  const [doc, setDoc] = useState<[any] | undefined>();
-  const { getAccessTokenSilently } = useAuth0();
-  const [token, setToken] = useState<string | undefined>();
-
-  useEffect(() => {
-    async function getToken() {
-      if (!token) {
-        const tok = await getAccessTokenSilently();
-        setToken(tok);
-      }
-    }
-    getToken();
-  }, [token]);
+function Folder({ name, client, credentials }: { name: string; client: S3Client; credentials: any }) {
+  const [folder, setFolder] = useState<any[] | undefined>();
 
   useEffect(() => {
     const getData = async () => {
-      if (name && token) {
-        setDoc(await getFolder(name, token))
+      if (name && client) {
+        const command = new ListObjectsV2Command({
+          Bucket: credentials.bucketName,
+          Prefix: `${name}/`,
+        });
+        const l = await client.send(command);
+        const files = l.Contents?.filter(({ Key }) => Key?.toLowerCase().endsWith('.pdf')) ?? [];
+        const names = files.map(({ Key }) => Key);
+        if (names.length === 0) {
+          setFolder([]);
+          return;
+        }
+        setFolder(names);
       }
     }
-    if (!doc) {
+    if (client && !folder) {
       getData();
     }
-  }, [doc, name, token]);
+  }, [folder, name, client]);
+
+  if (!folder) {
+    return <p>Loading...</p>
+  }
+
+  if (!folder || folder.length === 0) {
+    return <p>No files found</p>;
+  }
+  console.log('folder', folder);
+  return <ul>
+    {folder.map((name) => (
+      <li key={name}>
+        <PdfInNewTab bucket={credentials.bucketName} name={name} client={client} />
+      </li>
+    ))}
+  </ul>;
+}
+
+export default function PrivateFolder({ name }: { name?: string }) {
+  const { getAccessTokenSilently } = useAuth0();
+  const [client, setClient] = useState<S3Client | undefined>();
+  const [credentials, setCredentials] = useState<any | undefined>();
+
+  useEffect(() => {
+
+    async function getClient() {
+      const token = await getAccessTokenSilently();
+      const cred = await getCredentials(token);
+      const credentials = fromCognitoIdentity({
+        identityId: cred.identityId,
+        clientConfig: { region: cred.region },
+        logins: {
+          'cognito-identity.amazonaws.com': cred.token,
+        }
+      });
+      const client = new S3Client({ region: cred.region, credentials });
+      setClient(client);
+      setCredentials(cred);
+    }
+
+    if (client) return;
+    if (!name) return;
+
+    getClient();
+  }, [client, credentials]);
+
+  if (!name) {
+    return <p>No folder specified</p>
+  }
 
   return (
     <RoleRestricted role="member" hide={false}>
-      {(doc && token) ? <FolderList folders={doc} token={token} /> : <p>Loading...</p>}
+      <Folder name={name} client={client!} credentials={credentials} />
     </RoleRestricted>
   );
 }
