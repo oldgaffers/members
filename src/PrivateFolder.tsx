@@ -80,7 +80,7 @@ export default function PrivateFolder({ name }: { name?: string }) {
   }, [doc, name, token]);
 
   return (
-    <RoleRestricted role="member">
+    <RoleRestricted role="member" hide={false}>
       {doc ? <FolderList folders={doc} /> : <p>Loading...</p>}
     </RoleRestricted>
   );

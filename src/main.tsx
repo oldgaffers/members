@@ -8,6 +8,7 @@ import FindACruise from './FindACruise.tsx';
 import CustomMap from './CustomMap.tsx';
 import PrivateDocument from './PrivateDocument.tsx';
 import PrivateFolder from './PrivateFolder.tsx';
+import LoginButton from './LoginButton.tsx';
 // import { registerServiceWorker } from './rsw.mjs';
 
 declare global {
@@ -23,6 +24,9 @@ function handleDivs() {
     if (!div) continue;
     const id = div.id;
     const comp = div.dataset['ogaComponent'] ?? id;
+    if (comp === 'login') {
+      ReactDOM.createRoot(div).render(<App><LoginButton/></App>);
+    }
     if (comp === 'update_my_details') {
       ReactDOM.createRoot(div).render(<App><UpdateMyDetails /></App>);
     }

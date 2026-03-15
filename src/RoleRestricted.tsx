@@ -14,14 +14,14 @@ export default function RoleRestricted({ role, children, hide=true }: PropsWithC
             if (hide) {
                 return '';
             }
-            return (<Typography>This page is for {role} only. Please Login</Typography>);
+            return (<Typography>This content is for {role} only. Please Login</Typography>);
         }
         const roles = (user?.['https://oga.org.uk/roles']) || [];
         if (!roles.includes(role)) {
             if (hide) {
                 return '';
             }
-            return (<Typography>This page is for {role} only.</Typography>);
+            return (<Typography>This content is for {role} only.</Typography>);
         }
     
         return (<>{children}</>);    
