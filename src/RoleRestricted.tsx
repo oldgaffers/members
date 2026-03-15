@@ -1,33 +1,30 @@
 import { PropsWithChildren } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 import { Typography } from "@mui/material";
+import LoginButton from "./LoginButton";
 
 type RoleRestrictedProps = {
     role: string
     hide?: boolean
 }
 
-export default function RoleRestricted({ role, children, hide=true }: PropsWithChildren<RoleRestrictedProps>) {
+export default function RoleRestricted({ role = 'members', children, hide = true }: PropsWithChildren<RoleRestrictedProps>) {
     const { user, isAuthenticated } = useAuth0();
-    if (role) {
-        if (!isAuthenticated) {
-            if (hide) {
-                return '';
-            }
-            return (<Typography>This content is for {role} only. Please Login</Typography>);
-        }
-        const roles = (user?.['https://oga.org.uk/roles']) || [];
-        if (!roles.includes(role)) {
-            if (hide) {
-                return '';
-            }
-            return (<Typography>This content is for {role} only.</Typography>);
-        }
-    
-        return (<>{children}</>);    
+    if (!isAuthenticated) {
+        return (<div><Typography>Please login</Typography><LoginButton /></div>);
     }
-    if (isAuthenticated) {
+    const roles = (user?.['https://oga.org.uk/roles']) || [];
+    if (roles.includes(role)) {
+        return (<>{children}</>);
+    }
+    if (hide) {
         return '';
     }
-    return (<>{children}</>);    
+    return (<div>
+        <Typography>This content is for {role} only. </Typography>
+        {(roles.length > 0)
+            ? <Typography>Your roles are: {roles.join(', ')}. </Typography>
+            : <Typography>You have a login but either you are not a member or have recently joined and our records are not up to date.</Typography>
+        }
+    </div>);
 }
