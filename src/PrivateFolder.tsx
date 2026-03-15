@@ -18,13 +18,13 @@ export async function getFolder(folder: string, accessToken: string) {
   )).json();
 }
 
-function PdfInNewTab({ name }: { name: string }) {
+function PdfInNewTab({ name, token }: { name: string; token: string }) {
   const [url, setUrl] = useState<string | undefined>();
 
   useEffect(() => {
     const getData = async () => {
       if (name) {
-        setUrl(await getPdf(name))
+        setUrl(await getPdf(name, token))
       }
     }
     if (!url) {
@@ -41,12 +41,12 @@ function PdfInNewTab({ name }: { name: string }) {
   }
 }
 
-export function FolderList({ folders }: { folders: [any] }) {
+export function FolderList({ folders, token }: { folders: [any]; token: string }) {
   return (
     <ul>
       {folders.map(({ name }) => (
         <li key={name}>
-          <PdfInNewTab name={name as string} />
+          <PdfInNewTab name={name as string} token={token} />
         </li>
       ))}
     </ul>
@@ -81,7 +81,7 @@ export default function PrivateFolder({ name }: { name?: string }) {
 
   return (
     <RoleRestricted role="member" hide={false}>
-      {doc ? <FolderList folders={doc} /> : <p>Loading...</p>}
+      {(doc && token) ? <FolderList folders={doc} token={token} /> : <p>Loading...</p>}
     </RoleRestricted>
   );
 }

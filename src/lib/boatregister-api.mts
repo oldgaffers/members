@@ -54,14 +54,14 @@ export async function boatsWithHomeLocation(): Promise<Boat[]> {
   const extra = await getScopedData('public', 'crewing');
 
   const b = r.filter((b1: Boat) => b1).map((b2: Boat) => {
-      const be = extra.find((b3: any) => b3.oga_no === b2.oga_no);
-      return { ...b2, ...be };
+    const be = extra.find((b3: any) => b3.oga_no === b2.oga_no);
+    return { ...b2, ...be };
   });
   const hp: string[] = [...new Set(b.filter((i: Boat) => i.home_port).map((i: Boat) => i.home_port))] as string[];
   const settled = await Promise.allSettled(hp.map(async (place) => ({ place, geoname: await geolocate(place) })));
   const ra = settled.map((s) => (s as PromiseFulfilledResult<any>).value);
   const maybeFound = ra.filter((o: any) => o.geoname);
-  
+
   // TODO
   // const notFound = maybeFound.filter((o: any) => o.geoname?.message === 'not found').map((o) => o.place);
   // const tryAgain = [...new Set(notFound.map((p) => p.replace(/ .*/, '')))];
@@ -70,9 +70,9 @@ export async function boatsWithHomeLocation(): Promise<Boat[]> {
   const found = maybeFound.filter((o: any) => o.geoname?.message !== 'not found');
   const m = Object.fromEntries(found.map((f: any) => [f.place, f.geoname]));
   b.forEach((boat: Boat) => {
-      if (m[boat.home_port]) {
-          boat.home_location = m[boat.home_port];
-      }
+    if (m[boat.home_port]) {
+      boat.home_location = m[boat.home_port];
+    }
   });
   return b;
 }
@@ -114,7 +114,7 @@ export async function getScopedData(
   subject: string,
   filters?: string | URLSearchParams | Record<string, string> | string[][] | undefined,
   accessToken?: string,
-  ): Promise<object[]> {
+): Promise<object[]> {
   const headers: Record<string, string> = {
     'content-type': 'application/json',
   };
@@ -168,6 +168,18 @@ export async function geolocateGeonames(place: string) {
   if (r.ok) {
     return r.json();
   }
+}
+
+export async function getCredentials(accessToken: string) {
+  return (await fetch(
+    `${api}/${stage}/credentials`,
+    {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      }
+    }
+  )).json();
 }
 
 export async function getUploadCredentials() {
