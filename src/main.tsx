@@ -59,7 +59,6 @@ function handleDivs() {
     }
     if (comp === 'folder') {
       const folder = div.dataset['ogaArg0'];
-      console.log('folder', folder);
       ReactDOM.createRoot(div).render(<App><PrivateFolder name={folder} /></App>);
     }
   }
