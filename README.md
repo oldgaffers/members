@@ -20,6 +20,8 @@ Where "page to render" is one of:
 - crewfinder
 - cruisefinder
 - map
+- doc
+- folder
 
 ## Build
 
