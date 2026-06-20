@@ -1,7 +1,7 @@
 import React, { PropsWithChildren } from 'react'
 import { Auth0Provider } from '@auth0/auth0-react';
 import './App.css'
-import OGAProvider from './OGAProvider';
+import GOLDProvider from './GOLDProvider';
 
 type AppProps = {
   name?: string
@@ -23,9 +23,9 @@ function App({ children }: PropsWithChildren<AppProps>) {
         useRefreshTokensFallback
         cacheLocation="localstorage"
       >
-        <OGAProvider>
+        <GOLDProvider>
           {children}
-        </OGAProvider>
+        </GOLDProvider>
       </Auth0Provider>
     </React.StrictMode>
   );
