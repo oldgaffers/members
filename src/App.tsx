@@ -9,6 +9,8 @@ type AppProps = {
 
 function App({ children }: PropsWithChildren<AppProps>) {
   const redirect_uri = window.location.origin + window.location.pathname;
+  const params = new URLSearchParams(document.location.search);
+  const next = params.get("next") === 'true';
   return (
     <React.StrictMode>
       <Auth0Provider
@@ -23,12 +25,13 @@ function App({ children }: PropsWithChildren<AppProps>) {
         useRefreshTokensFallback
         cacheLocation="localstorage"
       >
-        <GOLDProvider>
+        <GOLDProvider next={next}>
           {children}
         </GOLDProvider>
       </Auth0Provider>
     </React.StrictMode>
   );
 }
+
 
 export default App
