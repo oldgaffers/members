@@ -33,14 +33,14 @@ function PdfInNewTab({ bucket, name, client }: { bucket: string; name: string; c
   }
 }
 
-function Folder({ name, client, credentials }: { name: string; client: S3Client; credentials: any }) {
+function Folder({ name, client, bucket }: { name: string; client: S3Client; bucket: string }) {
   const [folder, setFolder] = useState<any[] | undefined>();
 
   useEffect(() => {
     const getData = async () => {
       if (name && client) {
         const command = new ListObjectsV2Command({
-          Bucket: credentials.bucketName,
+          Bucket: bucket,
           Prefix: `${name}/`,
         });
         const l = await client.send(command);
@@ -65,11 +65,10 @@ function Folder({ name, client, credentials }: { name: string; client: S3Client;
   if (!folder || folder.length === 0) {
     return <p>No files found</p>;
   }
-  console.log('folder', folder);
   return <ul>
     {folder.map((name) => (
       <li key={name}>
-        <PdfInNewTab bucket={credentials.bucketName} name={name} client={client} />
+        <PdfInNewTab bucket={bucket} name={name} client={client} />
       </li>
     ))}
   </ul>;
@@ -109,7 +108,7 @@ export default function PrivateFolder({ name }: { name?: string }) {
 
   return (
     <RoleRestricted role="member" hide={false}>
-      <Folder name={name} client={client!} credentials={credentials} />
+      <Folder name={name} client={client!} bucket="oga-members-only" />
     </RoleRestricted>
   );
 }
