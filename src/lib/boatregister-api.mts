@@ -170,18 +170,6 @@ export async function geolocateGeonames(place: string) {
   }
 }
 
-export async function getCredentials(accessToken: string) {
-  return (await fetch(
-    `${api}/${stage}/credentials`,
-    {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      }
-    }
-  )).json();
-}
-
 export async function getUploadCredentials() {
   return (await fetch(`${api}/${stage}/upload_credentials`)).json();
 }

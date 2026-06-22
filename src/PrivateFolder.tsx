@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useAuth0 } from "@auth0/auth0-react";
 import RoleRestricted from "./RoleRestricted";
-import { getCredentials } from './lib/boatregister-api.mts';
-import { fromCognitoIdentity } from '@aws-sdk/credential-providers';
 import { GetObjectCommand, ListObjectsV2Command, S3Client } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
+import { getAWSCredentials, getS3ClientFromCredentials } from './lib/aws-utils.mts';
 
 function PdfInNewTab({ bucket, name, client }: { bucket: string; name: string; client: S3Client }) {
   const [url, setUrl] = useState<string | undefined>();
@@ -77,30 +76,20 @@ function Folder({ name, client, bucket }: { name: string; client: S3Client; buck
 export default function PrivateFolder({ name }: { name?: string }) {
   const { getAccessTokenSilently } = useAuth0();
   const [client, setClient] = useState<S3Client | undefined>();
-  const [credentials, setCredentials] = useState<any | undefined>();
 
   useEffect(() => {
 
     async function getClient() {
-      const token = await getAccessTokenSilently();
-      const cred = await getCredentials(token);
-      const credentials = fromCognitoIdentity({
-        identityId: cred.identityId,
-        clientConfig: { region: cred.region },
-        logins: {
-          'cognito-identity.amazonaws.com': cred.token,
-        }
-      });
-      const client = new S3Client({ region: cred.region, credentials });
-      setClient(client);
-      setCredentials(cred);
+      const idToken = await getAccessTokenSilently();
+      const credsResponse = await getAWSCredentials(idToken);
+      setClient(getS3ClientFromCredentials(credsResponse));
     }
 
     if (client) return;
     if (!name) return;
 
     getClient();
-  }, [client, credentials]);
+  }, [client]);
 
   if (!name) {
     return <p>No folder specified</p>

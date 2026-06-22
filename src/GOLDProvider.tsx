@@ -8,13 +8,11 @@ type GOLDProviderProps = {
   next?: boolean
 }
 
-const url1 = 'https://5li1jytxma.execute-api.eu-west-1.amazonaws.com/default/graphql';
-const url2 = 'https://jwxzd1md02.execute-api.eu-west-1.amazonaws.com/default/graphql';
+const uri = 'https://jwxzd1md02.execute-api.eu-west-1.amazonaws.com/default/graphql';
 
 export default function GOLDProvider(props: PropsWithChildren<GOLDProviderProps>) {
   const [client, setClient] = useState<ApolloClient>();
   const { isAuthenticated, getAccessTokenSilently } = useAuth0();
-  const uri = props.uri || props.next ? url2 : url1;
   useEffect(() => {
     const getAccessToken = async () => {
       if (isAuthenticated) {

@@ -3,6 +3,7 @@ import { FormControl, FormLabel, RadioGroup, FormControlLabel, Radio, TextField,
 import DeleteIcon from '@mui/icons-material/Delete';
 import Photodrop from "./PhotoDrop"
 import { getPrivateImage, postPhotos } from "./lib/postphotos"
+import { useAuth0 } from "@auth0/auth0-react";
 
 interface EditableCardImageProps {
     editEnabled: boolean
@@ -25,6 +26,7 @@ type CardImageProps = {
 
 function PrivateImage({ src, alt, width, height }: { src: string, alt: string, width: number, height: number }) {
     const [s, setS] = useState<any>(`https://placehold.co/${width}x${height}?text=please+wait`);
+    const { getAccessTokenSilently } = useAuth0();
 
     function errorHandler(e: any) {
         e.target.src = `https://placehold.co/${width}x${height}?text=image+not+loading`;
@@ -32,7 +34,7 @@ function PrivateImage({ src, alt, width, height }: { src: string, alt: string, w
 
     useEffect(() => {
         if (s.includes('placehold')) {
-            getPrivateImage(src).then((r) => {
+            getPrivateImage(getAccessTokenSilently, src).then((r) => {
                 setS(r);
             });
         }
@@ -92,6 +94,7 @@ export default function EditableCardImage({ editEnabled, id, name, email, pictur
     const [imageChoice, setImageChoice] = useState<string>('nothing');
     const [url, setUrl] = useState<string>('');
     const [web, setWeb] = useState<string>('');
+    const { getAccessTokenSilently } = useAuth0();
 
     useEffect(() => {
         let timeoutId: any | undefined;
@@ -126,7 +129,7 @@ export default function EditableCardImage({ editEnabled, id, name, email, pictur
         if (files.length === 0) {
             return;
         }
-        postPhotos(files, '', email, id, undefined, () => { }).then(
+        postPhotos(getAccessTokenSilently, files, '', email, id, undefined, () => { }).then(
             (r: any) => {
                 const { uuid, contentType } = r[0];
                 const ext = contentType.split('/')[1];

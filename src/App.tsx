@@ -15,10 +15,10 @@ function App({ children }: PropsWithChildren<AppProps>) {
     <React.StrictMode>
       <Auth0Provider
         domain="dev-uf87e942.eu.auth0.com"
-        clientId="Mlm45jI7zvoQXbLSYSNV8F1qI1iTEnce"
+        clientId='pXv1BYifT22RYd4HjDPhvzKOcTHMdLTT'
         authorizationParams={{
           redirect_uri,
-          audience: 'https://oga.org.uk/boatregister',
+          audience: 'https://oga.org.uk/membership',
           scope: 'openid profile email member',
         }}
         useRefreshTokens
