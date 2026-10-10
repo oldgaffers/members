@@ -16,7 +16,7 @@ declare global {
     interface Window { onClickVoyage: any; }
 }
 
-// window.onClickVoyage = (boat: number, title: string) => console.log('onClickVoyage', boat, title);
+// window.onClickVoyage = (boat: number, title: string) => // console.log('onClickVoyage', boat, title);
 
 function tag(v: Voyage) {
     return `v${v.boat.oga_no}${v.title.replace(/ /g, '')}`;

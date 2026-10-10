@@ -148,11 +148,11 @@ export default function VoyageCard({ voyage }: VoyageCardProps) {
         const data = interestEmail(from, fromEmail, user, voyage);
         postGeneralEnquiry('public', 'contact', data)
             .then((response) => {
-                console.log(response)
+                // console.log(response)
                 setSnackBarOpen(true);
             })
             .catch((error) => {
-                console.log("post", error);
+                // console.log("post", error);
                 // TODO snackbar from response.data
             });
     }

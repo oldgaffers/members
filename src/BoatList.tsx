@@ -25,7 +25,7 @@ export function useGetMembersBoats(membersResult: any) {
             try {
                 setBoats(await boatsWithHomeLocation());
             } catch (e) {
-                console.log(e);
+                // console.log(e);
             }
         }
         fetchData();

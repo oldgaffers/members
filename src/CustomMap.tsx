@@ -88,7 +88,7 @@ function BoatMarker({ boat }: { boat: { location: BoatLocation, oga_no: number, 
         title={title}
         eventHandlers={{
             click: () => {
-                console.log('marker clicked')
+                // console.log('marker clicked')
             },
         }}
     >
@@ -107,7 +107,7 @@ function BoatMarkers({ entries }: { entries: any[] }) {
             const up = new Date(boat.location.timestamp).getTime();
             const n = new Date().getTime();
             const days_old = Math.floor((n - up) / 86400000);
-            console.log(days_old);
+            // console.log(days_old);
             if (days_old > 6) {
                 return false;
             }

@@ -154,11 +154,11 @@ function MyDetails() {
     setOpenContact(false);
     postGeneralEnquiry('member', 'profile', { firstname, lastname, id, text }, token)
       .then((response) => {
-        console.log(response);
+        // console.log(response);
         setSnackBarOpen(true);
       })
       .catch((error) => {
-        console.log("post", error);
+        // console.log("post", error);
         // TODO snackbar from response.data
       });
   };
@@ -186,7 +186,7 @@ function MyDetails() {
         setBoats(p);
       })
       .catch((e) => {
-        console.log(e);
+        // console.log(e);
       });
   };
 

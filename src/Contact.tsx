@@ -122,7 +122,7 @@ export function ContactHelper({ memberGoldId, text = 'Contact', onClose, open }:
                 setSnackBarOpen(true);
             })
             .catch((error) => {
-                console.log("post", error);
+                // console.log("post", error);
                 // TODO snackbar from response.data
             });
         });

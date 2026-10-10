@@ -53,7 +53,7 @@ function PrivateImage({ src, alt, width, height }: { src: string, alt: string, w
 function HeroImage({ src, alt, width, height }: { src: string, alt: string, width: number, height: number }) {
 
     function errorHandler(e: any) {
-        console.log(e);
+        // console.log(e);
         e.target.src = `https://placehold.co/${width}x${height}?text=image+not+loading`;
     }
 

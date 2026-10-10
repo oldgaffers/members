@@ -39,8 +39,8 @@ async function processCrewInvitations(voyage: Voyage, invited: Member[], organis
 async function createOrUpdateVoyage(voyage: Voyage, getAccessTokenSilently: Function) {
   if (voyage.visibility === 'public') {
     postScopedData('public', 'voyage', voyage).then(
-      (answer: any) => console.log(answer),
-      (reason: any) => console.log('BAD', reason),
+      (answer: any) => // console.log(answer),
+      (reason: any) => // console.log('BAD', reason),
     );
   } else {
     getAccessTokenSilently().then((token: string) => {
@@ -48,12 +48,12 @@ async function createOrUpdateVoyage(voyage: Voyage, getAccessTokenSilently: Func
         .then(
           (response: any) => {
             if (response.ok) {
-              console.log('ok');
+              // console.log('ok');
             } else {
-              console.log(response);
+              // console.log(response);
             }
           },
-          (reason: any) => console.log('BAD', reason),
+          (reason: any) => // console.log('BAD', reason),
         );
     });
   }

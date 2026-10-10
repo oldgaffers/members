@@ -18,7 +18,7 @@ export default function ChooseABoat({ member, boats, onClick }: { member: Member
       getFilterable()
         .then((r) => {
           setFilterable(r);
-        }).catch((e) => console.log(e));
+        }).catch((e) => // console.log(e));
     }
   }, [filterable]);
 
@@ -42,11 +42,11 @@ export default function ChooseABoat({ member, boats, onClick }: { member: Member
     getAccessTokenSilently().then((token) => {
       postGeneralEnquiry('public', 'claim', data, token)
         .then((response) => {
-          console.log(response)
+          // console.log(response)
           onClick();
         })
         .catch((error) => {
-          console.log("post", error);
+          // console.log("post", error);
           // TODO snackbar from response.data
         });
     });

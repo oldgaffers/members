@@ -38,7 +38,7 @@ type LocationPickerProps = {
         }
       },
       locationfound: (location) => {
-        console.log('location found:', location);
+        // console.log('location found:', location);
       },
     })
   

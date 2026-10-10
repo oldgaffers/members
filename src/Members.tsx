@@ -59,7 +59,7 @@ export function useMembers(
       getFilterable()
         .then((r) => {
           setFilterable(r);
-        }).catch((e) => console.log(e));
+        }).catch((e) => // console.log(e));
     }
   }, [filterable]);
 
@@ -110,12 +110,12 @@ function MembersListForMember({
   const { loading, data } = useMembers(excludeNotPaid, excludeNoConsent, crew, mylocation);
 
   if (loading) {
-    console.log('MembersListForMember loading');
+    // console.log('MembersListForMember loading');
     return <CircularProgress />;
   }
 
   if (!data) {
-    console.log('MembersListForMember no data');
+    // console.log('MembersListForMember no data');
     return <CircularProgress />;
   }
 
@@ -186,12 +186,12 @@ export function MembersList({ crew = false }) {
   };
 
   if (memberResult.loading) {
-    console.log('MembersList loading');
+    // console.log('MembersList loading');
     return <CircularProgress />;
   }
 
   if (!memberResult.data) {
-    console.log('MembersList no data');
+    // console.log('MembersList no data');
     return <CircularProgress />;
   }
 

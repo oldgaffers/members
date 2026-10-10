@@ -102,7 +102,7 @@ export function distanceInNM(a: any, b: any) {
   const to = [b.longitude ?? b.lng, b.latitude ?? b.lat];  
   const d = 0.53996 * distance(from, to, { units: 'kilometers' }); // nautical miles
   if (d > 1000) {
-    console.log('BIG', a, b);
+    // console.log('BIG', a, b);
   }
   return Math.floor(d);
 }
