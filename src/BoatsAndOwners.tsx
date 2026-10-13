@@ -182,7 +182,7 @@ export default function BoatsAndOwners({
     },
     [],
   );
-  boats.forEach((boat) => {// console.log(`"${boat.name}", "${boat.home_port}"`);});
+  // boats.forEach((boat) => { console.log(`"${boat.name}", "${boat.home_port}"`);});
   return (
     <Box sx={{ width: '90vw' }}>
       <DataGrid
