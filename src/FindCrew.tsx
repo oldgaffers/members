@@ -53,7 +53,7 @@ async function createOrUpdateVoyage(voyage: Voyage, getAccessTokenSilently: Func
               // console.log(response);
             }
           },
-          (reason: any) => // console.log('BAD', reason),
+          (reason: any) => console.log('BAD', reason),
         );
     });
   }
