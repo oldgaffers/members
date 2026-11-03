@@ -46,7 +46,7 @@ export default function CheckMembership() {
             <Typography>Perhaps</Typography>
             <ul>
                 <li>You used different email addresses when you joined and when you created a login*</li>
-                <li>You haven't yet joined. <a href="/about/membership/membership.html">Join Here</a></li>
+                <li>You haven't yet joined. <a href="/join_us_/membership/membership.html">Join Here</a></li>
                 <li>You have applied to join but haven't yet had an email giving you your membership number.</li>
                 <li>You have received your membership number today.**</li>
                 <li>Our records are in error</li>
