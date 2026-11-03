@@ -14,7 +14,7 @@ export default function Welcome() {
                 <Typography>
                     If you've never logged in, then click the red button below and follow the instructions.
                 </Typography>
-                <Typography>If you aren't a member, take a look at our <a href='/about/membership/membership.html'>join-up page</a></Typography>
+                <Typography>If you aren't a member, take a look at our <a href='/join_us_/membership/membership.html'>join-up page</a></Typography>
             </Stack>
         );
     }
