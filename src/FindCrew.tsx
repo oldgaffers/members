@@ -39,8 +39,8 @@ async function processCrewInvitations(voyage: Voyage, invited: Member[], organis
 async function createOrUpdateVoyage(voyage: Voyage, getAccessTokenSilently: Function) {
   if (voyage.visibility === 'public') {
     postScopedData('public', 'voyage', voyage).then(
-      (answer: any) => // console.log(answer),
-      (reason: any) => // console.log('BAD', reason),
+      (answer: any) => console.log(answer),
+      (reason: any) => console.log('BAD', reason),
     );
   } else {
     getAccessTokenSilently().then((token: string) => {
