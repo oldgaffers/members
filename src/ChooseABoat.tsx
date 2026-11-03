@@ -18,7 +18,7 @@ export default function ChooseABoat({ member, boats, onClick }: { member: Member
       getFilterable()
         .then((r) => {
           setFilterable(r);
-        }).catch((e) => // console.log(e));
+        }).catch((e) => console.log(e));
     }
   }, [filterable]);
 
