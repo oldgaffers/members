@@ -1,6 +1,7 @@
 import { useAuth0 } from "@auth0/auth0-react";
 import { Stack, Typography } from "@mui/material";
 import CheckMembership from "./CheckMembership";
+import { joinUsLink } from "./lib/links.mts";
 
 export default function Welcome() {
     const { user } = useAuth0();
@@ -14,7 +15,7 @@ export default function Welcome() {
                 <Typography>
                     If you've never logged in, then click the red button below and follow the instructions.
                 </Typography>
-                <Typography>If you aren't a member, take a look at our <a href='/join_us_/membership/membership.html'>join-up page</a></Typography>
+                <Typography>If you aren't a member, take a look at our <a href={joinUsLink}>join-up page</a></Typography>
             </Stack>
         );
     }

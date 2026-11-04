@@ -11,6 +11,7 @@ import { ownerList, ownerValueGetter } from './lib/ownership.mts';
 import { useState } from 'react';
 import { Member } from './lib/membership.mts';
 import ChooseABoat from './ChooseABoat';
+import { browseTheRegisterLink } from './lib/links.mts';
 
 type BoatsByMembershipProps = {
   boats: Boat[]
@@ -46,7 +47,7 @@ function BoatsByMembershipFooter({ boats, member }: { boats: Boat[], member: Mem
       <Typography variant='h6'>
       If your boat is already on the register you can claim ownership here.</Typography>
       <ChooseABoat member={member} boats={boats} onClick={() => setSnackBarOpen(true)} />
-      <Typography variant='h6'>If your boat isn't on the list, then you add it on the <a href='/browse_the_register/index.html'>boat register</a>.</Typography>
+      <Typography variant='h6'>If your boat isn't on the list, then you add it on the <a href={browseTheRegisterLink}>boat register</a>.</Typography>
       <Snackbar
                 anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
                 open={snackBarOpen}

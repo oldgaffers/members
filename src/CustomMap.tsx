@@ -6,6 +6,7 @@ import { Popup } from 'react-leaflet/Popup';
 import { Stack } from '@mui/system';
 import { Typography } from '@mui/material';
 import { getScopedData } from './lib/boatregister-api.mts';
+import { openStreetMapCopyrightLink } from "./lib/links.mts";
 
 const L = window.L;// expect this to be true
 
@@ -14,6 +15,18 @@ interface BoatLocation {
     longitude: number
     timestamp: string
     source: string
+}
+
+function port() {
+    return L.icon({
+        iconUrl: `https://oldgaffers.github.io/boatregister//images/anchor.png`,
+        shadowUrl: 'https://oldgaffers.github.io/boatregister//images/shadow-anchor.png',
+        iconSize: [32, 37], // size of the icon
+        shadowSize: [51, 37], // size of the shadow
+        iconAnchor: [16, 34], // point of the icon which will correspond to marker's location
+        shadowAnchor: [16, 34],  // the same for the shadow
+        popupAnchor: [16, 18] // point from which the popup should open relative to the iconAnchor
+    });
 }
 
 function gaffer(colour: string) {
@@ -98,21 +111,20 @@ export default function CustomMap(props: CustomMapProps) {
         <Stack>
             <MapContainer style={{ height: props.height }} center={center} zoom={6} scrollWheelZoom={false}>
                 <TileLayer
-                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                    attribution={`&copy; <a href="${openStreetMapCopyrightLink}">OpenStreetMap</a> contributors`}
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 />
 
-                {(props.markers ?? []).map((port, index: Key) => <Marker
+                {(props.markers ?? []).map((m, index: Key) => <Marker
                     key={index}
-                    position={[port.latitude, port.longitude]}
-                    icon={customIcons[port.icon]}
-                    title={port.name}
+                    position={[m.latitude, m.longitude]}
+                    icon={port()}
+                    title={m.name}
                 ></Marker>)}
 
                 <BoatMarkers entries={data ?? []} />
 
             </MapContainer>
-            <a href="https://www.flaticon.com/free-icons/diamond" title="diamond icons">Diamond icons created by prettycons - Flaticon</a>
         </Stack>
     );
 }

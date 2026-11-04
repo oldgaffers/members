@@ -4,6 +4,7 @@ import 'dayjs/locale/en-gb';
 import { MapContainer, Marker, Popup, TileLayer, useMapEvents } from 'react-leaflet'
 import { LatLng } from 'leaflet';
 import { defaultIcon } from './VoyageMap';
+import { openStreetMapCopyrightLink } from './lib/links.mts';
 
 type LocationPickerProps = {
     open: boolean
@@ -72,7 +73,7 @@ export default function LocationPicker({ open, data, onCancel, onClose }: Locati
           scrollWheelZoom={false}
         >
           <TileLayer
-            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            attribution={`&copy; <a href="${openStreetMapCopyrightLink}">OpenStreetMap</a> contributors`}
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
           <MapComponent data={markers} onChangeMarkers={(m: LatLng[]) => setMarkers(m)} />

@@ -186,7 +186,7 @@ function MyDetails() {
         setBoats(p);
       })
       .catch((e) => {
-        // console.log(e);
+        console.log(e);
       });
   };
 

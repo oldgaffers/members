@@ -2,6 +2,7 @@ import { useState } from 'react';
 import 'dayjs/locale/en-gb';
 import { MapContainer, Marker, Popup, TileLayer, useMapEvents } from 'react-leaflet'
 import L, { LatLng } from 'leaflet';
+import { openStreetMapCopyrightLink } from './lib/links.mts';
 
 export const defaultIcon = L.icon({
     iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
@@ -62,7 +63,7 @@ export default function VoyageMap({ places }: { places: LatLng[] }) {
             scrollWheelZoom={false}
         >
             <TileLayer
-                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                attribution={`&copy; <a href="${openStreetMapCopyrightLink}">OpenStreetMap</a> contributors`}
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
             <MapComponent data={places} />

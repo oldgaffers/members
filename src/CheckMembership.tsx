@@ -3,6 +3,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 import { Box, CircularProgress, Stack, Typography } from "@mui/material";
 import { getIsMember } from './lib/boatregister-api.mts';
 import Contact from './Associate';
+import { joinUsLink } from "./lib/links.mts";
 
 export default function CheckMembership() {
     const { user, getAccessTokenSilently } = useAuth0();
@@ -46,7 +47,7 @@ export default function CheckMembership() {
             <Typography>Perhaps</Typography>
             <ul>
                 <li>You used different email addresses when you joined and when you created a login*</li>
-                <li>You haven't yet joined. <a href="/join_us_/membership/membership.html">Join Here</a></li>
+                <li>You haven't yet joined. <a href={joinUsLink}>Join Here</a></li>
                 <li>You have applied to join but haven't yet had an email giving you your membership number.</li>
                 <li>You have received your membership number today.**</li>
                 <li>Our records are in error</li>
