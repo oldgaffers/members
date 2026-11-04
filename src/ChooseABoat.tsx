@@ -41,12 +41,12 @@ export default function ChooseABoat({ member, boats, onClick }: { member: Member
     }
     getAccessTokenSilently().then((token) => {
       postGeneralEnquiry('public', 'claim', data, token)
-        .then((response) => {
+        .then((/*response*/) => {
           // console.log(response)
           onClick();
         })
         .catch((error) => {
-          // console.log("post", error);
+          console.log("post", error);
           // TODO snackbar from response.data
         });
     });

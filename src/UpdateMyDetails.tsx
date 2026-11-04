@@ -153,12 +153,12 @@ function MyDetails() {
     const { firstname, lastname } = myRecord as Member; 
     setOpenContact(false);
     postGeneralEnquiry('member', 'profile', { firstname, lastname, id, text }, token)
-      .then((response) => {
+      .then((/*response*/) => {
         // console.log(response);
         setSnackBarOpen(true);
       })
       .catch((error) => {
-        // console.log("post", error);
+        console.log("contact form post", error);
         // TODO snackbar from response.data
       });
   };

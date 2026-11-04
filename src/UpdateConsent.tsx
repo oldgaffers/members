@@ -34,12 +34,12 @@ export default function UpdateConsent({ member }: UpdateConsentProps) {
   `;
         getAccessTokenSilently().then((token) => {
             postGeneralEnquiry('member', 'profile', { firstname, lastname, id, text }, token)
-                .then((response) => {
+                .then((/*response*/) => {
                     // console.log("post", response);
                     setSnackBarOpen(true);
                 })
                 .catch((error) => {
-                    // console.log("post", error);
+                    console.log("member profile post", error);
                     // TODO snackbar from response.data
                 });
         });

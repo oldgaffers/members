@@ -84,12 +84,12 @@ ${Object.entries(user).map(([k, v]) => `${k}: ${v}`).join('\n')}`;
         }
         getAccessTokenSilently().then((token) => {
             postGeneralEnquiry('public', 'associate', data, token)
-                .then((response) => {
+                .then((/*response*/) => {
                     // console.log(response)
                     setSnackBarOpen(true);
                 })
                 .catch((error) => {
-                    // console.log("post", error);
+                    console.log("post", error);
                     // TODO snackbar from response.data
                 });
         });
