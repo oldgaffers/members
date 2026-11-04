@@ -14,12 +14,12 @@ import BoatsByMembership from './BoatsByMembership';
 import MemberStatus from './MemberStatus';
 import Interests from './MemberDetails';
 import ContactTheMembershipSecretary from './ContactTheMembershipSecretary';
-import { Boat, getBoat, getFilterable, postGeneralEnquiry, postScopedData } from './lib/boatregister-api.mts';
-import membersBoats from './lib/members_boats.mts';
+import { Boat, postGeneralEnquiry, postScopedData } from './lib/boatregister-api.mts';
 import { Member } from './lib/membership.mts';
 import Profile from './Profile';
 import LoginButton from './LoginButton';
 import Welcome from './Welcome';
+import { useGetFilterable } from './ChooseABoat';
 
 const MEMBER_QUERY = gql(`query members($members: [Int]!) {
     members(members: $members) {
@@ -92,20 +92,6 @@ function toHtml(d: Member | string | undefined) {
 `;
 }
 
-async function fetchBoatData(members: Member[], token: string) {
-        const r = await getFilterable();
-        const owned = membersBoats(r, members);
-        const details = await Promise.all(owned.map((b) => getBoat(b.oga_no, token)));
-        const got = details.filter((b): b is Boat => !!b);
-        const p = got.map((b) => {
-          const { owners } = owned.find((l) => l.oga_no === b.oga_no) || {};
-          // set options explicity so switches are always controlled
-          return { ...b, owners, hire: !!b.hire, crewing: !!b.crewing } as Boat;
-        });
-        p.sort((a, b) => a.oga_no - b.oga_no);
-        return p;
-}
-
 function MyDetails() {
   const [openContact, setOpenContact] = useState(false);
   const [snackBarOpen, setSnackBarOpen] = useState(false);
@@ -118,22 +104,21 @@ function MyDetails() {
   const memberResult = useQuery(MEMBER_QUERY, { variables: { members: [memberNo] } });
   const [tab, setTab] = useState(0);
   const [token, setToken] = useState<string|undefined>();
+  const filterable = useGetFilterable();
 
   useEffect(() => {
     if (!token) getAccessTokenSilently().then((tok) => setToken(tok));
   }, [token, getAccessTokenSilently]);
-
-  useEffect(() => {
-    if (boats.length > 0) return;
-    if (!token) return;
-    fetchBoatData(members, token).then((b) => setBoats(b));
-  }, [boats, members, token]);
 
   if (memberResult.loading) {
     return <CircularProgress />;
   }
 
   if (!memberResult.data) {
+    return <CircularProgress />;
+  }
+
+  if (!filterable) {
     return <CircularProgress />;
   }
 
@@ -198,12 +183,16 @@ function MyDetails() {
     return <CircularProgress />;
   }
 
+  const myBoats = filterable.filter((b) => b.owners?.includes(myRecord.id));
+
+  if (boats.length !== myBoats.length) {
+    setBoats(myBoats);
+  }
+
   return (
     <Stack spacing={1} width='90vw'>
       <Box sx={{ border: 5, borderColor: '#DEEAFD', background: '#DEEAFD' }}>
         <Tabs
-          // disable the tab indicator because it doesn't work well with wrapped container
-          TabIndicatorProps={{ sx: { display: 'none' } }}
           value={tab}
           onChange={handleTabChange}
           aria-label="membership detail tabs"

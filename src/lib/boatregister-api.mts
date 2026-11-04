@@ -142,22 +142,6 @@ export async function getFilterable() {
   return [];
 }
 
-export async function getBoat(ogaNo: number, accessToken: string): Promise<Boat | undefined> {
-  const r = await fetch(`${boatRegisterHome}/boatregister/page-data/boat/${ogaNo}/page-data.json`);
-  if (r.ok) {
-    const d = await r.json();
-    const { boat } = d.result.pageContext;
-    if (accessToken) {
-      const extra = await getScopedData('public', 'crewing', { oga_no: `${ogaNo}` }, accessToken);
-      if (extra.length > 0) {
-        return { ...boat, ...extra[0] };
-      }
-    }
-    return boat;
-  }
-  return undefined;
-}
-
 export async function geolocateGeonames(place: string) {
   const p = new URLSearchParams();
   p.append('username', 'oga_boatregister');

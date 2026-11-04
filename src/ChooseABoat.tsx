@@ -7,6 +7,19 @@ import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { Dayjs } from 'dayjs';
 
+export function useGetFilterable(): Boat[] | undefined {
+  const [filterable, setFilterable] = useState<Boat[] | undefined>();
+    useEffect(() => {
+    if (!filterable) {
+      getFilterable()
+        .then((r) => {
+          setFilterable(r);
+        }).catch((e) => console.log(e));
+    }
+  }, [filterable]);
+  return filterable;
+}
+
 export default function ChooseABoat({ member, boats, onClick }: { member: Member, boats: Boat[], onClick: Function }) {
   const [filterable, setFilterable] = useState<Boat[] | undefined>();
   const [year, setYear] = useState<Dayjs | null>(null);
